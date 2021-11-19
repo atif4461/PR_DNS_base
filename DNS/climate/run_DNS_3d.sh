@@ -1,7 +1,7 @@
 #!/bin/bash
 ##SBATCH -p skydebug
 ##SBATCH -p sky
-#SBATCH -p debug
+#SBATCH -p long
 #SBATCH -A dns
 #SBATCH -J dns
 
@@ -11,12 +11,15 @@
 #SBATCH  --exclusive
 ##SBATCH  --mail-type=ALL
 ##SBATCH  --mail-user=tzhang@bnl.gov
-#SBATCH  --time=0:10:00
+#SBATCH  --time=10:00:00
 
 
 ulimit -s unlimited
 
-cd /sdcc/u/tzhang/dns/DNS_install/cori/DNS/climate
-mpirun --mca  btl_openib_allow_ib 1 -n 64 /sdcc/u/tzhang/dns/DNS_install/cori/DNS/climate/climate -d 3 -p 4 4 4 -i input-pi-chamber/in-control-shorter -o out-control-shorter |& tee srun.log
-#srun -n 64 ./hello
-#cat /proc/cpuinfo
+
+#cd /sdcc/u/tzhang/PR_DNS_base/DNS/climate
+rm -rf out-pr-dns
+mpirun --mca  btl_openib_allow_ib 1 -n 64 /sdcc/u/tzhang/PR_DNS_base/DNS/climate/climate -d 3 -p 4 4 4 -i input-pr-dns/in-entrainment3dd_case1 -o out-pr-dns 
+#mpirun --mca  btl_openib_allow_ib 1 -n 128 /sdcc/u/tzhang/PR_DNS_base/DNS/climate/climate -d 3 -p 8 4 4 -i input-pr-dns/in-entrainment3dd_case1 -o out-pr-dns 
+#mpirun --mca  btl_openib_allow_ib 1 -n 256 /sdcc/u/tzhang/PR_DNS_base/DNS/climate/climate -d 3 -p 8 8 4 -i input-pr-dns/in-entrainment3dd_case1 -o out-pr-dns 
+#mpirun --mca  btl_openib_allow_ib 1 -n 512 /sdcc/u/tzhang/PR_DNS_base/DNS/climate/climate -d 3 -p 8 8 8 -i input-pr-dns/in-entrainment3dd_case1 -o out-pr-dns 

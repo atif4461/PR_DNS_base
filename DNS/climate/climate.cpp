@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "../iFluid/iFluid.h"
 #include "../iFluid/ifluid_basic.h"
 #include "climate.h"
+#include <sys/time.h>
 
 #define		MAX_NUM_VERTEX_IN_CELL		20
 	/*  Local Application Function Declarations */
@@ -63,7 +64,7 @@ int main(int argc, char **argv)
 	int dim;
 
 	FT_Init(argc,argv,&f_basic);
-        PetscInitialize(&argc,&argv,PETSC_NULL,PETSC_NULL);
+    PetscInitialize(&argc,&argv,PETSC_NULL,PETSC_NULL);
 
 	VCARTESIAN *v_cartesian = new VCARTESIAN(front);
 	Incompress_Solver_Smooth_Basis *l_cartesian = NULL;
@@ -77,10 +78,10 @@ int main(int argc, char **argv)
 
 	in_name      		= f_basic.in_name;
 	restart_state_name      = f_basic.restart_state_name;
-        out_name     		= f_basic.out_name;
-        restart_name 		= f_basic.restart_name;
-        RestartRun   		= f_basic.RestartRun;
-        ReadFromInput   	= f_basic.ReadFromInput;
+    out_name     		= f_basic.out_name;
+    restart_name 		= f_basic.restart_name;
+    RestartRun   		= f_basic.RestartRun;
+    ReadFromInput   	= f_basic.ReadFromInput;
 	RestartStep 		= f_basic.RestartStep;
 	dim	 		= f_basic.dim;
 
@@ -107,23 +108,23 @@ int main(int argc, char **argv)
 	read_CL_prob_type(&front);
 	read_movie_options(in_name,&eqn_params);
 	readPhaseParams(&front);
-        read_iFparams(in_name,&iFparams);
+    read_iFparams(in_name,&iFparams);
 
 	if (!RestartRun)
 	{
 	    if(eqn_params.no_droplets == NO)
 	    {
-		printf("Initializing droplets\n");
-		level_func_pack.pos_component = LIQUID_COMP2;
-	    	FT_InitIntfc(&front,&level_func_pack);
-                initWaterDrops(&front);
-	    	if (debugging("trace")) printf("Passed init water droplets()\n");
+		    printf("Initializing droplets\n");
+		    level_func_pack.pos_component = LIQUID_COMP2;
+	        FT_InitIntfc(&front,&level_func_pack);
+            initWaterDrops(&front);
+	        if (debugging("trace")) printf("Passed init water droplets()\n");
 	    }
 	    else
 	    {
 	        printf("No droplets contained\n");
 	        level_func_pack.func_params = NULL;
-                level_func_pack.func = NULL;
+            level_func_pack.func = NULL;
 	        level_func_pack.pos_component = LIQUID_COMP2;
 	        level_func_pack.wave_type = -1; 
 	        FT_InitIntfc(&front,&level_func_pack);
@@ -146,7 +147,7 @@ int main(int argc, char **argv)
 
 	FT_InitVeloFunc(&front,&velo_func_pack);
 
-        v_cartesian->initMesh();
+    v_cartesian->initMesh();
 	l_cartesian->initMesh();
 	l_cartesian->findStateAtCrossing = ifluid_find_state_at_crossing;
 	if (RestartRun)
@@ -162,12 +163,12 @@ int main(int argc, char **argv)
 	else
 	{
 
-            init_fluid_state_func(&front,l_cartesian);
-            init_vapor_state_func(&front,v_cartesian);
-            init_temp_state_func(&front,v_cartesian);
+        init_fluid_state_func(&front,l_cartesian);
+        init_vapor_state_func(&front,v_cartesian);
+        init_temp_state_func(&front,v_cartesian);
 
 	    if(eqn_params.init_state == FOURIER_STATE)
-		l_cartesian->setParallelVelocity();
+		    l_cartesian->setParallelVelocity();
 	    else
 	        l_cartesian->setInitialCondition();
             if (debugging("trace"))
@@ -200,12 +201,14 @@ static  void melting_flow_driver(
 	VCARTESIAN *v_cartesian,
 	Incompress_Solver_Smooth_Basis *l_cartesian)
 {
-        double CFL;
-        int  dim = front->rect_grid->dim;
+    double CFL;
+    int  dim = front->rect_grid->dim;
 	IF_PARAMS *iFparams;
 	PARAMS *eqn_params;
 	MOVIE_OPTION *movie_option;
-        static LEVEL_FUNC_PACK level_func_pack;
+    static LEVEL_FUNC_PACK level_func_pack;
+    struct timeval tv1,tv2;
+    float runtime;
 
 	if (debugging("trace"))
 	    printf("Entering melting_flow_driver()\n");
@@ -218,10 +221,10 @@ static  void melting_flow_driver(
 
 	front->hdf_movie_var = NULL;
 
-        if (!RestartRun)
-        {
+   if (!RestartRun)
+   {
 	    FT_ResetTime(front);
-            FT_SetOutputCounter(front);
+        FT_SetOutputCounter(front);
             /* Front standard output*/
 	   /* FT_Save(front,out_name);
             v_cartesian->printFrontInteriorState(out_name);
@@ -250,10 +253,10 @@ static  void melting_flow_driver(
 	    front->dt = std::min(front->dt,CFL*l_cartesian->max_dt);
 
 	    
-            l_cartesian->initMovieVariables();
-            v_cartesian->initMovieVariables();
+        l_cartesian->initMovieVariables();
+        v_cartesian->initMovieVariables();
 
-            if (eqn_params->prob_type == PARTICLE_TRACKING &&
+        if (eqn_params->prob_type == PARTICLE_TRACKING &&
 		movie_option->plot_particles == YES)
 	    {
                 vtk_plot_scatter(front);
@@ -272,11 +275,12 @@ static  void melting_flow_driver(
 	FT_TimeControlFilter(front);
 	/*Record the initial condition*/
 	/*v_cartesian->recordField(out_name,"velocity");*/
-        if (eqn_params->prob_type == PARTICLE_TRACKING)
+    if (eqn_params->prob_type == PARTICLE_TRACKING)
 	    v_cartesian->output();
 
-        for (;;)
-        {
+    for (;;)
+    {
+        gettimeofday(&tv1, NULL);
 	    FT_Propagate(front);
 	    l_cartesian->solve(front->dt);
 	    printf("Passed solving NS equations\n");
@@ -302,17 +306,19 @@ static  void melting_flow_driver(
 	    FT_SetTimeStep(front);
 	    front->dt = FT_Min(front->dt,CFL*l_cartesian->max_dt);
 
-            printf("\ntime = %10.9f   step = %7d   dt = %10.9f\n",
-                        front->time,front->step,front->dt);
-            fflush(stdout);
+        gettimeofday(&tv2, NULL);
+        runtime=(tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        printf("\nruntime = %10.2f  time = %10.9f   step = %7d   dt = %10.9f\n",
+                        runtime,front->time,front->step,front->dt);
+        fflush(stdout);
 	    
-            if (FT_IsSaveTime(front))
+        if (FT_IsSaveTime(front))
 	    {
                 printf("Recording data for post analysis ...\n");
 		if (eqn_params->prob_type == PARTICLE_TRACKING)
 		    v_cartesian->output();
 	    }
-            if (FT_IsMovieFrameTime(front))
+        if (FT_IsMovieFrameTime(front))
 	    {
 		printf("Output movie frame...\n");
 		// Front standard output

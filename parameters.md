@@ -5,3 +5,7 @@
 
 # grid number
 - Computational grid: 64 64 64 
+
+# boundary position for droplets
+- Enter lower bound for droplets position: 0.0 0.0 0.0
+- Enter upper bound for droplets position: 0.512 0.512 0.512
