@@ -39,7 +39,7 @@ static void test_propagate(Front*);
 static void init_io( int,char**);
 char *in_name,*out_name,sc_name[100];
 
-int main(int argc, char **argv)
+int main11(int argc, char **argv)
 {
 	static Front front;
 	static RECT_GRID comp_grid;

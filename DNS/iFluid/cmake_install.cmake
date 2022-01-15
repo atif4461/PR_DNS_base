@@ -1,4 +1,4 @@
-# Install script for directory: /sdcc/u/tzhang/dns/DNS_install/cori/DNS/iFluid
+# Install script for directory: /sdcc/u/tzhang/PR_DNS_base/DNS/iFluid
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

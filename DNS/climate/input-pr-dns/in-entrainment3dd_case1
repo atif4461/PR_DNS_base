@@ -41,6 +41,7 @@ Choose numerical scheme
 Enter scheme: CN 
 Enter reference pressure(Pa): 82844.139706
 Enter yes to enable volume force: yes 
+Enter pc_hypre_boomeramg_strong_threshold: 0.5
 
 ********************Droplets********************* 
 Water phase state can be

@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */ 
 #include "solver.h"
 #include "petscmat.h"
+#include "mpi.h"
 
 PETSc::PETSc()
 {
@@ -338,6 +339,20 @@ void PETSc::Solve_withPureNeumann(void)
 
 void PETSc::Solve_withPureNeumann_HYPRE(void)
 {
+        int rank_id;
+        extern char* in_name;
+        char hypre_thres[100];
+
+        //MPI_Comm_rank(MPI_COMM_WORLD, &rank_id);
+        //if(rank_id == 0){
+        FILE *infile = fopen(in_name,"r");
+        CursorAfterString(infile,"Enter pc_hypre_boomeramg_strong_threshold:");
+        fscanf(infile,"%s",hypre_thres);
+        //hypre_thres = atof(string);
+        printf("zhangtao %s\n",hypre_thres);
+        //}
+
+
         PC pc;
 	if (debugging("trace"))
         printf("Entering Solve_withPureNeumann_HYPRE()\n");
@@ -361,7 +376,7 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
 	start_clock("HYPRE preconditioner");
         PCSetType(pc,PCHYPRE);
         PCHYPRESetType(pc,"boomeramg");
-        PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_strong_threshold", "0.5"); 
+        PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_strong_threshold", hypre_thres); 
         KSPSetFromOptions(ksp);
         KSPSetUp(ksp);
 	stop_clock("HYPRE preconditioner");

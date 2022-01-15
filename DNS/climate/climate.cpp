@@ -48,7 +48,8 @@ static void 	read_movie_options(char*,PARAMS*);
 static void	melt_flow_point_propagate(Front*,POINTER,POINT*,POINT*,
 			HYPER_SURF_ELEMENT*,HYPER_SURF*,double,double*);
 
-char *in_name,*restart_state_name,*restart_name,*out_name;
+extern  char  *in_name;
+char *restart_state_name,*restart_name,*out_name;
 boolean RestartRun;
 boolean ReadFromInput;
 int RestartStep;
@@ -84,6 +85,7 @@ int main(int argc, char **argv)
     ReadFromInput   	= f_basic.ReadFromInput;
 	RestartStep 		= f_basic.RestartStep;
 	dim	 		= f_basic.dim;
+
 
 	sprintf(restart_state_name,"%s/state.ts%s",restart_name,
 			right_flush(RestartStep,7));
