@@ -395,3 +395,4 @@ extern void  Deviation(double*,Front*,double&,double&);
 extern double* ComputePDF(double*,int,double&,int,double&,double&);
 extern double* ComputePDF(double*,int,double&,int,double&,double&,boolean);
 extern bool  fftnd(fftw_complex*, int, int*,int);
+extern void call_cuda();

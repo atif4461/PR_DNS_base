@@ -1,4 +1,4 @@
-file(GLOB climate_source "*.cpp" "*.h")
+file(GLOB climate_source "*.cpp" "*.h" "*.cu")
 
 #create excutable
 add_executable(climate ${climate_source})

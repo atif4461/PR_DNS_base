@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.11)
-project (climate C CXX)
+project (climate C CXX CUDA)
 
 set (CMAKE_C_FLAGS)
 set (CMAKE_CXX_FLAGS "-fopenmp -ljpeg")

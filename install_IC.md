@@ -46,3 +46,6 @@
 - cd climate
 - sbatch run_DNS_3d.sh
 - outputs are in out-control-shorter
+
+
+

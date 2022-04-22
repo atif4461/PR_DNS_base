@@ -5,15 +5,6 @@
 #include <iFluid.h>
 #include "solver.h"
 #include "climate.h"
-
-#include <sys/time.h>
-
-double g_computeVaporSource_part_1 = 0.0;
-double g_computeVaporSource_part_2 = 0.0;
-double g_computeVaporSource_part_3 = 0.0;
-//double g_computeVaporSource_part_4 = 0.0;
-
-
 static void setSamplePoints(double*, double*, int);
 static int find_state_at_crossing(Front*,int*,GRID_DIRECTION,int,
                                 POINTER*,HYPER_SURF**,double*);
@@ -375,6 +366,10 @@ void VCARTESIAN::computeAdvection()
 
 	sub_comp[0] = SOLID_COMP;
 	sub_comp[1] = LIQUID_COMP2;
+
+    //zhangtao cuda
+    call_cuda();
+    
 
 	for (i = 0; i < 2; ++i)
 	{
@@ -3950,12 +3945,7 @@ void VCARTESIAN::computeVolumeForceFourier()
 	static double eps; /*mean kinetic energy dissipation*/
 	fftw_complex deno,ans;
 	int count = 0;
-        struct timeval tv1,tv2;
-        double time;
 
-
-
-        gettimeofday(&tv1, NULL);
 	FILE* outfile;
 	char filename[100];
 
@@ -4006,17 +3996,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	        }
 	    }
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 1 : %f\n", time);
-
-
-
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	eqn_params->disp_rate = computeDspRate();
 	printf("FFT: esp_in = %e, eps_out = %e\n",eps,eqn_params->disp_rate);
 	/*collect data in master processor*/
@@ -4025,15 +4004,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	if (dim == 3)
 	    gatherParallelData(front,vel[2],W);	
 
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 2 : %f\n", time);
-
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	if (pp_mynode() == 0)
 	{
 	switch (dim)
@@ -4193,16 +4163,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 		clean_up(ERROR);
 	}
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 3 : %f\n", time);
-
-
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	scatterParallelData(front,fx,ext_accel[0]);
 	scatterParallelData(front,fy,ext_accel[1]);
 	if (dim == 3)
@@ -4217,10 +4177,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	lmax[0] = imax; lmax[1] = jmax; lmax[2] = kmax;
 	eps_in = computeInputEnergy(ext_accel,vel,dim,lmin,lmax,top_gmax);
 	stop_clock("volume_force");
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 4 : %f\n", time);
-
 	return;
 }
 
@@ -4286,12 +4242,9 @@ void VCARTESIAN::computeVaporSource()
 	double rho_0 = iFparams->rho2;
 	double a3 = 1.0;
 	double coeff;
-        struct timeval tv1,tv2;
-        double time;
 
 	static double maxsource = -HUGE, minsource = HUGE;
 
-        gettimeofday(&tv1, NULL);
 	for(i = 0; i < dim; i++)
 	    a3 *= top_h[i];
 
@@ -4301,14 +4254,6 @@ void VCARTESIAN::computeVaporSource()
 	    field->drops[i] = 0;
 	    field->cloud[i] = 0.0;
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 1 : %f\n", time);
-
-
-
-        gettimeofday(&tv1, NULL);
-        printf("VCARTESIAN::computeVaporSource() : num_drops : %d\n", num_drops);
 	/*caculate num_drops in each cell: drops[index]*/
 	/*compute source term for vapor equation: source[index]*/
 	/*compute cloud water mixing ratio: qc[index]*/
@@ -4334,23 +4279,8 @@ void VCARTESIAN::computeVaporSource()
 				    /   (a3 * rho_0);
 	    }
         }
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 2 : %f\n", time);
-
-
-
-        gettimeofday(&tv1, NULL);
 	FT_ParallelExchGridArrayBuffer(qc,front,NULL);
 	FT_ParallelExchGridArrayBuffer(field->drops,front,NULL);
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 3 : %f\n", time);
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	/*compute source for Navier Stokes equation:ext_accel[dim][index]*/
 	if (eqn_params->if_volume_force)
 	    computeVolumeForce();
@@ -4367,10 +4297,6 @@ void VCARTESIAN::computeVaporSource()
 	    /*remove mean value to obtain neutral buoyancy*/
 	    computeFluctuation(front,field->ext_accel,comp_size,dim);
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 4 : %f\n", time);
-
 }
 
 void VCARTESIAN::computeTemperatureSource()
