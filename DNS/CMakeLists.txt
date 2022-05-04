@@ -3,9 +3,11 @@ project (climate C CXX CUDA)
 
 set (CMAKE_C_FLAGS)
 set (CMAKE_CXX_FLAGS "-fopenmp -ljpeg")
+set (CMAKE_CUDA_FLAGS "-I/sdcc/u/tzhang/soft/openmpi-4.1.1/include -L//sdcc/u/tzhang/soft/openmpi-4.1.1/lib -lmpi")
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -rdynamic")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -rdynamic")
+
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
 
 
 #detect dependencies

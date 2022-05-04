@@ -1,5 +1,5 @@
 #include <stdio.h>
-//#include "climate.h"
+#include "climate.h"
 #include "cuda_runtime.h"
 
 __global__ void cuda_hello(){
