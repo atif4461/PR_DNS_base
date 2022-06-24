@@ -262,6 +262,7 @@ public:
 	void recordParticles();
 	void recordParticles(char*,PARTICLE*,int);
 	void output();
+	void output_vel();
         void vtk_plot3d(const char*,double*);
 
 	// Extra movie functions

@@ -13,7 +13,7 @@ else()
     get_filename_component(FFTW3_DIR ${FFTW3_WISDOM}/../.. ABSOLUTE)
 endif()
 
-#set(FFTW3_DIR "/software/fftw-3.3.8")
+#set(FFTW3_DIR "/home/tzhang/soft/fftw-3.3.10/")
 find_path(FFTW3_INCLUDE_DIR fftw3.h 
           HINTS ${PC_FFTW_INCLUDEDIR} ${PC_FFTW_INCLUDE_DIRS}
 	  ${FFTW3_DIR}/include

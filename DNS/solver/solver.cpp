@@ -377,8 +377,6 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
         PCSetType(pc,PCHYPRE);
         PCHYPRESetType(pc,"boomeramg");
         PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_strong_threshold", hypre_thres); 
-        PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_coarsen_type", "pmis"); 
-        PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_interp_type", "ext+i"); 
         KSPSetFromOptions(ksp);
         KSPSetUp(ksp);
 	stop_clock("HYPRE preconditioner");

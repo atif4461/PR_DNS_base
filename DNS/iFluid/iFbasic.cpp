@@ -671,13 +671,13 @@ void Incompress_Solver_Smooth_Basis::printFrontInteriorStates(char *out_name)
 	    for (i = 0; i <= top_gmax[0]; ++i)
 	    for (j = 0; j <= top_gmax[1]; ++j)
 	    {
-		index = d_index2d(i,j,top_gmax);
+		    index = d_index2d(i,j,top_gmax);
 	        fprintf(outfile,"%24.18g\n",field->rho[index]);
 	        fprintf(outfile,"%24.18g\n",field->pres[index]);
 	        fprintf(outfile,"%24.18g\n",field->phi[index]);
 	        fprintf(outfile,"%24.18g\n",field->mu[index]);
 	    	for (l = 0; l < dim; ++l)
-	            fprintf(outfile,"%24.18g\n",vel[l][index]);
+                fprintf(outfile,"%24.18g\n",vel[0][index]);
 	    }
 	    break;
 	case 3:

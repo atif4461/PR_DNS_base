@@ -5,15 +5,6 @@
 #include <iFluid.h>
 #include "solver.h"
 #include "climate.h"
-
-#include <sys/time.h>
-
-double g_computeVaporSource_part_1 = 0.0;
-double g_computeVaporSource_part_2 = 0.0;
-double g_computeVaporSource_part_3 = 0.0;
-//double g_computeVaporSource_part_4 = 0.0;
-
-
 static void setSamplePoints(double*, double*, int);
 static int find_state_at_crossing(Front*,int*,GRID_DIRECTION,int,
                                 POINTER*,HYPER_SURF**,double*);
@@ -3154,27 +3145,18 @@ void VCARTESIAN::setDomain()
 	case 2:
 	    if (first == YES)
 	    {
-		comp_size = (top_gmax[0]+1)*(top_gmax[1]+1);
+		    comp_size = (top_gmax[0]+1)*(top_gmax[1]+1);
 	    	FT_VectorMemoryAlloc((POINTER*)&array,comp_size,FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,FLOAT);
-	    	FT_VectorMemoryAlloc((POINTER*)&field->vapor,
-			comp_size,FLOAT);
-	    	FT_VectorMemoryAlloc((POINTER*)&field->cloud,
-			comp_size,FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&field->supersat,comp_size,
-                        FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&field->mrad,comp_size,
-                        FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&field->drops,comp_size,
-                        FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&field->adv,comp_size,
-                        FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&field->adv_old,comp_size,
-                        FLOAT);
-                FT_MatrixMemoryAlloc((POINTER*)&field->ext_accel,2,comp_size,
-                                        FLOAT);
-		FT_VectorMemoryAlloc((POINTER*)&field->temperature,
-                        comp_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&source,comp_size,FLOAT);
+	    	FT_VectorMemoryAlloc((POINTER*)&field->vapor,comp_size,FLOAT);
+	    	FT_VectorMemoryAlloc((POINTER*)&field->cloud,comp_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&field->supersat,comp_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&field->mrad,comp_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&field->drops,comp_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&field->adv,comp_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&field->adv_old,comp_size,FLOAT);
+            FT_MatrixMemoryAlloc((POINTER*)&field->ext_accel,2,comp_size,FLOAT);
+		    FT_VectorMemoryAlloc((POINTER*)&field->temperature,comp_size,FLOAT);
 	    	first = NO;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -3950,12 +3932,7 @@ void VCARTESIAN::computeVolumeForceFourier()
 	static double eps; /*mean kinetic energy dissipation*/
 	fftw_complex deno,ans;
 	int count = 0;
-        struct timeval tv1,tv2;
-        double time;
 
-
-
-        gettimeofday(&tv1, NULL);
 	FILE* outfile;
 	char filename[100];
 
@@ -4006,17 +3983,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	        }
 	    }
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 1 : %f\n", time);
-
-
-
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	eqn_params->disp_rate = computeDspRate();
 	printf("FFT: esp_in = %e, eps_out = %e\n",eps,eqn_params->disp_rate);
 	/*collect data in master processor*/
@@ -4025,15 +3991,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	if (dim == 3)
 	    gatherParallelData(front,vel[2],W);	
 
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 2 : %f\n", time);
-
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	if (pp_mynode() == 0)
 	{
 	switch (dim)
@@ -4193,16 +4150,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 		clean_up(ERROR);
 	}
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 3 : %f\n", time);
-
-
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	scatterParallelData(front,fx,ext_accel[0]);
 	scatterParallelData(front,fy,ext_accel[1]);
 	if (dim == 3)
@@ -4217,10 +4164,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	lmax[0] = imax; lmax[1] = jmax; lmax[2] = kmax;
 	eps_in = computeInputEnergy(ext_accel,vel,dim,lmin,lmax,top_gmax);
 	stop_clock("volume_force");
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 4 : %f\n", time);
-
 	return;
 }
 
@@ -4286,12 +4229,15 @@ void VCARTESIAN::computeVaporSource()
 	double rho_0 = iFparams->rho2;
 	double a3 = 1.0;
 	double coeff;
-        struct timeval tv1,tv2;
-        double time;
 
 	static double maxsource = -HUGE, minsource = HUGE;
+    extern char* in_name;
+    char disable_fb[10];
+    FILE *infile = fopen(in_name,"r");
+    CursorAfterString(infile,"Disable fb forcing:");
+    fscanf(infile,"%s",disable_fb);
+    printf("enable_fb is %s\n", disable_fb);
 
-        gettimeofday(&tv1, NULL);
 	for(i = 0; i < dim; i++)
 	    a3 *= top_h[i];
 
@@ -4301,14 +4247,6 @@ void VCARTESIAN::computeVaporSource()
 	    field->drops[i] = 0;
 	    field->cloud[i] = 0.0;
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 1 : %f\n", time);
-
-
-
-        gettimeofday(&tv1, NULL);
-        printf("VCARTESIAN::computeVaporSource() : num_drops : %d\n", num_drops);
 	/*caculate num_drops in each cell: drops[index]*/
 	/*compute source term for vapor equation: source[index]*/
 	/*compute cloud water mixing ratio: qc[index]*/
@@ -4334,23 +4272,8 @@ void VCARTESIAN::computeVaporSource()
 				    /   (a3 * rho_0);
 	    }
         }
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 2 : %f\n", time);
-
-
-
-        gettimeofday(&tv1, NULL);
 	FT_ParallelExchGridArrayBuffer(qc,front,NULL);
 	FT_ParallelExchGridArrayBuffer(field->drops,front,NULL);
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 3 : %f\n", time);
-
-
-
-
-        gettimeofday(&tv1, NULL);
 	/*compute source for Navier Stokes equation:ext_accel[dim][index]*/
 	if (eqn_params->if_volume_force)
 	    computeVolumeForce();
@@ -4359,18 +4282,17 @@ void VCARTESIAN::computeVaporSource()
 	    for (index = 0; index < comp_size; index++)
 	    for (j = 0; j < dim; j++)
 	    {
-	        field->ext_accel[j][index] = -iFparams->gravity[j]
-	         *((T[index]-T0)/T0 + 0.608 * 0.001 * (qv[index] - q0) - qc[index]);
+            if (disable_fb[0] == 'y')
+                field->ext_accel[j][index] = 0;
+            else
+	            field->ext_accel[j][index] = -iFparams->gravity[j]
+	            *((T[index]-T0)/T0 + 0.608 * 0.001 * (qv[index] - q0) - qc[index]);
    	    }
 	    for (j = 0; j < dim; j++)
 	    FT_ParallelExchGridArrayBuffer(field->ext_accel[j],front,NULL);
 	    /*remove mean value to obtain neutral buoyancy*/
 	    computeFluctuation(front,field->ext_accel,comp_size,dim);
 	}
-        gettimeofday(&tv2, NULL);
-        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVaporSource() : part 4 : %f\n", time);
-
 }
 
 void VCARTESIAN::computeTemperatureSource()
@@ -4413,6 +4335,23 @@ void VCARTESIAN::computeTemperatureSource()
                                       * particle_array[i].radius;
         }
         FT_ParallelExchGridArrayBuffer(source,front,NULL);
+}
+
+void VCARTESIAN::output_vel()
+{
+        recordField(field->vel[0],"xvel");
+        recordField(field->vel[1],"yvel");
+	    recordField(field->temperature,"temp");
+	    recordField(field->vapor,"vapor");
+        recordField(field->drops,"num");
+        recordField(field->supersat,"supersat");
+        recordField(field->cloud,"cloud");
+        recordField(field->ext_accel[0],"x_ext_accel");
+        recordField(field->ext_accel[1],"y_ext_accel");
+        if (dim == 3){
+            recordField(field->vel[2],"zvel");
+            recordField(field->ext_accel[2],"z_ext_accel");
+        }
 }
 
 void VCARTESIAN::output()
@@ -4494,6 +4433,7 @@ int VCARTESIAN::write_hdf5_field(double* field,const char* fname,const char* var
 		clean_up(ERROR);
 	}
 	/* Set the coordinates */
+    ierr = DMSetUp(daND);CHKERRQ(ierr);
   	DMDASetUniformCoordinates(daND, GL[0],GU[0],GL[1],GU[1],GL[2],GU[2]);
 	/* Declare res as a DMDA component */
   	ierr = DMCreateGlobalVector(daND,&res);CHKERRQ(ierr);

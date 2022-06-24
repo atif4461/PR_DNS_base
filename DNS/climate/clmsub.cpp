@@ -486,6 +486,7 @@ static void Rogallo_state(
 		    }
 		    wn = sqrt(wn);
 		    
+            srand(time(0));
 		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
 		    E = 16.0/sqrt(0.5*M_PI)*u0*u0*pow(wn,4)/pow(w0,5)
 			* exp(-2.0*wn*wn/(w0*w0)); 

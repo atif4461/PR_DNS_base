@@ -11,7 +11,7 @@ else()
     get_filename_component(GD_DIR ${GD2TOGIF}/../.. ABSOLUTE)
 endif()
 
-#set(GD_DIR "/software/libgd-2.2.5/")
+#set(GD_DIR "/home/tzhang/soft/libgd-gd-2.3.3/")
 
 find_path(GD_INCLUDE_DIR gd.h 
           HINTS ${GD_DIR}/include
