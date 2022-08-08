@@ -1039,6 +1039,7 @@ LOCAL  void ParallelExchParticle(PARTICLE** particle_array,Front *front)
 
 extern void ParticlePropagate(Front *fr)
 {
+        printf("ParticlePropagate() : Entering ParticlePropage()\n");
 	if (debugging("trace"))
 	    printf("Entering ParticlePropage()\n");
 	start_clock("ParticlePropagate");

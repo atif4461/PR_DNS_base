@@ -210,7 +210,8 @@ static  void melting_flow_driver(
 	MOVIE_OPTION *movie_option;
     static LEVEL_FUNC_PACK level_func_pack;
     struct timeval tv1,tv2;
-    float runtime;
+    double runtime;
+    double totaltime = 0.0;
 
 	if (debugging("trace"))
 	    printf("Entering melting_flow_driver()\n");
@@ -280,6 +281,10 @@ static  void melting_flow_driver(
     if (eqn_params->prob_type == PARTICLE_TRACKING)
 	    v_cartesian->output();
 
+#ifdef __CUDA__
+    v_cartesian->uploadParticle();
+    v_cartesian->initFlg = 0;
+#endif
     for (;;)
     {
         gettimeofday(&tv1, NULL);
@@ -300,6 +305,9 @@ static  void melting_flow_driver(
                  if (eqn_params->prob_type == PARTICLE_TRACKING)
                  {
                     ParticlePropagate(front);
+#ifdef __CUDA__
+                    v_cartesian->uploadParticle();
+#endif
                     printf("Passed solving particle equations\n");
                  }
 	    }
@@ -310,8 +318,9 @@ static  void melting_flow_driver(
 
         gettimeofday(&tv2, NULL);
         runtime=(tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("\nruntime = %10.2f  time = %10.9f   step = %7d   dt = %10.9f\n",
-                        runtime,front->time,front->step,front->dt);
+        totaltime += runtime;
+        printf("\nruntime = %10.2f,   total runtime = %10.2f,  time = %10.9f   step = %7d   dt = %10.9f\n\n\n",
+                        runtime, totaltime, front->time,front->step,front->dt);
         fflush(stdout);
 	    
         if (FT_IsSaveTime(front))

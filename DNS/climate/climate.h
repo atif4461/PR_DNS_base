@@ -9,6 +9,9 @@
 #define         SOLID_COMP             1
 #define		alternate_comp(comp) 					\
 		(comp) == LIQUID_COMP2 ? SOLID_COMP : LIQUID_COMP2
+#ifndef __CUDA__
+#define __CUDA__
+#endif
 
 enum _CL_PROB_TYPE {
 	PARTICLE_TRACKING = 1,
@@ -217,6 +220,22 @@ public:
 	int             NLblocks,ilower,iupper;
         int             *n_dist;
 
+
+public:
+#ifdef __CUDA__
+        double* particle_buffer;
+        double* particle_buffer_D;
+        int max_num_particle;
+
+        double* source_D;
+        double* drops_D;
+        double* cloud_D;
+        double* supersat_D;
+        int max_comp_size;
+        int initFlg;
+#endif
+
+public:
 	// mesh: full cells mesh
 	void initMesh(void);		// setup the cartesian grid
 	void setDomain(void);
@@ -321,6 +340,22 @@ public:
 #ifdef __HDF5__
 	int write_hdf5_field(double*,const char*,const char*);
 #endif
+
+public:
+#ifdef __CUDA__
+        void initDevice();
+        void cleanDevice();
+        void initOutput();
+	void computeVaporSource_DropsInCell(int gmax0, int gmax1, double rho_0, double a3); // Definition: vcartsn.cu
+        void uploadParticle();
+        void uploadSupersat();
+        void retrieveResult(double* source, double* drops, double* cloud);
+
+
+        void computeVaporSource_CUDA(int num_drops, PARAMS* eqn_params, int gmax0, int gmax1, double rho_0, double a3, double lcp);
+        void retrieveSource(double* source);
+#endif
+
 };
 
 /*weno scheme for computing advection term*/
@@ -395,4 +430,3 @@ extern void  Deviation(double*,Front*,double&,double&);
 extern double* ComputePDF(double*,int,double&,int,double&,double&);
 extern double* ComputePDF(double*,int,double&,int,double&,double&,boolean);
 extern bool  fftnd(fftw_complex*, int, int*,int);
-extern void call_cuda();
