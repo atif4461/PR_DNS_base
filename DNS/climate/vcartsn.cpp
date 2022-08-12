@@ -4335,12 +4335,12 @@ void VCARTESIAN::computeVaporSource()
         uploadSupersat();
         if(initFlg) uploadParticle();
 	computeVaporSource_DropsInCell(top_gmax[0], top_gmax[1], rho_0, a3);
-        //retrieveResult(source, field->drops, qc);
-        double* source_temp = new double[comp_size];
-        double* drops_temp = new double[comp_size];
-        double* qc_temp = new double[comp_size];
-        retrieveResult(source_temp, drops_temp, qc_temp);
-//#else
+        retrieveResult(source, field->drops, qc);
+        //double* source_temp = new double[comp_size];
+        //double* drops_temp = new double[comp_size];
+        //double* qc_temp = new double[comp_size];
+        //retrieveResult(source_temp, drops_temp, qc_temp);
+#else
 	/*caculate num_drops in each cell: drops[index]*/
 	/*compute source term for vapor equation: source[index]*/
 	/*compute cloud water mixing ratio: qc[index]*/
@@ -4367,6 +4367,7 @@ void VCARTESIAN::computeVaporSource()
 	    }
         }
 
+        /*
         double norm2_src = 0.0;
         double norm2_drops = 0.0;
         double norm2_qc = 0.0;
@@ -4388,7 +4389,7 @@ void VCARTESIAN::computeVaporSource()
         norm2_drops /= comp_size;
         norm2_qc /= comp_size;
         printf("VCARTESIAN::computeVaporSource() : source L2 norm: %e, drops L2 norm: %e, qc L2 norm: %e\n", norm2_src, norm2_drops, norm2_qc);
-
+        */
 
 
 
