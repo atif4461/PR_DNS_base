@@ -98,7 +98,8 @@ void VCARTESIAN::cleanDevice() {
   cudaFree(drops_D);
   cudaFree(source_D);
   cudaFree(particle_buffer_D);
-  delete[] particle_buffer;
+  //delete[] particle_buffer;
+  cudaFree(particle_buffer);
 }
 
 void VCARTESIAN::initOutput() {
