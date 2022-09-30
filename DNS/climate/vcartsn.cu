@@ -62,10 +62,14 @@ void VCARTESIAN::initDevice() {
 
   max_num_particle = 100000000; // 100 M
 
-  particle_buffer = new double[max_num_particle*5]; // radius, x,y,z, rho 
+  //particle_buffer = new double[max_num_particle*5]; // radius, x,y,z, rho 
+  ierr = cudaMallocHost((void**)&particle_buffer, 5*max_num_particle*sizeof(double));
+  if(cudaSuccess != ierr) {
+    cout << "[CUDA] : VCARTESIAN::initDevice() Error!!! : cudaMallocHost(particle_buffer) : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
+  }
   ierr = cudaMalloc((void**)&particle_buffer_D, 5*max_num_particle*sizeof(double));
   if(cudaSuccess != ierr) {
-    cout << "[CUDA] : VCARTESIAN::initDevice() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
+    cout << "[CUDA] : VCARTESIAN::initDevice() Error!!! : cudaMalloc(particle_buffer_D) :" << ierr << ", " << cudaGetErrorString(ierr) << endl;
   }
 
   max_comp_size = 100000000; // 100 M
@@ -94,7 +98,8 @@ void VCARTESIAN::cleanDevice() {
   cudaFree(drops_D);
   cudaFree(source_D);
   cudaFree(particle_buffer_D);
-  delete[] particle_buffer;
+  //delete[] particle_buffer;
+  cudaFree(particle_buffer);
 }
 
 void VCARTESIAN::initOutput() {
