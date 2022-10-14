@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <iFluid.h>
 #include "climate.h"
 #include <time.h>
+#include <iostream>
+#include <omp.h>
         /*  Function Declarations */
 static void zero_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
 static void rand_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
@@ -486,7 +488,8 @@ static void Rogallo_state(
 		    }
 		    wn = sqrt(wn);
 		    
-		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+		    theta  = 0.5 *(2*M_PI);
+		    //theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
 		    E = 16.0/sqrt(0.5*M_PI)*u0*u0*pow(wn,4)/pow(w0,5)
 			* exp(-2.0*wn*wn/(w0*w0)); 
 		    alpha[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta);
@@ -541,14 +544,17 @@ static void Rogallo_state(
 		    }
 		    wn = sqrt(wn);
 		    
-		    phi  = (double)rand() / (RAND_MAX + 1.0) * (2*M_PI);
+		    phi  = 0.5 * (2*M_PI);
+		    //phi  = (double)rand() / (RAND_MAX + 1.0) * (2*M_PI);
 		    E = 16.0/sqrt(0.5*M_PI)*u0*u0*pow(wn,4)/pow(w0,5)
 			* exp(-2.0*wn*wn/(w0*w0)); 
-		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+		    theta  = 0.5 *(2*M_PI);
+		    //theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
 		    alpha[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta)*cos(phi);
 		    alpha[1] = sqrt(E/(4.0*M_PI*wn*wn))*sin(theta)*cos(phi);
 		    /*use different theta for alpha and beta*/
-		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+		    theta  = 0.5 *(2*M_PI);
+		    //theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
 		    beta[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta)*sin(phi);
 		    beta[1] = sqrt(E/(4.0*M_PI*wn*wn))*sin(theta)*sin(phi);
 		    if (w[0] == 0 && w[1] == 0)
@@ -657,7 +663,8 @@ static void Fourier_state(
 		 	continue;
 		    }
 		    wn = (2*M_PI/L[0])*sqrt(i*i+j*j);
-		    phi  = (double)rand() / (RAND_MAX + 1.0);
+		    phi  = 0.5;
+		    //phi  = (double)rand() / (RAND_MAX + 1.0);
 		    U[index][0] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
                                  * cos(2*M_PI*phi);
                     U[index][1] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
@@ -676,7 +683,8 @@ static void Fourier_state(
                         continue;
                     }
                     wn = (2*M_PI/L[0])*sqrt(i*i+j*j+k*k);
-                    phi  = (double)rand() / (RAND_MAX + 1.0);
+                    phi  = 0.5;
+                    //phi  = (double)rand() / (RAND_MAX + 1.0);
                     U[index][0] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
                                  * cos(2*M_PI*phi);
                     U[index][1] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
@@ -1043,46 +1051,58 @@ extern void ParticlePropagate(Front *fr)
 	if (debugging("trace"))
 	    printf("Entering ParticlePropage()\n");
 	start_clock("ParticlePropagate");
-        RECT_GRID *gr = FT_GridIntfcTopGrid(fr);
+	RECT_GRID *gr = FT_GridIntfcTopGrid(fr);
         RECT_GRID *rect_grid = &(fr->pp_grid->Global_grid);
         IF_PARAMS *iFparams = (IF_PARAMS*)fr->extra1;
-	PARAMS *eqn_params = (PARAMS*)fr->extra2;
+        PARAMS *eqn_params = (PARAMS*)fr->extra2;
 	PARTICLE* particle_array = eqn_params->particle_array;
 	double **vel = iFparams->field->vel;
-	double *supersat = eqn_params->field->supersat;
-	double *gravity = iFparams->gravity;
+        double *supersat = eqn_params->field->supersat;
+    	double *gravity = iFparams->gravity;
         int *gmax = FT_GridIntfcTopGmax(fr);
-	int i, j, index, dim = gr->dim;
-	double T;
-	int ic[MAXD];
-	double u[MAXD];
-	double *center;
-	double s; /*restore local supersaturation*/
-	double *cvel; /*center velocity for droplets*/
-	double a;  /*acceleration*/
-	double dt = fr->dt;
+	int dim = gr->dim;
+        //double T;
+        //int ic[MAXD];
+	//double u[MAXD];
+	//double *center;
+	//double s; /*restore local supersaturation*/
+	//double *cvel; /*center velocity for droplets*/
+	//double a;  /*acceleration*/
+    	double dt = fr->dt;
 
         /*computing finite respone time*/
+	//double R, rho, tau_p, delta_R;
         double rho_0    = iFparams->rho2;/*fluid density*/
         double mu       = iFparams->mu2;/*viscosity*/
-	double R, rho, tau_p, delta_R;
 	double R_max = 0;
 	double R_min = HUGE;
 	double w = 2*PI/5.0;
-	
-	for (i = 0; i < eqn_params->num_drops; i++)
+    
+        std::cout << "inside particle propagate loop" << std::endl;
+        //#pragma omp parallel for num_threads(16) //private(R_min)	
+	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
+            //if( 0 == i and 0 == omp_get_thread_num())
+            //   printf("num threads = %d \n", omp_get_num_threads() );
             /*computing finite respone time*/
-            R        = particle_array[i].radius;/*droplet radius*/
-            rho      = particle_array[i].rho;/*water droplet density*/
-            tau_p    = 2 * rho*R*R/(9*rho_0*mu);/*response time*/
+
+    	    int j, index;
+	    double R        = particle_array[i].radius;/*droplet radius*/
+            double rho      = particle_array[i].rho;/*water droplet density*/
+            double tau_p    = 2 * rho*R*R/(9*rho_0*mu);/*response time*/
 
 	    if (R == 0)
 	    {
 		R_min = 0;
 	        continue;
 	    }
-	    /*find index at coords*/
+		
+	    int ic[MAXD];
+	    double u[MAXD];
+            double *center;
+	    double s; /*restore local supersaturation*/
+	    double *cvel; /*center velocity for droplets*/
+            /*find index at coords*/
 	    center = particle_array[i].center;
 	    rect_in_which(center,ic,gr);
 	    index = d_index(ic,gmax,dim);
@@ -1096,6 +1116,10 @@ extern void ParticlePropagate(Front *fr)
 	    FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center,
 				supersat,getStateSuper,&s,&s);
 
+	    //for (j = 0; j < dim; j++)
+            //printf("%d center[%d]=%f at if %f %f %f %f %f\n", i, j, center[j], tau_p, (1-exp(-dt/tau_p)), cvel[j], u[j], gravity[j]);
+
+            double delta_R;
 	    if (eqn_params->if_condensation == YES)
 	        delta_R = R*R+2*eqn_params->K*s*dt;
 	    else
@@ -1120,6 +1144,28 @@ extern void ParticlePropagate(Front *fr)
                 //dx/dt = v
                 //dv/dt = (u-v)/tau + g
                 //assume tau and u are constant within one step
+               
+                //added by Atif 
+                //const double exp_mindt_by_taup = exp(-dt/tau_p); 
+                //const double taup_minus_taup_into_exp_term = tau_p - tau_p * exp_mindt_by_taup; 
+                //const double u_plus_taup_into_gr = u[j] + gravity[j]*tau_p;
+                //if (eqn_params->if_sedimentation)
+                //{
+                //        center[j] += taup_minus_taup_into_exp_term * cvel[j]
+                //                        + (dt - taup_minus_taup_into_exp_term)
+                //                        * u_plus_taup_into_gr;
+                //        cvel[j] = exp_mindt_by_taup * cvel[j]
+                //                + (1 - exp_mindt_by_taup) * u_plus_taup_into_gr;
+                //}
+                //else
+                //{
+                //        center[j] += taup_minus_taup_into_exp_term * cvel[j]
+                //                        + (dt - taup_minus_taup_into_exp_term)
+                //                        * (u[j]);
+                //        cvel[j] = exp_mindt_by_taup * cvel[j]
+                //                + (1 - exp_mindt_by_taup)*(u[j]);
+                //}
+
                 if (eqn_params->if_sedimentation)
                 {
                         center[j] += tau_p*(1-exp(-dt/tau_p))*cvel[j]
@@ -1151,7 +1197,7 @@ extern void ParticlePropagate(Front *fr)
 		if(pp_numnodes() > 1)
 		    continue;
 		/*handle periodic drops for one processor*/
-		T = rect_grid->U[j]-rect_grid->L[j];	
+		double T = rect_grid->U[j]-rect_grid->L[j];	
 		if (center[j] > rect_grid->U[j])
 		    center[j] = rect_grid->L[j]+fmod(center[j],T);
 		if (center[j] < rect_grid->L[j])
@@ -1159,11 +1205,14 @@ extern void ParticlePropagate(Front *fr)
 
 		if(isnan(center[j]))
 		{
-		    printf("center[%d]=nan, T = %f, domain=[%f,%f]\n",
+                    printf("center[%d]=nan, T = %f, domain=[%f,%f]\n",
 				j,T,rect_grid->L[j],rect_grid->U[j]);
 		    clean_up(ERROR);
 		}
 	    }
+        if ( i%15485863 == 0)
+          printf("droplet %d thread %d of %d at %f %f %f %f %f %f\n", i, omp_get_thread_num(), omp_get_num_threads(),
+          u[0], u[1], u[2], cvel[0], cvel[1], cvel[2]);
 
 	    if (debugging("single_particle"))
 	    {
@@ -1180,6 +1229,8 @@ extern void ParticlePropagate(Front *fr)
 	        printf("Response time = %f\n",tau_p);
 	    }
 	}
+            
+
 	if(pp_numnodes() > 1)
 	{
 	    start_clock("ParallelExchangeParticle");

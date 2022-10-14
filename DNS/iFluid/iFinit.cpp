@@ -428,7 +428,8 @@ static void random_state(
         double **vel = field->vel;
         for (i = 0; i < dim; ++i)
         {
-            vel[i][index] = (erand48(seed) - 0.5) * 10;
+            vel[i][index] = (0.75 - 0.5) * 10;
+            //vel[i][index] = (erand48(seed) - 0.5) * 10;
         }
 }       /* end random_state */
 
