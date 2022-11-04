@@ -1630,7 +1630,8 @@ EXPORT  double FrontBilinIntrp(
         INTRP_CELL *blk_cell,
         boolean reuse_coeffs)
 {
-	static double f[MAXD][2];
+	//static double f[MAXD][2];
+ double f[MAXD][2];
 	int i,j,k,il,iu,index;
 	int dim = blk_cell->dim;
 	double ans;
@@ -1676,14 +1677,26 @@ EXPORT  double FrontBilinIntrp(
 	    }
 	    break;
 	case 3:
-	    for (i = 0; i < 2; ++i)
-	    for (j = 0; j < 2; ++j)
-	    for (k = 0; k < 2; ++k)
-	    {
-	    	ans += blk_cell->var[index++]*f[0][i]*f[1][j]*f[2][k];
-	    }
+            ans += blk_cell->var[0]*f[0][0]*f[1][0]*f[2][0]
+                 + blk_cell->var[1]*f[0][0]*f[1][0]*f[2][1]
+                 + blk_cell->var[2]*f[0][0]*f[1][1]*f[2][0]
+                 + blk_cell->var[3]*f[0][0]*f[1][1]*f[2][1]
+                 + blk_cell->var[4]*f[0][1]*f[1][0]*f[2][0]
+                 + blk_cell->var[5]*f[0][1]*f[1][0]*f[2][1]
+                 + blk_cell->var[6]*f[0][1]*f[1][1]*f[2][0]
+                 + blk_cell->var[7]*f[0][1]*f[1][1]*f[2][1];
+	    //for (i = 0; i < 2; ++i)
+	    //for (j = 0; j < 2; ++j)
+	    //for (k = 0; k < 2; ++k)
+	    //{
+	    //	ans += blk_cell->var[index++]*f[0][i]*f[1][j]*f[2][k];
+	    //}
 	}
-	return ans;
+        //printf(" il iu %d %d us %f %f %f ls %f %f %f fs %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f \n", 
+        //       il, iu, u[0], u[1], u[2], l[0], l[1], l[2], f[0][0], f[1][0], f[2][0], f[0][1], 
+        //       f[1][1], f[2][1], f[0][2], f[1][2], f[2][2], blk_cell->var[0], blk_cell->var[1], blk_cell->var[2],
+        //       blk_cell->var[3], blk_cell->var[4], blk_cell->var[5], blk_cell->var[6], blk_cell->var[7], ans); 
+	//return ans;
 
 }	/* end FrontBilinIntrp */
 

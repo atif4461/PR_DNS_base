@@ -1,4 +1,4 @@
-# Install script for directory: /sdcc/u/tzhang/PR_DNS_base/DNS/solver
+# Install script for directory: /sdcc/u/fmohammad/PR_DNS_base/DNS/solver
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

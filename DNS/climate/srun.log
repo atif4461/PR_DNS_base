@@ -1,20 +1,29 @@
---------------------------------------------------------------------------
-By default, for Open MPI 4.0 and later, infiniband ports on a device
-are not used by default.  The intent is to use UCX for these devices.
-You can override this policy by setting the btl_openib_allow_ib MCA parameter
-to true.
 
-  Local host:              ichost002
-  Local adapter:           mlx5_0
-  Local port:              1
-
---------------------------------------------------------------------------
---------------------------------------------------------------------------
-WARNING: There was an error initializing an OpenFabrics device.
-
-  Local host:   ichost002
-  Local device: mlx5_0
---------------------------------------------------------------------------
-[ichost001.sdcc.bnl.local:02641] 63 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
-[ichost001.sdcc.bnl.local:02641] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
-[ichost001.sdcc.bnl.local:02641] 63 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+OPENMP DISPLAY ENVIRONMENT BEGIN
+  _OPENMP = '201511'
+  OMP_DYNAMIC = 'FALSE'
+  OMP_NESTED = 'FALSE'
+  OMP_NUM_THREADS = '8'
+  OMP_SCHEDULE = 'DYNAMIC'
+  OMP_PROC_BIND = 'TRUE'
+  OMP_PLACES = '{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35}'
+  OMP_STACKSIZE = '0'
+  OMP_WAIT_POLICY = 'PASSIVE'
+  OMP_THREAD_LIMIT = '4294967295'
+  OMP_MAX_ACTIVE_LEVELS = '2147483647'
+  OMP_CANCELLATION = 'FALSE'
+  OMP_DEFAULT_DEVICE = '0'
+  OMP_MAX_TASK_PRIORITY = '0'
+  OMP_DISPLAY_AFFINITY = 'TRUE'
+  OMP_AFFINITY_FORMAT = 'Thread Affinity: %0.3L %.8n %.15{thread_affinity} %.12H'
+OPENMP DISPLAY ENVIRONMENT END
+Thread Affinity: 001        0               0 ichost168.sdcc.bnl.local
+Thread Affinity: 001        1               1 ichost168.sdcc.bnl.local
+Thread Affinity: 001        2               2 ichost168.sdcc.bnl.local
+Thread Affinity: 001        3               3 ichost168.sdcc.bnl.local
+Thread Affinity: 001        4               4 ichost168.sdcc.bnl.local
+Thread Affinity: 001        5               5 ichost168.sdcc.bnl.local
+Thread Affinity: 001        6               6 ichost168.sdcc.bnl.local
+Thread Affinity: 001        7               7 ichost168.sdcc.bnl.local
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 1469871.0 ON ichost168 CANCELLED AT 2022-11-01T10:19:24 ***

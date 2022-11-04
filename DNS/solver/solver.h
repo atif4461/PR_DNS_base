@@ -119,6 +119,14 @@ public:
 	void Solve_withPureNeumann_ML(void);
 	virtual void Print_A(const char *filename);
         virtual void Print_b(const char *filename);
+
+protected:   /*** VLM??????????????? To get rid of the warnings:
+                  /sdcc/u/vlopezmar/PR-DNS_dir/PR_DNS_base-GPU_Hackathon_2022/DNS/solver/solver.h(120): warning:     funct    ion "SOLVER::Print_A(char *)" is     hidden by "PETSc::Print_A" -- virtual function override intended?
+              ***/
+         using SOLVER::Set_x;
+         using SOLVER::Set_b;
+         using SOLVER::Print_A;
+         using SOLVER::Print_b;
 };
 
 class PARABOLIC_SOLVER{

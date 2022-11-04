@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ******************************************************************************/
 
-
 #include <iFluid.h>
 #include "climate.h"
 #include <time.h>
 #include <iostream>
+#include <sched.h>
 #include <omp.h>
         /*  Function Declarations */
 static void zero_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
@@ -1077,9 +1077,12 @@ extern void ParticlePropagate(Front *fr)
 	double R_max = 0;
 	double R_min = HUGE;
 	double w = 2*PI/5.0;
-    
+   
+ 
         std::cout << "inside particle propagate loop" << std::endl;
-        //#pragma omp parallel for num_threads(16) //private(R_min)	
+        double start = omp_get_wtime(); 
+
+        #pragma omp parallel for //num_threads() //private(R_min)	
 	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
             //if( 0 == i and 0 == omp_get_thread_num())
@@ -1146,42 +1149,42 @@ extern void ParticlePropagate(Front *fr)
                 //assume tau and u are constant within one step
                
                 //added by Atif 
-                //const double exp_mindt_by_taup = exp(-dt/tau_p); 
-                //const double taup_minus_taup_into_exp_term = tau_p - tau_p * exp_mindt_by_taup; 
-                //const double u_plus_taup_into_gr = u[j] + gravity[j]*tau_p;
-                //if (eqn_params->if_sedimentation)
-                //{
-                //        center[j] += taup_minus_taup_into_exp_term * cvel[j]
-                //                        + (dt - taup_minus_taup_into_exp_term)
-                //                        * u_plus_taup_into_gr;
-                //        cvel[j] = exp_mindt_by_taup * cvel[j]
-                //                + (1 - exp_mindt_by_taup) * u_plus_taup_into_gr;
-                //}
-                //else
-                //{
-                //        center[j] += taup_minus_taup_into_exp_term * cvel[j]
-                //                        + (dt - taup_minus_taup_into_exp_term)
-                //                        * (u[j]);
-                //        cvel[j] = exp_mindt_by_taup * cvel[j]
-                //                + (1 - exp_mindt_by_taup)*(u[j]);
-                //}
-
+                const double exp_mindt_by_taup = exp(-dt/tau_p); 
+                const double taup_minus_taup_into_exp_term = tau_p - tau_p * exp_mindt_by_taup; 
+                const double u_plus_taup_into_gr = u[j] + gravity[j]*tau_p;
                 if (eqn_params->if_sedimentation)
                 {
-                        center[j] += tau_p*(1-exp(-dt/tau_p))*cvel[j]
-                                        +(dt-tau_p+tau_p*exp(-dt/tau_p))
-                                        *(u[j]+gravity[j]*tau_p);
-                        cvel[j] = exp(-dt/tau_p)*cvel[j]
-                                + (1-exp(-dt/tau_p))*(u[j]+gravity[j]*tau_p);
+                        center[j] += taup_minus_taup_into_exp_term * cvel[j]
+                                        + (dt - taup_minus_taup_into_exp_term)
+                                        * u_plus_taup_into_gr;
+                        cvel[j] = exp_mindt_by_taup * cvel[j]
+                                + (1 - exp_mindt_by_taup) * u_plus_taup_into_gr;
                 }
                 else
                 {
-                        center[j] += tau_p*(1-exp(-dt/tau_p))*cvel[j]
-                                        +(dt-tau_p+tau_p*exp(-dt/tau_p))
-                                        *(u[j]);
-                        cvel[j] = exp(-dt/tau_p)*cvel[j]
-                                + (1-exp(-dt/tau_p))*(u[j]);
+                        center[j] += taup_minus_taup_into_exp_term * cvel[j]
+                                        + (dt - taup_minus_taup_into_exp_term)
+                                        * (u[j]);
+                        cvel[j] = exp_mindt_by_taup * cvel[j]
+                                + (1 - exp_mindt_by_taup)*(u[j]);
                 }
+
+                //if (eqn_params->if_sedimentation)
+                //{
+                //        center[j] += tau_p*(1-exp(-dt/tau_p))*cvel[j]
+                //                        +(dt-tau_p+tau_p*exp(-dt/tau_p))
+                //                        *(u[j]+gravity[j]*tau_p);
+                //        cvel[j] = exp(-dt/tau_p)*cvel[j]
+                //                + (1-exp(-dt/tau_p))*(u[j]+gravity[j]*tau_p);
+                //}
+                //else
+                //{
+                //        center[j] += tau_p*(1-exp(-dt/tau_p))*cvel[j]
+                //                        +(dt-tau_p+tau_p*exp(-dt/tau_p))
+                //                        *(u[j]);
+                //        cvel[j] = exp(-dt/tau_p)*cvel[j]
+                //                + (1-exp(-dt/tau_p))*(u[j]);
+                //}
 
 		/*compute velocity
 		if (eqn_params->if_sedimentation == YES) 
@@ -1210,8 +1213,11 @@ extern void ParticlePropagate(Front *fr)
 		    clean_up(ERROR);
 		}
 	    }
-        if ( i%15485863 == 0)
-          printf("droplet %d thread %d of %d at %f %f %f %f %f %f\n", i, omp_get_thread_num(), omp_get_num_threads(),
+        
+          if ( i%1548586 == 0)
+          //if ( i%15485863 == 0)
+          //if ( index % 46870 == 0)
+          printf("droplet %d index of %d drops %d thread %d of %d running on cpu ID %d at %f %f %f with u= %f %f %f cvel= %f %f %f\n", i, index, eqn_params->num_drops, omp_get_thread_num(), omp_get_num_threads(), sched_getcpu(), center[0], center[1], center[2],
           u[0], u[1], u[2], cvel[0], cvel[1], cvel[2]);
 
 	    if (debugging("single_particle"))
@@ -1230,6 +1236,8 @@ extern void ParticlePropagate(Front *fr)
 	    }
 	}
             
+        double end = omp_get_wtime(); 
+        printf("Particle propagate time = %f seconds\n", end - start);  
 
 	if(pp_numnodes() > 1)
 	{

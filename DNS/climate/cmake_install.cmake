@@ -1,4 +1,4 @@
-# Install script for directory: /sdcc/u/tzhang/PR_DNS_base/DNS/climate
+# Install script for directory: /sdcc/u/fmohammad/PR_DNS_base/DNS/climate
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

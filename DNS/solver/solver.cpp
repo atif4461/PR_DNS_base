@@ -257,6 +257,9 @@ void PETSc::Solve_GMRES(void)
 
 	start_clock("KSPSolve");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
 	stop_clock("KSPSolve");
 
 }	/* end Solve_GMRES */
@@ -293,6 +296,9 @@ void PETSc::Solve_BCGSL(void)
 
 	start_clock("KSPSolve");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
 	stop_clock("KSPSolve");
 }
 
@@ -326,6 +332,9 @@ void PETSc::Solve_withPureNeumann_GMRES(void)
 	stop_clock("KSPSetUp in pure neumann solver");
 	start_clock("Petsc Solve in pure neumann solver");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
 	stop_clock("Petsc Solve in pure neumann solver");
 	printf("Leaving Solve_withPureNeumann_GMRES()\n");
 }	/* end Solve_withPureNeumann_GMRES */
@@ -384,6 +393,9 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
 	stop_clock("HYPRE preconditioner");
         start_clock("Petsc Solve in pure neumann solver");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
         stop_clock("Petsc Solve in pure neumann solver");
 	if (debugging("trace"))
 	printf("Leaving Solve_withPureNeumann_HYPRE()\n");
@@ -421,7 +433,10 @@ void PETSc::Solve_withPureNeumann_BCGSL(void)
 
 	start_clock("Petsc Solve in pure neumann solver");
         KSPSolve(ksp,b,x);
-	stop_clock("Petsc Solve in pure neumann solver");
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);	
+        stop_clock("Petsc Solve in pure neumann solver");
 	printf("Leaving Solve_withPureNeumann_BCGSL()\n");
 }	/* end Solve_withPureNeumann_BCGSL */
 
@@ -505,6 +520,9 @@ void PETSc::Solve_HYPRE(void)
 
         start_clock("KSPSolve");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
         stop_clock("KSPSolve");
 
 }
@@ -544,6 +562,9 @@ void PETSc::Solve_withPureNeumann_ML(void)
 	stop_clock("KSP setup in pure neumann solver");
 	start_clock("Petsc Solve in pure neumann solver");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
 	stop_clock("Petsc Solve in pure neumann solver");
 	printf("Leaving Solve_withPureNeumann_ML()\n");
 }	/* end Solve_withPureNeumann_GMRES */
@@ -573,5 +594,8 @@ void PETSc::Solve_LU(void)
 
         start_clock("KSPSolve");
         KSPSolve(ksp,b,x);
+//KSPConvergedReason reason;
+//KSPGetConvergedReason(ksp, &reason);
+//printf("KSPConvergedReason: %d\n", reason);
         stop_clock("KSPSolve");
 } /*direct solver, usually give exact solution for comparison*/

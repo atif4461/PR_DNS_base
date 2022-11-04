@@ -1,4 +1,4 @@
-# Install script for directory: /sdcc/u/tzhang/PR_DNS_base/DNS
+# Install script for directory: /sdcc/u/fmohammad/PR_DNS_base/DNS
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,10 +39,10 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/sdcc/u/tzhang/PR_DNS_base/DNS/climate/cmake_install.cmake")
-  include("/sdcc/u/tzhang/PR_DNS_base/DNS/iFluid/cmake_install.cmake")
-  include("/sdcc/u/tzhang/PR_DNS_base/DNS/src/cmake_install.cmake")
-  include("/sdcc/u/tzhang/PR_DNS_base/DNS/solver/cmake_install.cmake")
+  include("/sdcc/u/fmohammad/PR_DNS_base/DNS/climate/cmake_install.cmake")
+  include("/sdcc/u/fmohammad/PR_DNS_base/DNS/iFluid/cmake_install.cmake")
+  include("/sdcc/u/fmohammad/PR_DNS_base/DNS/src/cmake_install.cmake")
+  include("/sdcc/u/fmohammad/PR_DNS_base/DNS/solver/cmake_install.cmake")
 
 endif()
 
@@ -54,5 +54,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/sdcc/u/tzhang/PR_DNS_base/DNS/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/sdcc/u/fmohammad/PR_DNS_base/DNS/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
