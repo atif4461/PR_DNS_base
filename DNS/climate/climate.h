@@ -10,7 +10,7 @@
 #define		alternate_comp(comp) 					\
 		(comp) == LIQUID_COMP2 ? SOLID_COMP : LIQUID_COMP2
 #ifndef __CUDA__
-#define __CUDA__
+//#define __CUDA__
 #endif
 
 enum _CL_PROB_TYPE {
