@@ -13,7 +13,6 @@ else()
     get_filename_component(PETSC_DIR ${PETSCMPIEXEC}/../.. ABSOLUTE)
 endif()
 
-##set(PETSC_DIR "/hpcgpfs01/software/petsc/3.16.0/")
 set(PETSC_DIR "/work/atif/petsc-3.16.0/")
 MESSAGE(zhangao  ${PETSC_DIR})
 
