@@ -210,7 +210,6 @@ EXPORT	int outside_point(
 	return p_out;
 }	/* end outside_point */
 
-
 EXPORT	double	distance_between_positions(
 	const double    *p,
 	const double    *q,
@@ -666,7 +665,11 @@ EXPORT	double random_gaussian(
 	    logsqrtpi = 0.5*log(PI);
 	    erf1 = erf(1.0);
 	}
+#if defined __NO_RND__
+	t = 0.0;
+#else
 	t = 2.0*erand48(xsubi) - 1.0;
+#endif
 	if (t > erf1)
 	    z =  sqrt(-logsqrtpi - log(1.0-t));
 	else if (t < -erf1)

@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /hpcgpfs01/software/cmake/3.16.2/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /hpcgpfs01/software/cmake/3.16.2/bin/cmake -E remove -f
+RM = /usr/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /sdcc/u/fmohammad/PR_DNS_base/DNS
+CMAKE_SOURCE_DIR = /work/atif/PR_DNS_base/DNS
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /sdcc/u/fmohammad/PR_DNS_base/DNS
+CMAKE_BINARY_DIR = /work/atif/PR_DNS_base/DNS
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /sdcc/u/fmohammad/PR_DNS_base/DNS
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/hpcgpfs01/software/cmake/3.16.2/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -69,8 +69,8 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/hpcgpfs01/software/cmake/3.16.2/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(CMAKE_COMMAND) -E cmake_progress_start /sdcc/u/fmohammad/PR_DNS_base/DNS/CMakeFiles /sdcc/u/fmohammad/PR_DNS_base/DNS/iFluid/CMakeFiles/progress.marks
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /sdcc/u/fmohammad/PR_DNS_base/DNS/CMakeFiles 0
+	cd /work/atif/PR_DNS_base/DNS && $(CMAKE_COMMAND) -E cmake_progress_start /work/atif/PR_DNS_base/DNS/CMakeFiles /work/atif/PR_DNS_base/DNS/iFluid/CMakeFiles/progress.marks
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /work/atif/PR_DNS_base/DNS/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/clean
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/preinstall
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/preinstall
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /work/atif/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 iFluid/CMakeFiles/ifluid.dir/rule:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/CMakeFiles/ifluid.dir/rule
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 iFluid/CMakeFiles/ifluid.dir/rule
 .PHONY : iFluid/CMakeFiles/ifluid.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ ifluid: iFluid/CMakeFiles/ifluid.dir/rule
 
 # fast build rule for target.
 ifluid/fast:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/build
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/build
 .PHONY : ifluid/fast
 
 iFbasic.o: iFbasic.cpp.o
@@ -131,7 +131,7 @@ iFbasic.o: iFbasic.cpp.o
 
 # target to build an object file
 iFbasic.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFbasic.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFbasic.cpp.o
 .PHONY : iFbasic.cpp.o
 
 iFbasic.i: iFbasic.cpp.i
@@ -140,7 +140,7 @@ iFbasic.i: iFbasic.cpp.i
 
 # target to preprocess a source file
 iFbasic.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFbasic.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFbasic.cpp.i
 .PHONY : iFbasic.cpp.i
 
 iFbasic.s: iFbasic.cpp.s
@@ -149,7 +149,7 @@ iFbasic.s: iFbasic.cpp.s
 
 # target to generate assembly for a file
 iFbasic.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFbasic.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFbasic.cpp.s
 .PHONY : iFbasic.cpp.s
 
 iFcartsn2d.o: iFcartsn2d.cpp.o
@@ -158,7 +158,7 @@ iFcartsn2d.o: iFcartsn2d.cpp.o
 
 # target to build an object file
 iFcartsn2d.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn2d.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn2d.cpp.o
 .PHONY : iFcartsn2d.cpp.o
 
 iFcartsn2d.i: iFcartsn2d.cpp.i
@@ -167,7 +167,7 @@ iFcartsn2d.i: iFcartsn2d.cpp.i
 
 # target to preprocess a source file
 iFcartsn2d.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn2d.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn2d.cpp.i
 .PHONY : iFcartsn2d.cpp.i
 
 iFcartsn2d.s: iFcartsn2d.cpp.s
@@ -176,7 +176,7 @@ iFcartsn2d.s: iFcartsn2d.cpp.s
 
 # target to generate assembly for a file
 iFcartsn2d.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn2d.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn2d.cpp.s
 .PHONY : iFcartsn2d.cpp.s
 
 iFcartsn3d.o: iFcartsn3d.cpp.o
@@ -185,7 +185,7 @@ iFcartsn3d.o: iFcartsn3d.cpp.o
 
 # target to build an object file
 iFcartsn3d.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn3d.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn3d.cpp.o
 .PHONY : iFcartsn3d.cpp.o
 
 iFcartsn3d.i: iFcartsn3d.cpp.i
@@ -194,7 +194,7 @@ iFcartsn3d.i: iFcartsn3d.cpp.i
 
 # target to preprocess a source file
 iFcartsn3d.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn3d.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn3d.cpp.i
 .PHONY : iFcartsn3d.cpp.i
 
 iFcartsn3d.s: iFcartsn3d.cpp.s
@@ -203,7 +203,7 @@ iFcartsn3d.s: iFcartsn3d.cpp.s
 
 # target to generate assembly for a file
 iFcartsn3d.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn3d.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFcartsn3d.cpp.s
 .PHONY : iFcartsn3d.cpp.s
 
 iFinit.o: iFinit.cpp.o
@@ -212,7 +212,7 @@ iFinit.o: iFinit.cpp.o
 
 # target to build an object file
 iFinit.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.o
 .PHONY : iFinit.cpp.o
 
 iFinit.i: iFinit.cpp.i
@@ -221,7 +221,7 @@ iFinit.i: iFinit.cpp.i
 
 # target to preprocess a source file
 iFinit.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.i
 .PHONY : iFinit.cpp.i
 
 iFinit.s: iFinit.cpp.s
@@ -230,7 +230,7 @@ iFinit.s: iFinit.cpp.s
 
 # target to generate assembly for a file
 iFinit.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.s
 .PHONY : iFinit.cpp.s
 
 iFsub.o: iFsub.cpp.o
@@ -239,7 +239,7 @@ iFsub.o: iFsub.cpp.o
 
 # target to build an object file
 iFsub.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFsub.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFsub.cpp.o
 .PHONY : iFsub.cpp.o
 
 iFsub.i: iFsub.cpp.i
@@ -248,7 +248,7 @@ iFsub.i: iFsub.cpp.i
 
 # target to preprocess a source file
 iFsub.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFsub.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFsub.cpp.i
 .PHONY : iFsub.cpp.i
 
 iFsub.s: iFsub.cpp.s
@@ -257,7 +257,7 @@ iFsub.s: iFsub.cpp.s
 
 # target to generate assembly for a file
 iFsub.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFsub.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFsub.cpp.s
 .PHONY : iFsub.cpp.s
 
 # Help Target
@@ -295,6 +295,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /work/atif/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -488,8 +488,11 @@ static void Rogallo_state(
 		    }
 		    wn = sqrt(wn);
 		    
+#if defined __NO_RND__
 		    theta  = 0.5 *(2*M_PI);
-		    //theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#else
+		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#endif
 		    E = 16.0/sqrt(0.5*M_PI)*u0*u0*pow(wn,4)/pow(w0,5)
 			* exp(-2.0*wn*wn/(w0*w0)); 
 		    alpha[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta);
@@ -544,17 +547,28 @@ static void Rogallo_state(
 		    }
 		    wn = sqrt(wn);
 		    
+#if defined __NO_RND__		    
 		    phi  = 0.5 * (2*M_PI);
-		    //phi  = (double)rand() / (RAND_MAX + 1.0) * (2*M_PI);
+		    printf("\n NO RNDS "); 
+#else
+		    phi  = (double)rand() / (RAND_MAX + 1.0) * (2*M_PI);
+		    printf("\n YES RNDS "); 
+#endif
 		    E = 16.0/sqrt(0.5*M_PI)*u0*u0*pow(wn,4)/pow(w0,5)
 			* exp(-2.0*wn*wn/(w0*w0)); 
+#if defined __NO_RND__		    
 		    theta  = 0.5 *(2*M_PI);
-		    //theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#else
+		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#endif
 		    alpha[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta)*cos(phi);
 		    alpha[1] = sqrt(E/(4.0*M_PI*wn*wn))*sin(theta)*cos(phi);
 		    /*use different theta for alpha and beta*/
+#if defined __NO_RND__		    
 		    theta  = 0.5 *(2*M_PI);
-		    //theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#else
+		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#endif
 		    beta[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta)*sin(phi);
 		    beta[1] = sqrt(E/(4.0*M_PI*wn*wn))*sin(theta)*sin(phi);
 		    if (w[0] == 0 && w[1] == 0)
@@ -663,8 +677,11 @@ static void Fourier_state(
 		 	continue;
 		    }
 		    wn = (2*M_PI/L[0])*sqrt(i*i+j*j);
+#if defined __NO_RND__		    
 		    phi  = 0.5;
-		    //phi  = (double)rand() / (RAND_MAX + 1.0);
+#else
+		    phi  = (double)rand() / (RAND_MAX + 1.0);
+#endif
 		    U[index][0] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
                                  * cos(2*M_PI*phi);
                     U[index][1] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
@@ -683,8 +700,11 @@ static void Fourier_state(
                         continue;
                     }
                     wn = (2*M_PI/L[0])*sqrt(i*i+j*j+k*k);
+#if defined __NO_RND__		    
                     phi  = 0.5;
-                    //phi  = (double)rand() / (RAND_MAX + 1.0);
+#else
+                    phi  = (double)rand() / (RAND_MAX + 1.0);
+#endif
                     U[index][0] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
                                  * cos(2*M_PI*phi);
                     U[index][1] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L[0],2))
@@ -1047,6 +1067,7 @@ LOCAL  void ParallelExchParticle(PARTICLE** particle_array,Front *front)
 
 extern void ParticlePropagate(Front *fr)
 {
+        double initpp = omp_get_wtime(); 
         printf("ParticlePropagate() : Entering ParticlePropage()\n");
 	if (debugging("trace"))
 	    printf("Entering ParticlePropage()\n");
@@ -1082,7 +1103,7 @@ extern void ParticlePropagate(Front *fr)
         std::cout << "inside particle propagate loop" << std::endl;
         double start = omp_get_wtime(); 
 
-        #pragma omp parallel for //num_threads() //private(R_min)	
+        #pragma omp parallel for num_threads(8) //private(R_min)	
 	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
             //if( 0 == i and 0 == omp_get_thread_num())
@@ -1215,8 +1236,6 @@ extern void ParticlePropagate(Front *fr)
 	    }
         
           if ( i%1548586 == 0)
-          //if ( i%15485863 == 0)
-          //if ( index % 46870 == 0)
           printf("droplet %d index of %d drops %d thread %d of %d running on cpu ID %d at %f %f %f with u= %f %f %f cvel= %f %f %f\n", i, index, eqn_params->num_drops, omp_get_thread_num(), omp_get_num_threads(), sched_getcpu(), center[0], center[1], center[2],
           u[0], u[1], u[2], cvel[0], cvel[1], cvel[2]);
 
@@ -1237,7 +1256,7 @@ extern void ParticlePropagate(Front *fr)
 	}
             
         double end = omp_get_wtime(); 
-        printf("Particle propagate time = %f seconds\n", end - start);  
+        printf("Particle propagate time = %f, %f seconds\n", initpp - start, end - start);  
 
 	if(pp_numnodes() > 1)
 	{

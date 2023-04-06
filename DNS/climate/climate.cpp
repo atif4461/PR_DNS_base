@@ -294,7 +294,7 @@ static  void melting_flow_driver(
 	    printf("Passed solving NS equations\n");
 	    v_cartesian->recordTKE();
 
-	    if (eqn_params->if_volume_force && front->time < 0.1)
+	    if (eqn_params->if_volume_force && front->time < 0.15)
 	    {
                 v_cartesian->solve(0.0);
 	    }

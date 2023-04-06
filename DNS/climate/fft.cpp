@@ -202,7 +202,9 @@ int two_dim_filter()
 	int dim[2];
 	dim [0] = M; dim[1] = N;
 
-	//srand(time(NULL));
+#if !defined __NO_RND__
+	srand(time(NULL));
+#endif
 
 	for (i = 0; i < M; i++)
 	for (j = 0; j < N/2+1; j++)
@@ -214,7 +216,11 @@ int two_dim_filter()
 		continue;
 	    }
 	    wn = (2*M_PI/L)*sqrt(i*i+j*j);
-	    phi  = (double)rand() / (RAND_MAX + 1.0);
+#if defined __NO_RND__
+	    phi = 0.5;
+#else		    
+    	    phi  = (double)rand() / (RAND_MAX + 1.0);
+#endif
 	    myarray[index][0] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L,2))
 				 * cos(2*M_PI*phi); 
 	    myarray[index][1] = wn*wn*exp(-wn*wn/pow(2*M_PI*4.7568/L,2))

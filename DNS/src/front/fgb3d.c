@@ -3155,9 +3155,14 @@ LOCAL	boolean  set_tst_recon_boxes(
 	    box = box->next;
 	    
 	    for (k = 0; k < 3; k++)
+#if defined __NO_RND__
 	    	box->bmin[k] = box->bmax[k] = smin[k] + 
-			    (int)((smax[k] - smin[k]) * 0.5);//*drand48());
-	    printf("#randbx  %d %d %d\n ", 
+			    (int)((smax[k] - smin[k]) * 0.5);
+#else    
+	    	box->bmin[k] = box->bmax[k] = smin[k] + 
+			    (int)((smax[k] - smin[k]) *drand48());
+#endif
+    	    printf("#randbx  %d %d %d\n ", 
 	    	box->bmin[0], box->bmin[1], box->bmin[2]);
 	    fflush(NULL);
 	}

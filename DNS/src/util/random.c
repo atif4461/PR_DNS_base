@@ -43,7 +43,11 @@ EXPORT  double gauss_newton(
             logsqrtpi = 0.5*log(PI);
             erf1 = erf(1.0);
         }
+#if defined __NO_RND__
+        t = 0.0;
+#else
         t = 2.0*erand48(xsubi) - 1.0;
+#endif
         if (t > erf1)
             z =  sqrt(-logsqrtpi - log(1.0-t));
         else if (t < -erf1)
@@ -67,8 +71,13 @@ EXPORT  double gauss_box_muller(
 	double mu = gauss_params->mu;
 	double sigma = gauss_params->sigma;
 
+#if defined __NO_RND__
+	x1 = 0.5;
+	x2 = 0.75;
+#else
         x1 = erand48(xsubi);
         x2 = erand48(xsubi);
+#endif
 
 	y = sqrt(-2.0*log(x1))*cos(2.0*PI*x2);
 	y = sigma*y + mu;
@@ -85,7 +94,13 @@ EXPORT  double gauss_center_limit(
 	double x;
 	int i;
 	for (i = 0, x = 0.0; i < 12; ++i)
+	{
+#if defined __NO_RND__
+	    x += 0.5;
+#else
 	    x += erand48(xsubi);
+#endif
+	}
 	x -= 6.0;
 	x = sigma*x + mu;
 	return x;
@@ -99,7 +114,11 @@ EXPORT  double dist_exponential(
 	int i;
 	EXP_PARAMS *exp_params = (EXP_PARAMS*)params;
 	double lambda = exp_params->lambda;
+#if defined __NO_RND__
+	x = 0.5;
+#else
 	x = erand48(xsubi);
+#endif
 	y = -1.0/lambda*log(x);
 	return y;
 }	/* end gauss_center_limit */
@@ -111,10 +130,18 @@ EXPORT  double dist_power(
 	POWER_PARAMS *power_params = (POWER_PARAMS*)params;
 	double x,y;
 	int i,power = power_params->power;
+#if defined __NO_RND__
+	y = 0.5;
+#else
 	y = erand48(xsubi);
+#endif
 	for (i = 1; i < power; ++i)
 	{
+#if defined __NO_RND__
+	    x = 0.5;
+#else
 	    x = erand48(xsubi);
+#endif
 	    if (y < x) y = x;
 	}
 	return y;
@@ -128,7 +155,11 @@ EXPORT  double dist_middle(
 	int i,j;
 	for (i = 0; i < 3; ++i)
 	{
+#if defined __NO_RND__
+	    y = 0.5;
+#else
 	    y = erand48(xsubi);
+#endif
 	    for (j = 0; j < i; ++j)
 	    {
 		if (y < x[j])
@@ -151,7 +182,11 @@ EXPORT  double dist_cauchy(
 	GAUSS_PARAMS *gauss_params = (GAUSS_PARAMS*)params;
 	double mu = gauss_params->mu;
 	double sigma = gauss_params->sigma;
+#if defined __NO_RND__
+	x = 0.0;
+#else
 	x = 2.0*erand48(xsubi) - 1.0;
+#endif
 	y = tan(0.5*PI*x);
 	y = sigma*y + mu;
 	return y;
@@ -167,7 +202,11 @@ EXPORT  double dist_uniform(
 	double b = uniform_params->b;
 	double k = b - a;
 
+#if defined __NO_RND__
+	x = 0.5;
+#else
 	x = erand48(xsubi);
+#endif
 	y = k*x + a;
 	return y;
 }	/* end dist_uniform */

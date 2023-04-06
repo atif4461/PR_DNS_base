@@ -1677,7 +1677,7 @@ EXPORT  double FrontBilinIntrp(
 	    }
 	    break;
 	case 3:
-            ans += blk_cell->var[0]*f[0][0]*f[1][0]*f[2][0]
+	    ans += blk_cell->var[0]*f[0][0]*f[1][0]*f[2][0]
                  + blk_cell->var[1]*f[0][0]*f[1][0]*f[2][1]
                  + blk_cell->var[2]*f[0][0]*f[1][1]*f[2][0]
                  + blk_cell->var[3]*f[0][0]*f[1][1]*f[2][1]
