@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <iFluid.h>
 #include "climate.h"
 #include <time.h>
+#include <sys/time.h>
 #include <iostream>
 #include <sched.h>
 #include <omp.h>
@@ -1067,7 +1068,9 @@ LOCAL  void ParallelExchParticle(PARTICLE** particle_array,Front *front)
 
 extern void ParticlePropagate(Front *fr)
 {
-        double initpp = omp_get_wtime(); 
+        struct timeval tv1,tv2,tv3,tv4,tv5,tv6,tv7,tv8;
+	double t1(0.),t2(0.),t3(0.);
+        gettimeofday(&tv1, NULL);
         printf("ParticlePropagate() : Entering ParticlePropage()\n");
 	if (debugging("trace"))
 	    printf("Entering ParticlePropage()\n");
@@ -1099,13 +1102,12 @@ extern void ParticlePropagate(Front *fr)
 	double R_min = HUGE;
 	double w = 2*PI/5.0;
    
- 
-        std::cout << "inside particle propagate loop" << std::endl;
-        double start = omp_get_wtime(); 
+        gettimeofday(&tv2, NULL);
 
-        #pragma omp parallel for num_threads(8) //private(R_min)	
+        //#pragma omp parallel for num_threads(8) //private(R_min)	
 	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
+            gettimeofday(&tv5, NULL);
             //if( 0 == i and 0 == omp_get_thread_num())
             //   printf("num threads = %d \n", omp_get_num_threads() );
             /*computing finite respone time*/
@@ -1133,6 +1135,7 @@ extern void ParticlePropagate(Front *fr)
 	    cvel = particle_array[i].vel;
 	    /*compute radius for particle[i]*/
 	    s = supersat[index];
+            gettimeofday(&tv8, NULL);
 
 	    for (j = 0; j < dim; j++)
 	     FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center,
@@ -1160,6 +1163,7 @@ extern void ParticlePropagate(Front *fr)
 		R_max = R;
 	    if(R < R_min)
 		R_min = R;
+            gettimeofday(&tv6, NULL);
 	    /*compute velocity for particle[i] with implicit method*/
 	    for(j = 0; j < dim; ++j)
             {
@@ -1234,10 +1238,15 @@ extern void ParticlePropagate(Front *fr)
 		    clean_up(ERROR);
 		}
 	    }
-        
-          if ( i%1548586 == 0)
-          printf("droplet %d index of %d drops %d thread %d of %d running on cpu ID %d at %f %f %f with u= %f %f %f cvel= %f %f %f\n", i, index, eqn_params->num_drops, omp_get_thread_num(), omp_get_num_threads(), sched_getcpu(), center[0], center[1], center[2],
-          u[0], u[1], u[2], cvel[0], cvel[1], cvel[2]);
+            gettimeofday(&tv7, NULL);
+            t1 += (tv8.tv_usec - tv5.tv_usec)/1000000.0 + (tv8.tv_sec - tv5.tv_sec);
+            t3 += (tv6.tv_usec - tv8.tv_usec)/1000000.0 + (tv6.tv_sec - tv8.tv_sec);
+	    t2 += (tv7.tv_usec - tv6.tv_usec)/1000000.0 + (tv7.tv_sec - tv6.tv_sec);
+
+            if (i%1548586 == 0)
+               printf("droplet %d index of %d drops %d thread %d of %d running on cpu ID %d at %f %f %f with u= %f %f %f cvel= %f %f %f\n", 
+			  i, index, eqn_params->num_drops, omp_get_thread_num(), omp_get_num_threads(), 
+			  sched_getcpu(), center[0], center[1], center[2], u[0], u[1], u[2], cvel[0], cvel[1], cvel[2]);
 
 	    if (debugging("single_particle"))
 	    {
@@ -1255,8 +1264,7 @@ extern void ParticlePropagate(Front *fr)
 	    }
 	}
             
-        double end = omp_get_wtime(); 
-        printf("Particle propagate time = %f, %f seconds\n", initpp - start, end - start);  
+        gettimeofday(&tv3, NULL);
 
 	if(pp_numnodes() > 1)
 	{
@@ -1268,6 +1276,14 @@ extern void ParticlePropagate(Front *fr)
 	stop_clock("ParticlePropagate");
 	printf("%d droplets in subdomain, max radius = %e, min radius = %e\n",
 	eqn_params->num_drops,R_max,R_min);
+        gettimeofday(&tv4, NULL);
+        if(debugging("detailed_timing")) printf("\n atif5 :    %10.2f", (tv4.tv_usec - tv1.tv_usec)/1000000.0 + (tv4.tv_sec - tv1.tv_sec));
+        if(debugging("detailed_timing")) printf("\n atif6 :      %10.2f", (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec));
+        if(debugging("detailed_timing")) printf("\n atif7 :      %10.2f", (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec));
+        if(debugging("detailed_timing")) printf("\n atif8 :        %10.2f", t1);
+        if(debugging("detailed_timing")) printf("\n atif9 :        %10.2f", t3);
+        if(debugging("detailed_timing")) printf("\n atif10:        %10.2f", t2);
+        if(debugging("detailed_timing")) printf("\n atif11:      %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
 }
 
 extern void setParticleGroupIndex(
