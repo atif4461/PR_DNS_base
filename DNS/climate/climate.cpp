@@ -241,7 +241,8 @@ static  void melting_flow_driver(
 	    l_cartesian->solve(front->dt); /*compute pressure for vapor equation*/
 
 	    v_cartesian->solve(front->dt); /*solve vapor equation*/
-	    printf("passed solving vapor and temperature\n\n");
+	    if (debugging("trace"))
+	        printf("Solved vapor and temperature\n\n");
 	    /*For entrainment problem, droplets in area with supersat > 0*/
 	    /*This step must be after one step of v_catesian solver*/
 	    if(eqn_params->init_drop_state == PRESET_STATE)
@@ -291,10 +292,12 @@ static  void melting_flow_driver(
             gettimeofday(&tv1, NULL);
 	    FT_Propagate(front);
 	    l_cartesian->solve(front->dt);
-	    printf("Passed solving NS equations\n");
+	    printf("Solved NS equations\n");
 	    v_cartesian->recordTKE();
 
-            if(debugging("detailed_timing")) gettimeofday(&tv3, NULL);
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv3, NULL);
+#endif
 	    if (eqn_params->if_volume_force && front->time < 0.15)
 	    {
                 v_cartesian->solve(0.0);
@@ -302,9 +305,11 @@ static  void melting_flow_driver(
 	    else
 	    {
                  v_cartesian->solve(front->dt);
-                 printf("Passed solving vapor and temperature equations\n");
+                 printf("Solved vapor and temperature equations\n");
 
-                 if(debugging("detailed_timing")) gettimeofday(&tv4, NULL);
+#ifdef __PRDNS_TIMER__
+                 gettimeofday(&tv4, NULL);
+#endif
                  if (eqn_params->prob_type == PARTICLE_TRACKING)
                  {
                     ParticlePropagate(front);
@@ -312,10 +317,14 @@ static  void melting_flow_driver(
                     v_cartesian->uploadParticle();
 #endif
                  }
-                 if(debugging("detailed_timing")) gettimeofday(&tv5, NULL);
+#ifdef __PRDNS_TIMER__
+                 gettimeofday(&tv5, NULL);
                  t1 = (tv5.tv_usec - tv4.tv_usec)/1000000.0 + (tv5.tv_sec - tv4.tv_sec);
+#endif
 	    }
-            if(debugging("detailed_timing")) gettimeofday(&tv6, NULL);
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv6, NULL);
+#endif
 
 	    FT_AddTimeStepToCounter(front);
 	    FT_SetTimeStep(front);
@@ -324,10 +333,12 @@ static  void melting_flow_driver(
             gettimeofday(&tv2, NULL);
             runtime=(tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
             totaltime += runtime;
-            if(debugging("detailed_timing")) printf("\n atif1 :  %10.2f", (tv3.tv_usec - tv1.tv_usec)/1000000.0 + (tv3.tv_sec - tv1.tv_sec));
-            if(debugging("detailed_timing")) printf("\n atif2 :  %10.2f", (tv6.tv_usec - tv3.tv_usec)/1000000.0 + (tv6.tv_sec - tv3.tv_sec));
-            if(debugging("detailed_timing")) printf("\n atif3 :    %10.2f", t1);
-            if(debugging("detailed_timing")) printf("\n atif4 :  %10.2f", (tv2.tv_usec - tv6.tv_usec)/1000000.0 + (tv2.tv_sec - tv6.tv_sec));
+#ifdef __PRDNS_TIMER__
+            printf("\n atif1 :  %10.2f", (tv3.tv_usec - tv1.tv_usec)/1000000.0 + (tv3.tv_sec - tv1.tv_sec));
+            printf("\n atif2 :  %10.2f", (tv6.tv_usec - tv3.tv_usec)/1000000.0 + (tv6.tv_sec - tv3.tv_sec));
+            printf("\n atif3 :    %10.2f", t1);
+            printf("\n atif4 :  %10.2f", (tv2.tv_usec - tv6.tv_usec)/1000000.0 + (tv2.tv_sec - tv6.tv_sec));
+#endif
             printf("\nruntime = %10.2f,   total runtime = %10.2f,  time = %10.9f   step = %7d   dt = %10.9f\n\n\n",
                             runtime, totaltime, front->time,front->step,front->dt);
             fflush(stdout);

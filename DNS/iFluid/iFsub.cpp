@@ -360,6 +360,7 @@ static void iF_flowThroughBoundaryState3d(
 	COMPONENT comp = ft_params->comp;
 	IF_PARAMS *iFparams = (IF_PARAMS*)front->extra1;
 	IF_FIELD *field = iFparams->field;
+	double timer[3];
 	double dir[MAXD];
 	double u[3];		/* velocity in the sweeping direction */
 	double v[3][MAXD];	/* velocity in the orthogonal direction */
@@ -398,12 +399,12 @@ static void iF_flowThroughBoundaryState3d(
 	{
 	    double vtmp;
 	    FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],
-			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i]);
+			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i],timer);
 	    u[1] += vtmp*dir[i];
 	    newst->vel[i] = vtmp;
 	}
 	FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],field->pres,
-                            getStatePres,&pres[2],&oldst->pres);
+                            getStatePres,&pres[2],&oldst->pres,timer);
 
 	f_pres = linear_flux(u[1],pres[0],pres[1],pres[2]);
 	newst->pres = oldst->pres - dt/dn*f_pres;
@@ -484,6 +485,7 @@ static void iF_flowThroughBoundaryState2d(
 	COMPONENT comp = ft_params->comp;
 	IF_PARAMS *iFparams = (IF_PARAMS*)front->extra1;
 	IF_FIELD *field = iFparams->field;
+	double timer[3];
 	double dir[MAXD];
 	double u[3];		/* velocity in the sweeping direction */
 	double v[3][MAXD];	/* velocity in the orthogonal direction */
@@ -527,15 +529,15 @@ static void iF_flowThroughBoundaryState2d(
 	{
 	    double vtmp;
 	    FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],
-			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i]);
+			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i],timer);
 	    u[1] += vtmp*dir[i];
 	    newst->vel[i] = vtmp;
 	}
 
 	FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],field->vort,
-                            getStateVort,&vort[2],&oldst->vort);
+                            getStateVort,&vort[2],&oldst->vort,timer);
 	FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],field->pres,
-                            getStatePres,&pres[2],&oldst->pres);
+                            getStatePres,&pres[2],&oldst->pres,timer);
 
 	f_vort = linear_flux(u[1],vort[0],vort[1],vort[2]);
 	f_pres = linear_flux(u[1],pres[0],pres[1],pres[2]);
@@ -650,6 +652,7 @@ static  void neumann_point_propagate(
 	double nor[MAXD],p1[MAXD];
 	double *p0 = Coords(oldp);
 	double dn,*h = front->rect_grid->h;
+        double timer[3];
 
 	FT_GetStatesAtPoint(oldp,oldhse,oldhs,&sl,&sr);
 	if (ifluid_comp(negative_component(oldhs)))
@@ -677,7 +680,7 @@ static  void neumann_point_propagate(
             FT_RecordMaxFrontSpeed(i,0.0,NULL,Coords(newp),front);
 	}
 	FT_IntrpStateVarAtCoords(front,comp,p1,m_pre,
-			getStatePres,&newst->pres,&oldst->pres);
+			getStatePres,&newst->pres,&oldst->pres,timer);
 	/*
 	FT_IntrpStateVarAtCoords(front,comp,p1,m_phi,
 			getStatePhi,&newst->phi,&oldst->phi);
@@ -685,7 +688,7 @@ static  void neumann_point_propagate(
 	if (dim == 2)
 	{
 	    FT_IntrpStateVarAtCoords(front,comp,p1,m_vor,
-			getStateVort,&newst->vort,&oldst->vort);
+			getStateVort,&newst->vort,&oldst->vort,timer);
 	}
 	FT_RecordMaxFrontSpeed(dim,0.0,NULL,Coords(newp),front);
         return;
@@ -799,7 +802,7 @@ static  void contact_point_propagate(
 	double *p0;
 	STATE *oldst,*newst;
 	POINTER sl,sr;
-	double pres,vort;
+	double pres,vort,timer[3];
 
         (*front->vfunc)(front->vparams,front,oldp,oldhse,oldhs,vel);
         for (i = 0; i < dim; ++i)
@@ -812,11 +815,11 @@ static  void contact_point_propagate(
 	oldst = (STATE*)sl;
 	p0 = Coords(newp);
 	FT_IntrpStateVarAtCoords(front,-1,p0,m_pre,getStatePres,&pres,
-				&oldst->pres);
+				&oldst->pres,timer);
 	if (dim == 2)
 	{
 	    FT_IntrpStateVarAtCoords(front,-1,p0,m_vor,getStateVort,&vort,
-				&oldst->vort);
+				&oldst->vort,timer);
 	}
 
 	newst = (STATE*)left_state(newp);
@@ -850,7 +853,7 @@ static  void rgbody_point_propagate(
 {
 	IF_PARAMS *iFparams = (IF_PARAMS*)front->extra1;
 	IF_FIELD *field = iFparams->field;
-        double vel[MAXD];
+        double vel[MAXD],timer[3];
         int i, dim = front->rect_grid->dim;
 	double dn,*h = front->rect_grid->h;
 	double *m_pre = field->pres;
@@ -908,11 +911,11 @@ static  void rgbody_point_propagate(
         }
 	for (i = 0; i < dim; ++i) newst->vel[i] = vel[i];
 	FT_IntrpStateVarAtCoords(front,comp,p1,m_pre,
-			getStatePres,&newst->pres,&oldst->pres);
+			getStatePres,&newst->pres,&oldst->pres,timer);
 	if (dim == 2)
 	{
 	    FT_IntrpStateVarAtCoords(front,comp,p1,m_vor,
-			getStateVort,&newst->vort,&oldst->vort);
+			getStateVort,&newst->vort,&oldst->vort,timer);
 	}
         return;
 }	/* end rgbody_point_propagate */

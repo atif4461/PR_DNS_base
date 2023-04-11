@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include <front/fdecs.h>		/* includes int.h, table.h */
+#include <sys/time.h>
 
 LOCAL 	boolean build_linear_element(INTRP_CELL*,double*);
 LOCAL 	void collect_cell_ptst(INTRP_CELL*,int*,double*,COMPONENT,Front*,
@@ -814,9 +815,14 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 	double *grid_array,
 	double (*get_state)(Locstate),
 	double *ans,
-	double *default_ans)
+	double *default_ans,
+	double *timer)
 {
-	int icoords[MAXD];
+#ifdef __PRDNS_TIMER__
+        struct timeval tv1,tv2,tv3,tv4,tv5;
+   	gettimeofday(&tv1, NULL);
+#endif
+        int icoords[MAXD];
 	INTERFACE *grid_intfc = front->grid_intfc;
 	static INTRP_CELL *blk_cell;
 	RECT_GRID *gr = &topological_grid(grid_intfc);
@@ -836,6 +842,9 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 	    for (i = 0; i < dim; ++i)
 	    	lin_cell_tol *= 0.00001*gr->h[i];
 	}
+#ifdef __PRDNS_TIMER__
+   	gettimeofday(&tv2, NULL);
+#endif
 
 	if (!rect_in_which(coords,icoords,gr))
 	{
@@ -844,11 +853,20 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 	}
 	collect_cell_ptst(blk_cell,icoords,coords,comp,front,grid_array,
 				get_state);
-	if (blk_cell->is_bilinear)
+#ifdef __PRDNS_TIMER__
+   	gettimeofday(&tv3, NULL);
+#endif
+        if (blk_cell->is_bilinear)
 	{
 	    if (debugging("the_pt"))
-		printf("Bilinear cell interpolate\n");
+		printf("Bilinear cell interpolate 1\n");
 	    *ans = FrontBilinIntrp(coords,blk_cell,NO);
+#ifdef __PRDNS_TIMER__
+   	gettimeofday(&tv4, NULL);
+        timer[0] += (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        timer[1] += (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec);
+        timer[2] += (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec);
+#endif
 	    return YES;
 	}
 	else if (build_linear_element(blk_cell,coords))
@@ -917,7 +935,7 @@ EXPORT	boolean FT_CompGridIntrpStateVarAtCoords(
 	if (blk_cell->is_bilinear)
 	{
 	    if (debugging("the_pt"))
-		printf("Bilinear cell interpolate\n");
+		printf("Bilinear cell interpolate 2\n");
 	    *ans = FrontBilinIntrp(coords,blk_cell,NO);
 	    return YES;
 	}

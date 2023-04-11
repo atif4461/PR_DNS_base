@@ -1982,6 +1982,7 @@ void VCARTESIAN::recordParticles(char* filename, PARTICLE* particle_array, int n
 	int my_node = pp_mynode();
 	int total_particles = num_particles;
 	long *offset = new long[num_nodes]();
+        double timer[3];
 
 	pp_gsync();
 	pp_global_isum(&total_particles,1);
@@ -2040,12 +2041,12 @@ void VCARTESIAN::recordParticles(char* filename, PARTICLE* particle_array, int n
 		buffer[j+1] = particle_array[i].center[j];
 		buffer[j+4] = particle_array[i].vel[j];
 		FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->vel[j],getStateVel[j],buffer+9+j,NULL);
+					field->vel[j],getStateVel[j],buffer+9+j,NULL,timer);
 	    }
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->supersat,NULL,buffer+7,NULL);
+					field->supersat,NULL,buffer+7,NULL,timer);
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->temperature,NULL,buffer+8,NULL);
+					field->temperature,NULL,buffer+8,NULL,timer);
 	    MPI_File_write(fh, buffer, num_cols, MPI_DOUBLE, &status);
 	}
 	delete[] offset;
@@ -2761,6 +2762,7 @@ void VCARTESIAN::recordCondensationRate(char* outname){
 	char filename[256];
 	FILE* ofile;
 	static boolean first = YES;
+        double timer[3];
 
 	for (i = 0; i < dim; i++)
 	    domain_volume *= (U[i]-L[i]);
@@ -2773,7 +2775,7 @@ void VCARTESIAN::recordCondensationRate(char* outname){
 		index = d_index(ic,top_gmax,dim);
 		s = field->supersat[index];
 		FT_IntrpStateVarAtCoords(front,LIQUID_COMP,coords,
-                                field->supersat,getStateSuper,&s,&s);
+                                field->supersat,getStateSuper,&s,&s,timer);
 		Cd_mean += R * s;
 	}
 	pp_gsync();
@@ -3314,6 +3316,7 @@ void VCARTESIAN::recordLagrangSupersat(const char *out_name)
 	int i,bin_num,index,ic[MAXD];
 	static double *supersat_array;
 	static int max_array_size = 0;
+        double timer[3];
 	
  	if (debugging("trace"))	
 	    printf("Entering record Lagrang supersaturation\n");
@@ -3346,7 +3349,7 @@ void VCARTESIAN::recordLagrangSupersat(const char *out_name)
 	    index = d_index(ic,top_gmax,dim);
 	    s = field->supersat[index];
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP,center,
-                                field->supersat,getStateSuper,&s,&s);
+                                field->supersat,getStateSuper,&s,&s,timer);
 	    supersat_array[count++] = s;
 	}
 	bin_num = 200;

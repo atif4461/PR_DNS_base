@@ -525,7 +525,7 @@ extern "C" {
    				GRID_DIRECTION  dir,
 				int wave_type);
 
-/*! \fn boolean FT_IntrpStateVarAtCoords(Front *front, int comp, double *coords, double *var_array, double (*state_func)(POINTER), double *ans, double *default_ans)
+/*! \fn boolean FT_IntrpStateVarAtCoords(Front *front, int comp, double *coords, double *var_array, double (*state_func)(POINTER), double *ans, double *default_ans, double *timer)
  *  \ingroup GRIDINTFC
     \brief Interpolate a state variable at a space point with coords. If 
      comp == NO_COMP, it interpolates with no regard of interface. Otherwise
@@ -539,6 +539,7 @@ extern "C" {
     \param state_func() @b in	Function to retrieve the variable from the interface state pointer.
     \param ans @b out	Address of the interpolated variable.
     \param default_ans @b in	Address of default solution, if NULL, the function will look for solution at nearest interface point.
+    \param timer @b in  Calculates times spend inside different parts of interpolation when __PRDNS_TIMER__ is enabled, @atif
  */
 
    IMPORT  boolean FT_IntrpStateVarAtCoords(Front *front ,
@@ -547,7 +548,8 @@ extern "C" {
 				double *var_array , 
 				double (*state_func)(POINTER) , 
 				double *ans,
-				double *default_ans);
+				double *default_ans,
+				double *timer);
 
 /*! \fn boolean FT_CompGridIntrpStateVarAtCoords(Front *front, int comp, double *coords, double *var_array, double (*state_func)(POINTER), double *ans, double *default_ans)
  *  \ingroup GRIDINTFC
