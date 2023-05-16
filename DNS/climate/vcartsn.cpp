@@ -4602,6 +4602,7 @@ int VCARTESIAN::write_hdf5_field(double* field,const char* fname,const char* var
 		clean_up(ERROR);
 	}
 	/* Set the coordinates */
+	ierr = DMSetUp(daND);CHKERRQ(ierr);
   	DMDASetUniformCoordinates(daND, GL[0],GU[0],GL[1],GU[1],GL[2],GU[2]);
 	/* Declare res as a DMDA component */
   	ierr = DMCreateGlobalVector(daND,&res);CHKERRQ(ierr);

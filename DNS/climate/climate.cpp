@@ -298,7 +298,7 @@ static  void melting_flow_driver(
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv3, NULL);
 #endif
-	    if (eqn_params->if_volume_force && front->time < 0.15)
+	    if (eqn_params->if_volume_force && front->time < 0.01)
 	    {
                 v_cartesian->solve(0.0);
 	    }

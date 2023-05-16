@@ -30,6 +30,7 @@ export PATH=/work/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
 cmake -DCMAKE_CXX_COMPILER=mpic++ -DCMAKE_C_COMPILER=mpicc -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
 
 #Install on lambda4
+export PATH=/work/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
 cmake -DCMAKE_C_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicc -DCMAKE_CXX_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicxx -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
 
 
