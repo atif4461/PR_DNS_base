@@ -1,7 +1,7 @@
 Domain limit in 0-th dimension: 0 0.512 
 Domain limit in 1-th dimension: 0 0.512
 Domain limit in 2-th dimension: 0 0.512
-Computational grid: 256 256 256
+Computational grid: 32 32 32
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -9,9 +9,9 @@ Upper boundary in 1-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 2-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 2-th dimension: PERIODIC_BOUNDARY
 
-Max time: 60.0
-Max step: 100000
-Print interval: 0.5
+Max time: 1
+Max step: 1000000000
+Print interval: 0.1
 Movie frame interval: 0.5 
 CFL factor: 0.75
 Redistribution interval: 10000000
@@ -48,7 +48,7 @@ Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
 Enter phase state of water drop: I
-Enter number of water drops: 8800000 
+Enter number of water drops: 10000000 
 Enter density of water drops: 1000
 Two methods for initialization:
         Prompt initialization (P)
@@ -79,7 +79,7 @@ Type y to make vector velocity field movie: n
 
 ************Debugging options*****************
 
-Enter yes for debugging: yes 
+Enter yes for debugging: no 
 Enter the debugging string: tvolume_force 
 Enter the debugging string: tMPIIO
 Enter the debugging string: PETSc
