@@ -5539,7 +5539,11 @@ LOCAL void enforce_single_crossing(
 		}
 		else
 		{
-		    if ( 0 == 0 ) // (drand48() > 0.5) /* flip a coin */
+#if defined __NO_RND__
+		    if ( 1 ) /* flip a coin */
+#else
+		    if (drand48() > 0.5) /* flip a coin */
+#endif
 		    {
 			for (i = 1; i < nc; ++i)
 			{

@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /hpcgpfs01/software/cmake/3.16.2/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /hpcgpfs01/software/cmake/3.16.2/bin/cmake -E remove -f
+RM = /usr/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /sdcc/u/fmohammad/PR_DNS_base/DNS
+CMAKE_SOURCE_DIR = /work/atif/PR_DNS_base/DNS
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /sdcc/u/fmohammad/PR_DNS_base/DNS
+CMAKE_BINARY_DIR = /work/atif/PR_DNS_base/DNS
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /sdcc/u/fmohammad/PR_DNS_base/DNS
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/hpcgpfs01/software/cmake/3.16.2/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -69,8 +69,8 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/hpcgpfs01/software/cmake/3.16.2/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(CMAKE_COMMAND) -E cmake_progress_start /sdcc/u/fmohammad/PR_DNS_base/DNS/CMakeFiles /sdcc/u/fmohammad/PR_DNS_base/DNS/climate/CMakeFiles/progress.marks
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /sdcc/u/fmohammad/PR_DNS_base/DNS/CMakeFiles 0
+	cd /work/atif/PR_DNS_base/DNS && $(CMAKE_COMMAND) -E cmake_progress_start /work/atif/PR_DNS_base/DNS/CMakeFiles /work/atif/PR_DNS_base/DNS/climate/CMakeFiles/progress.marks
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /work/atif/PR_DNS_base/DNS/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/clean
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/preinstall
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/preinstall
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /work/atif/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 climate/CMakeFiles/climate.dir/rule:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/CMakeFiles/climate.dir/rule
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f CMakeFiles/Makefile2 climate/CMakeFiles/climate.dir/rule
 .PHONY : climate/CMakeFiles/climate.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ climate: climate/CMakeFiles/climate.dir/rule
 
 # fast build rule for target.
 climate/fast:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/build
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/build
 .PHONY : climate/fast
 
 climate.o: climate.cpp.o
@@ -131,7 +131,7 @@ climate.o: climate.cpp.o
 
 # target to build an object file
 climate.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/climate.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/climate.cpp.o
 .PHONY : climate.cpp.o
 
 climate.i: climate.cpp.i
@@ -140,7 +140,7 @@ climate.i: climate.cpp.i
 
 # target to preprocess a source file
 climate.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/climate.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/climate.cpp.i
 .PHONY : climate.cpp.i
 
 climate.s: climate.cpp.s
@@ -149,7 +149,7 @@ climate.s: climate.cpp.s
 
 # target to generate assembly for a file
 climate.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/climate.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/climate.cpp.s
 .PHONY : climate.cpp.s
 
 clminit.o: clminit.cpp.o
@@ -158,7 +158,7 @@ clminit.o: clminit.cpp.o
 
 # target to build an object file
 clminit.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clminit.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clminit.cpp.o
 .PHONY : clminit.cpp.o
 
 clminit.i: clminit.cpp.i
@@ -167,7 +167,7 @@ clminit.i: clminit.cpp.i
 
 # target to preprocess a source file
 clminit.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clminit.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clminit.cpp.i
 .PHONY : clminit.cpp.i
 
 clminit.s: clminit.cpp.s
@@ -176,7 +176,7 @@ clminit.s: clminit.cpp.s
 
 # target to generate assembly for a file
 clminit.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clminit.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clminit.cpp.s
 .PHONY : clminit.cpp.s
 
 clmsub.o: clmsub.cpp.o
@@ -185,7 +185,7 @@ clmsub.o: clmsub.cpp.o
 
 # target to build an object file
 clmsub.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clmsub.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clmsub.cpp.o
 .PHONY : clmsub.cpp.o
 
 clmsub.i: clmsub.cpp.i
@@ -194,7 +194,7 @@ clmsub.i: clmsub.cpp.i
 
 # target to preprocess a source file
 clmsub.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clmsub.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clmsub.cpp.i
 .PHONY : clmsub.cpp.i
 
 clmsub.s: clmsub.cpp.s
@@ -203,7 +203,7 @@ clmsub.s: clmsub.cpp.s
 
 # target to generate assembly for a file
 clmsub.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clmsub.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/clmsub.cpp.s
 .PHONY : clmsub.cpp.s
 
 fft.o: fft.cpp.o
@@ -212,7 +212,7 @@ fft.o: fft.cpp.o
 
 # target to build an object file
 fft.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/fft.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/fft.cpp.o
 .PHONY : fft.cpp.o
 
 fft.i: fft.cpp.i
@@ -221,7 +221,7 @@ fft.i: fft.cpp.i
 
 # target to preprocess a source file
 fft.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/fft.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/fft.cpp.i
 .PHONY : fft.cpp.i
 
 fft.s: fft.cpp.s
@@ -230,7 +230,7 @@ fft.s: fft.cpp.s
 
 # target to generate assembly for a file
 fft.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/fft.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/fft.cpp.s
 .PHONY : fft.cpp.s
 
 testgpu.o: testgpu.cu.o
@@ -239,7 +239,7 @@ testgpu.o: testgpu.cu.o
 
 # target to build an object file
 testgpu.cu.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/testgpu.cu.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/testgpu.cu.o
 .PHONY : testgpu.cu.o
 
 testgpu.i: testgpu.cu.i
@@ -248,7 +248,7 @@ testgpu.i: testgpu.cu.i
 
 # target to preprocess a source file
 testgpu.cu.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/testgpu.cu.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/testgpu.cu.i
 .PHONY : testgpu.cu.i
 
 testgpu.s: testgpu.cu.s
@@ -257,7 +257,7 @@ testgpu.s: testgpu.cu.s
 
 # target to generate assembly for a file
 testgpu.cu.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/testgpu.cu.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/testgpu.cu.s
 .PHONY : testgpu.cu.s
 
 vcartsn.o: vcartsn.cpp.o
@@ -266,7 +266,7 @@ vcartsn.o: vcartsn.cpp.o
 
 # target to build an object file
 vcartsn.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cpp.o
 .PHONY : vcartsn.cpp.o
 
 vcartsn.i: vcartsn.cpp.i
@@ -275,7 +275,7 @@ vcartsn.i: vcartsn.cpp.i
 
 # target to preprocess a source file
 vcartsn.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cpp.i
 .PHONY : vcartsn.cpp.i
 
 vcartsn.s: vcartsn.cpp.s
@@ -284,7 +284,7 @@ vcartsn.s: vcartsn.cpp.s
 
 # target to generate assembly for a file
 vcartsn.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cpp.s
 .PHONY : vcartsn.cpp.s
 
 vcartsn.o: vcartsn.cu.o
@@ -293,7 +293,7 @@ vcartsn.o: vcartsn.cu.o
 
 # target to build an object file
 vcartsn.cu.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cu.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cu.o
 .PHONY : vcartsn.cu.o
 
 vcartsn.i: vcartsn.cu.i
@@ -302,7 +302,7 @@ vcartsn.i: vcartsn.cu.i
 
 # target to preprocess a source file
 vcartsn.cu.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cu.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cu.i
 .PHONY : vcartsn.cu.i
 
 vcartsn.s: vcartsn.cu.s
@@ -311,7 +311,7 @@ vcartsn.s: vcartsn.cu.s
 
 # target to generate assembly for a file
 vcartsn.cu.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cu.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/vcartsn.cu.s
 .PHONY : vcartsn.cu.s
 
 weno.o: weno.cpp.o
@@ -320,7 +320,7 @@ weno.o: weno.cpp.o
 
 # target to build an object file
 weno.cpp.o:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/weno.cpp.o
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/weno.cpp.o
 .PHONY : weno.cpp.o
 
 weno.i: weno.cpp.i
@@ -329,7 +329,7 @@ weno.i: weno.cpp.i
 
 # target to preprocess a source file
 weno.cpp.i:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/weno.cpp.i
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/weno.cpp.i
 .PHONY : weno.cpp.i
 
 weno.s: weno.cpp.s
@@ -338,7 +338,7 @@ weno.s: weno.cpp.s
 
 # target to generate assembly for a file
 weno.cpp.s:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/weno.cpp.s
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/weno.cpp.s
 .PHONY : weno.cpp.s
 
 # Help Target
@@ -385,6 +385,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /sdcc/u/fmohammad/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /work/atif/PR_DNS_base/DNS && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

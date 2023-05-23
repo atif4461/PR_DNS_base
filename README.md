@@ -1,5 +1,5 @@
-# Author(s) : Atif
 # PR-DNS_base
+# Author(s) : Atif
 
 On BNL IC, inside PR_DNS_Base/DNS
 conda activate pr-dns
@@ -22,4 +22,16 @@ For libfabric.so.1
 export LD_LIBRARY_PATH=/hpcgpfs01/software/spack2/spack/opt/spack/linux-rhel7-broadwell/gcc-9.3.0/libfabric-1.13.2-ggbtb5xqcodbkzpdwl2uzqfewqrbvxad/lib:$LD_LIBRARY_PATH
 
 mpirun --mca btl_openib_allow_ib 1 -n 16 tau_exec -T mpi,cupti -ebs -cupti /work/atif/PR_DNS_base/DNS/climate/climate -d 3 -p 4 2 2 -i input-pr-dns/in-entrainment3dd_short -o out-pr-dns
+
+#Install on lambda2
+conda activate pr-dns
+./clean.sh
+export PATH=/work/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
+cmake -DCMAKE_CXX_COMPILER=mpic++ -DCMAKE_C_COMPILER=mpicc -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
+
+#Install on lambda4
+export PATH=/work/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
+cmake -DCMAKE_C_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicc -DCMAKE_CXX_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicxx -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
+
+
 

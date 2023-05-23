@@ -6348,7 +6348,11 @@ EXPORT void delete_from_cross_list(
 EXPORT	double i_random01(
 	INTERFACE *intfc)
 {
+#if defined __NO_RND__
+	return 0.5;
+#else
 	return erand48(Random01_seed(intfc));
+#endif
 }		/*end i_random01*/
 
 

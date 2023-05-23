@@ -3143,6 +3143,7 @@ LOCAL	void	hdf_plot_var2d(
 	int		pheight;
 	int		i, j, k;
 	double           coords[MAXD];
+	double           timer[3];
 	double           *U;
 	double           *L;
 	double           *PU;
@@ -3257,7 +3258,7 @@ LOCAL	void	hdf_plot_var2d(
 		continue;
 	    }
 	    FT_IntrpStateVarAtCoords(front,c,coords,var,get_state_var,
-					var_val+k,NULL);
+					var_val+k,NULL,timer);
 	    if (var_val[k] < min_val)
 		min_val = var_val[k];
 	    if (var_val[k] > max_val)
@@ -3388,6 +3389,7 @@ LOCAL	void	hdf_plot_var3d(
 	int		pheight;
 	int		i, j, k;
 	double           coords[MAXD];
+	double           timer[3];
 	double           L[2],U[2],PL[2],PU[2];
 	double           hx,hy;
  	RECT_GRID       *gr = front->rect_grid;
@@ -3476,7 +3478,7 @@ LOCAL	void	hdf_plot_var3d(
 	    k = j + (height - i - 1)*width;
 	    if (comps[k] == obs_comp) continue;
 	    FT_IntrpStateVarAtCoords(front,comps[k],coords,var,
-				get_state_var,var_val+k,NULL);
+				get_state_var,var_val+k,NULL,timer);
 	    if (var_val[k] < min_val) min_val = var_val[k];
 	    if (var_val[k] > max_val) max_val = var_val[k];
 	}
