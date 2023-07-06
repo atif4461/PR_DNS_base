@@ -341,7 +341,7 @@ void PETSc::Solve_GMRES(void)
 	PetscLogEventBegin(USER_EVENT,0,0,0,0);
 	
         
-        start_clock("Assemble matrix and vector");
+        start_clock("Assemble matrix and vector -- Solve_GMRES");
 	ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
   	ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
   	
@@ -350,18 +350,26 @@ void PETSc::Solve_GMRES(void)
   	
   	ierr = VecAssemblyBegin(b);
   	ierr = VecAssemblyEnd(b);
-	stop_clock("Assembly matrix and vector");
+	stop_clock("Assembly matrix and vector -- Solve_GMRES");
 
 
+	start_clock("KSPSetOperators -- Solve_GMRES");
         KSPSetOperators(ksp,A,A);
+	stop_clock("KSPSetOperators -- Solve_GMRES");
+	start_clock("KSPSetType -- Solve_GMRES");
 	KSPSetType(ksp,KSPGMRES);
+	stop_clock("KSPSetType -- Solve_GMRES");
 
+	start_clock("KSPSetFromOptions -- Solve_GMRES");
         KSPSetFromOptions(ksp);
+	stop_clock("KSPSetFromOptions -- Solve_GMRES");
+	start_clock("KSPSetUp -- Solve_GMRES");
         KSPSetUp(ksp);
+	stop_clock("KSPSetUp -- Solve_GMRES");
 
-	start_clock("KSPSolve");
+	start_clock("KSPSolve -- Solve_GMRES");
         KSPSolve(ksp,b,x);
-	stop_clock("KSPSolve");
+	stop_clock("KSPSolve -- Solve_GMRES");
 
         //VLM 
         KSPConvergedReason reason;
@@ -407,7 +415,10 @@ void PETSc::Solve(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d; Leave PETSC::Solve()\n", reason);
-
+	PetscInt its, itstot;
+        KSPGetIterationNumber(ksp, &its);
+        KSPGetTotalIterations(ksp, &itstot);
+        printf("VLM: KSP iterationNumber, TotalIterations: %d, %d; Leave PETSC::Solve()\n", its, itstot);
 }	/* end Solve */
 
 void PETSc::Solve_BCGSL(void)
@@ -415,7 +426,7 @@ void PETSc::Solve_BCGSL(void)
         
 	printf("VLM: Entering Solve_BCGSL()\n");
 
-        start_clock("Assemble matrix and vector");
+        start_clock("Assemble matrix and vector -- Solve_BCGSL");
 	ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
   	ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
   	
@@ -424,18 +435,28 @@ void PETSc::Solve_BCGSL(void)
   	
   	ierr = VecAssemblyBegin(b);
   	ierr = VecAssemblyEnd(b);
-	stop_clock("Assembly matrix and vector");
+	stop_clock("Assembly matrix and vector -- Solve_BCGSL");
 
+        start_clock("KSPSetOperators -- Solve_BCGSL");
         KSPSetOperators(ksp,A,A);
+        stop_clock("KSPSetOperators -- Solve_BCGSL");
+        start_clock("KSPSetType -- Solve_BCGSL");
         KSPSetType(ksp,KSPBCGSL);
+        stop_clock("KSPSetType -- Solve_BCGSL");
+        start_clock("KSPBCGSLSetEll -- Solve_BCGSL");
 	KSPBCGSLSetEll(ksp,2);
+        stop_clock("KSPBCGSLSetEll -- Solve_BCGSL");
 
+        start_clock("KSPSetFromOptions -- Solve_BCGSL");
         KSPSetFromOptions(ksp);
+        stop_clock("KSPSetFromOptions -- Solve_BCGSL");
+        start_clock("KSPSetUp -- Solve_BCGSL");
         KSPSetUp(ksp);
+        stop_clock("KSPSetUp -- Solve_BCGSL");
 
-	start_clock("KSPSolve");
+	start_clock("KSPSolve -- Solve_BCGSL");
         KSPSolve(ksp,b,x);
-	stop_clock("KSPSolve");
+	stop_clock("KSPSolve -- Solve_BCGSL");
 
         //VLM 
         KSPConvergedReason reason;
@@ -445,9 +466,12 @@ void PETSc::Solve_BCGSL(void)
 
 void PETSc::Solve_withPureNeumann_GMRES(void)
 {
+	PC pc;
+
 	if (debugging("trace"))
 	    printf("Entering Solve_withPureNeumann_GMRES()\n");
-	PC pc;
+
+        start_clock("Assemble matrix and vector -- Solve_withPureNeumann_GMRES");
     	ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
   	ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
   	
@@ -456,29 +480,40 @@ void PETSc::Solve_withPureNeumann_GMRES(void)
   	
   	ierr = VecAssemblyBegin(b);
   	ierr = VecAssemblyEnd(b);
+        stop_clock("Assemble matrix and vector -- Solve_withPureNeumann_GMRES");
   	
 	
+        start_clock("Matrix Null Space -- Solve_withPureNeumann_GMRES");
 	MatNullSpaceCreate(PETSC_COMM_WORLD,PETSC_TRUE,0,PETSC_NULL,&nullsp);
         MatSetNullSpace(A,nullsp);
 	MatNullSpaceRemove(nullsp,b);
+        stop_clock("Matrix Null Space -- Solve_withPureNeumann_GMRES");
 
-	
+        start_clock("KSPSetOperators -- Solve_withPureNeumann_GMRES");
         KSPSetOperators(ksp,A,A);
-
+        stop_clock("KSPSetOperators -- Solve_withPureNeumann_GMRES");
+        start_clock("KSPSetType -- Solve_withPureNeumann_GMRES");
 	KSPSetType(ksp,KSPGMRES);
-
+        stop_clock("KSPSetType -- Solve_withPureNeumann_GMRES");
+        start_clock("KSPSetFromOptions -- Solve_withPureNeumann_GMRES");
         KSPSetFromOptions(ksp);
-	start_clock("KSPSetUp in pure neumann solver");
+        stop_clock("KSPFromOptions -- Solve_withPureNeumann_GMRES");
+
+	start_clock("KSPSetUp in pure neumann solver -- Solve_withPureNeumann_GMRES");
         KSPSetUp(ksp);
-	stop_clock("KSPSetUp in pure neumann solver");
-	start_clock("Petsc Solve in pure neumann solver");
+	stop_clock("KSPSetUp in pure neumann solver -- Solve_withPureNeumann_GMRES");
+	start_clock("Petsc Solve in pure neumann solver -- Solve_withPureNeumann_GMRES");
         KSPSolve(ksp,b,x);
-	stop_clock("Petsc Solve in pure neumann solver");
+	stop_clock("Petsc Solve in pure neumann solver -- Solve_withPureNeumann_GMRES");
 
         //VLM 
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d\n", reason);
+	PetscInt its, itstot;
+        KSPGetIterationNumber(ksp, &its);
+        KSPGetTotalIterations(ksp, &itstot);
+        printf("VLM: KSP iterationNumber, TotalIterations: %d, %d\n", its, itstot);
 
 	printf("Leaving Solve_withPureNeumann_GMRES()\n");
 }	/* end Solve_withPureNeumann_GMRES */
@@ -499,6 +534,10 @@ void PETSc::Solve_withPureNeumann(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d; Leaving Solve_withPureNeumann\n", reason);
+	PetscInt its, itstot;
+        KSPGetIterationNumber(ksp, &its);
+        KSPGetTotalIterations(ksp, &itstot);
+        printf("VLM: KSP iterationNumber, TotalIterations: %d, %d; Leaving Solve_withPureNeumann\n", its, itstot);
 
 }	/* end Solve_withPureNeumann */
 
@@ -517,6 +556,8 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
 
 	if (debugging("trace"))
         printf("Entering Solve_withPureNeumann_HYPRE()\n");
+
+        start_clock("Assemble matrix and vector -- Solve_withPureNeumann_HYPRE");
         ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
         ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
 
@@ -525,16 +566,24 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
 
         ierr = VecAssemblyBegin(b);
         ierr = VecAssemblyEnd(b);
+        stop_clock("Assemble matrix and vector -- Solve_withPureNeumann_HYPRE");
 
 
+        start_clock("Matrix Null Space -- Solve_withPureNeumann_HYPRE");
         MatNullSpaceCreate(PETSC_COMM_WORLD,PETSC_TRUE,0,PETSC_NULL,&nullsp);
         MatSetNullSpace(A,nullsp);
         MatNullSpaceRemove(nullsp,b);
+        stop_clock("Matrix Null Space -- Solve_withPureNeumann_HYPRE");
 
+        start_clock("KSPSetType -- Solve_withPureNeumann_HYPRE");
         KSPSetType(ksp,KSPBCGS);
+        stop_clock("KSPSetType  -- Solve_withPureNeumann_HYPRE");
+        start_clock("KSPSetOperators -- Solve_withPureNeumann_HYPRE");
         KSPSetOperators(ksp,A,A);
+        stop_clock("KSPSetOperators -- Solve_withPureNeumann_HYPRE");
+
+	start_clock("HYPRE preconditioner -- Solve_withPureNeumann_HYPRE");
         KSPGetPC(ksp,&pc);
-	start_clock("HYPRE preconditioner");
         PCSetType(pc,PCHYPRE);
         PCHYPRESetType(pc,"boomeramg");
         PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_strong_threshold", hypre_thres); 
@@ -542,10 +591,11 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
         PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_interp_type", "ext+i"); 
         KSPSetFromOptions(ksp);
         KSPSetUp(ksp);
-	stop_clock("HYPRE preconditioner");
-        start_clock("Petsc Solve in pure neumann solver");
+	stop_clock("HYPRE preconditioner -- Solve_withPureNeumann_HYPRE");
+
+        start_clock("Petsc Solve in pure neumann solver -- Solve_withPureNeumann_HYPRE");
         KSPSolve(ksp,b,x);
-        stop_clock("Petsc Solve in pure neumann solver");
+        stop_clock("Petsc Solve in pure neumann solver -- Solve_withPureNeumann_HYPRE");
 
         //VLM 
         KSPConvergedReason reason;
@@ -563,6 +613,7 @@ void PETSc::Solve_withPureNeumann_BCGSL(void)
 
 	printf("Entering Solve_withPureNeumann_BCGSL()\n");
 
+        start_clock("Assemble matrix and vector -- Solve_withPureNeumann_BCGSL");
 	ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
   	ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
   	
@@ -571,27 +622,39 @@ void PETSc::Solve_withPureNeumann_BCGSL(void)
   	
   	ierr = VecAssemblyBegin(b);
   	ierr = VecAssemblyEnd(b);
+        stop_clock("Assemble matrix and vector -- Solve_withPureNeumann_BCGSL");
   	
-	
+        start_clock("Matrix Null Space -- Solve_withPureNeumann_BCGSL");
 	MatNullSpaceCreate(PETSC_COMM_WORLD,PETSC_TRUE,0,PETSC_NULL,&nullsp);
         MatSetNullSpace(A,nullsp);
 	MatNullSpaceRemove(nullsp,b);
+        stop_clock("Matrix Null Space -- Solve_withPureNeumann_BCGSL");
 	
-        start_clock("PCG in pure neumann solver");
+        start_clock("PCG in pure neumann solver -- Solve_withPureNeumann_BCGSL");
         KSPGetPC(ksp,&pc);
         PCSetType(pc,PCGAMG);
-        stop_clock("PCG in pure neumann solver");
+        stop_clock("PCG in pure neumann solver -- Solve_withPureNeumann_BCGSL");
+
+        start_clock("KSPSetOperators -- Solve_withPureNeumann_BCGSL");
         KSPSetOperators(ksp,A,A);
-        
+        stop_clock("KSPSetOperators -- Solve_withPureNeumann_BCGSL");
+        start_clock("KSPSetType -- Solve_withPureNeumann_BCGSL");
 	KSPSetType(ksp,KSPBCGSL);
+        stop_clock("KSPSetType -- Solve_withPureNeumann_BCGSL");
+        start_clock("KSPBCGSLSetEll -- Solve_withPureNeumann_BCGSL");
 	KSPBCGSLSetEll(ksp,2);
+        stop_clock("KSPBCGSLSetEll -- Solve_withPureNeumann_BCGSL");
 
+        start_clock("KSPSetFromOptions -- Solve_withPureNeumann_BCGSL");
         KSPSetFromOptions(ksp);
+        stop_clock("KSPSetFromOptions -- Solve_withPureNeumann_BCGSL");
+        start_clock("KSPSetUp -- Solve_withPureNeumann_BCGSL");
         KSPSetUp(ksp);
+        stop_clock("KSPSetUp -- Solve_withPureNeumann_BCGSL");
 
-	start_clock("Petsc Solve in pure neumann solver");
+	start_clock("Petsc Solve in pure neumann solver -- Solve_withPureNeumann_BCGSL");
         KSPSolve(ksp,b,x);
-	stop_clock("Petsc Solve in pure neumann solver");
+	stop_clock("Petsc Solve in pure neumann solver -- Solve_withPureNeumann_BCGSL");
 
         //VLM 
         KSPConvergedReason reason;
@@ -666,10 +729,6 @@ void PETSc::Solve_HYPRE(void)
 
 	printf("Entering Solve_HYPRE()\n");
 
-        start_clock("Assemble matrix and vector");
-        ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
-        ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
-
 	//VLM
 	if (petsc_cuda || !petsc_hypre_pc)
         {
@@ -677,17 +736,26 @@ void PETSc::Solve_HYPRE(void)
 	}
 	printf("hypre strong_threshold %s\n", hypre_thres);
 
+        start_clock("Assemble matrix and vector -- Solve_HYPRE");
+        ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
+        ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
+
         ierr = VecAssemblyBegin(x);
         ierr = VecAssemblyEnd(x);
 
         ierr = VecAssemblyBegin(b);
         ierr = VecAssemblyEnd(b);
-        stop_clock("Assembly matrix and vector");
+        stop_clock("Assembly matrix and vector -- Solve_HYPRE");
 
+        start_clock("KSPSetType -- Solve_HYPRE");
 	KSPSetType(ksp,KSPBCGS);
+        stop_clock("KSPSetType -- Solve_HYPRE");
+        start_clock("KSPSetOperators -- Solve_HYPRE");
         KSPSetOperators(ksp,A,A);
+        stop_clock("KSPsetOperators -- Solve_HYPRE");
+
+	start_clock("HYPRE preconditioner -- Solve_HYPRE");
         KSPGetPC(ksp,&pc);
-	start_clock("HYPRE preconditioner");
 	PCSetType(pc,PCHYPRE);
         PCHYPRESetType(pc,"boomeramg");
         PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_strong_threshold", hypre_thres);
@@ -695,11 +763,11 @@ void PETSc::Solve_HYPRE(void)
         PetscOptionsSetValue(NULL, "-pc_hypre_boomeramg_interp_type", "ext+i");
         KSPSetFromOptions(ksp);
         KSPSetUp(ksp);
-        stop_clock("HYPRE preconditioner"); 
+        stop_clock("HYPRE preconditioner -- Solve_HYPRE"); 
 
-        start_clock("KSPSolve");
+        start_clock("KSPSolve -- Solve_HYPRE");
         KSPSolve(ksp,b,x);
-        stop_clock("KSPSolve");
+        stop_clock("KSPSolve -- Solve_HYPRE");
 
         //VLM
         KSPConvergedReason reason;
