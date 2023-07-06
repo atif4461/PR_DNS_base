@@ -30,7 +30,7 @@ export PATH=/work/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
 cmake -DCMAKE_CXX_COMPILER=mpic++ -DCMAKE_C_COMPILER=mpicc -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
 
 #Install on lambda4
-export PATH=/work/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
+export PATH=/work/atif/petsc-3.16.0/lib/petsc/bin/:$PATH
 cmake -DCMAKE_C_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicc -DCMAKE_CXX_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicxx -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
 
 /work/atif/packages/openmpi-4.0.3-lambda4/bin/mpirun --mca btl_openib_allow_ib 1 -n 1 ./climate/climate -d 3 -p 1 1 1 -i ./climate/input-pr-dns/in-entrainment3dd_case1_vlm_test1 -o output-cuda -mat_type aijcusparse -vec_type cuda -log_view

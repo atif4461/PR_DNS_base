@@ -1294,17 +1294,17 @@ extern void ParticlePropagate(Front *fr)
 	eqn_params->num_drops,R_max,R_min);
 #ifdef __PRDNS_TIMER__
         gettimeofday(&tv4, NULL);
-        printf("\n atif5 :    %10.2f", (tv4.tv_usec - tv1.tv_usec)/1000000.0 + (tv4.tv_sec - tv1.tv_sec));
-        printf("\n atif6 :      %10.2f", (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec));
-        printf("\n atif7 :      %10.2f", (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec));
-        printf("\n atif8 :        %10.2f", t1);
-        printf("\n atif9 :        %10.2f", t3);
-        printf("\n atif13:          %10.2f", timer_intrp[0]);
-        printf("\n atif14:          %10.2f", timer_intrp[1]);
-        printf("\n atif15:          %10.2f", timer_intrp[2]);
-        printf("\n atif10:        %10.2f", t4);
-        printf("\n atif11:        %10.2f", t2);
-        printf("\n atif12:      %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
+        printf("\n atif5  Particle Propagate                    :      %10.2f", (tv4.tv_usec - tv1.tv_usec)/1000000.0 + (tv4.tv_sec - tv1.tv_sec));
+        printf("\n atif6  Initialize                            :          %10.2f", (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec));
+        printf("\n atif7  Loop over num_drops                   :          %10.2f", (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec));
+        printf("\n atif8  rect_in_which + index                 :              %10.2f", t1);
+        printf("\n atif9  FT_IntrpStateVarAtCoords              :              %10.2f", t3);
+        printf("\n atif13                                       :                  %10.2f", timer_intrp[0]);
+        printf("\n atif14                                       :                  %10.2f", timer_intrp[1]);
+        printf("\n atif15                                       :                  %10.2f", timer_intrp[2]);
+        printf("\n atif10 delta_R R computations                :              %10.2f", t4);
+        printf("\n atif11 Loop over dim + sedimentation         :              %10.2f", t2);
+        printf("\n atif12 ParallelExchParticle + particle array :          %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
 #endif
 }
 
