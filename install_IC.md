@@ -15,7 +15,7 @@
 - wget [https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.16.0.tar.gz](https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.16.0.tar.gz)
 - tar zxvf [petsc-3.16.0.tar.gz](https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.16.0.tar.gz)
 - cd petsc-petsc-3.16.0
-- ./configure --CC=mpicc --CXX=mpic++ --FC=mpifort --prefix=/sdcc/u/tzhang/soft/petsc-3.16.0 --download-fblaslapack=1 --download-make=1 --download-hdf5=1 --download-hypre=1 --with-shared-libraries --enable-static
+- ./configure --CC=mpicc --CXX=mpic++ --FC=mpifort --prefix=/sdcc/u/tzhang/soft/petsc-3.16.0 --with-debugging=0 COPTFLAGS='-O3 -march=native -mtune=native' CXXOPTFLAGS='-O3 -march=native -mtune=native' FOPTFLAGS='-O3 -march=native -mtune=native' --download-fblaslapack=1 --download-make=1 --download-hdf5=1 --download-hypre=1 --with-shared-libraries --enable-static
 - make -j8; make install
 
 # 3. install other packages by conda
