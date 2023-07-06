@@ -64,7 +64,7 @@ else()
 endif()
  
 #set(HDF4_ROOT_DIR /global/homes/z/zhangtao/soft/hdf-4.2.14/ins)
-set(HDF4_ROOT_DIR "/home/atif/.conda/envs/pr-dns//")
+set(HDF4_ROOT_DIR "/global/homes/a/atif/.conda/envs/pr-dns//")
 
 FIND_PATH (HDF4_INCLUDE_DIRS "hdf.h"
     HINTS ${_HDF4_HINTS}

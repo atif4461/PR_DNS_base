@@ -4,7 +4,8 @@
 #  HDF5_LIBRARIES - The libraries needed to use HDF5
 #  HDF5_DEFINITIONS - Compiler switches required for using HDF5
 
-set(HDF5_DIR "/work/atif/petsc-3.16.0/")
+set(HDF5_DIR "/global/homes/a/atif/packages/petsc-3.16.0-opt/")
+##set(HDF5_DIR "/global/homes/a/atif/packages/petsc-3.19.2-cuda/")
 #set(HDF5_DIR "/sdcc/u/tzhang/soft/miniconda3/envs/pr-dns//")
 
 find_path(HDF5_INCLUDE_DIR hdf5.h 

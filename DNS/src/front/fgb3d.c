@@ -1306,9 +1306,9 @@ LOCAL	boolean grid_based_box_untangle(
 	/* linking suitable pairs */
 	if(debugging("pairsfix"))
 	{
-	    num_new_tris = linking_tris_with_pairs_fix(new_tris, max_n_new, 
-		out_tris, num_out_tris, in_tris, num_in_tris, 
-		ref_tris, num_ref_tris, intfc);
+	    //num_new_tris = linking_tris_with_pairs_fix(new_tris, max_n_new, 
+	    //	out_tris, num_out_tris, in_tris, num_in_tris, 
+    	    //	ref_tris, num_ref_tris, intfc);
 
 	}
 	else

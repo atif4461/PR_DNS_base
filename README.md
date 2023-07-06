@@ -33,4 +33,23 @@ cmake -DCMAKE_CXX_COMPILER=mpic++ -DCMAKE_C_COMPILER=mpicc -DCMAKE_CUDA_COMPILER
 cmake -DCMAKE_C_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicc -DCMAKE_CXX_COMPILER=/work/atif/packages/openmpi-4.0.3-lambda4/bin/mpicxx -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
 
 
+###############
+CORI
+###############
+module load python3/3.9-anaconda-2021.11
+conda activate pr-dns
+export PATH=/global/homes/a/atif/packages/openmpi-4.1.1/bin/:$PATH
+export PATH=/global/homes/a/atif/packages/petsc-3.16.0/lib/petsc/bin/:$PATH
+cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc .
+srun /global/homes/a/atif/packages/openmpi-4.1.1/bin/mpirun --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/
 
+###############
+PERLMUTTER 
+###############
+conda activate pr-dns
+export PATH=/global/homes/a/atif/packages/openmpi-4.1.1/bin/:$PATH
+export LD_LIBRARY_PATH=/global/homes/a/atif/packages/openmpi-4.1.1/bin/:$LD_LIBRARY_PATH
+export PATH=/global/homes/a/atif/packages/petsc-3.19.2-mpich/lib/petsc/bin/:$PATH
+cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc .
+salloc --nodes 1 --qos interactive --time 1:00:00 --constraint gpu --gpus 4 --account=m2845
+mpirun --mca opal_common_ucx_opal_mem_hooks 1 --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/ |& tee srun.log &

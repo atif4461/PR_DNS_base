@@ -1,8 +1,9 @@
-cmake_minimum_required (VERSION 2.8.11)
-project (climate C CXX CUDA)
+cmake_minimum_required (VERSION 3.20.0)
+project (climate C CXX)
+##project (climate C CXX CUDA)
 
-set (CMAKE_C_FLAGS)
-set (CMAKE_CXX_FLAGS "-fopenmp -D__HDF5__") 
+set (CMAKE_C_FLAGS "-Wno-implicit-function-declaration")
+set (CMAKE_CXX_FLAGS "-fopenmp  -D__HDF5__") 
 ##set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__NO_RND__")      # uncomment to disable random numbers for reproducibility
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__PRDNS_TIMER__") # uncomment to enable detailed timings
 set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -D__PRDNS_TIMER__") # uncomment to enable detailed timings
@@ -16,7 +17,9 @@ set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -D__PRDNS_TIMER__") # uncomment to enab
 ##-gencode=arch=compute_80,code=sm_80 \
 ##-gencode=arch=compute_86,code=sm_86 \
 ##")
-set (CMAKE_CUDA_FLAGS "-I/usr/lib/x86_64-linux-gnu/openmpi/include/ -L///usr/lib/x86_64-linux-gnu/openmpi/lib -lmpi")
+##set (CMAKE_CUDA_FLAGS "-I/opt/cray/pe/mpich/8.1.25/ofi/intel/19.0/include/ -L//opt/cray/pe/mpich/8.1.25/ofi/intel/19.0/lib -lmpi")
+set (CMAKE_CUDA_FLAGS "-I/global/homes/a/atif/packages/openmpi-4.1.1/include -L/global/homes/a/atif/packages/openmpi-4.1.1/lib -lmpi")
+##set (CMAKE_CUDA_FLAGS "-I/global/common/software/nersc/pe/mpich/4.1.1/gnu/include -L/global/common/software/nersc/pe/mpich/4.1.1/gnu/lib -lmpi")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
