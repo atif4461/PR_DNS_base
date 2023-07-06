@@ -48,7 +48,7 @@ Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
 Enter phase state of water drop: I
-Enter number of water drops: 100000 
+Enter number of water drops: 10000000 
 Enter density of water drops: 1000
 Two methods for initialization:
         Prompt initialization (P)

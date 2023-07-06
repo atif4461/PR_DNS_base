@@ -480,6 +480,22 @@ EXPORT	void	FT_Init(
                 }
 		break;
 #endif /* defined(__MPI__) */
+	    case 'l':  /* VLM */
+	    	if (strncmp(argv[0], "-log", 4) == 0)
+		{
+                    argc -= 1;
+		    argv += 1;
+		    break;
+		}
+		else
+		{
+		    printf("invalid argument %s\n", argv[0]);
+#if defined(__MPI__)
+                    clean_up(ERROR);
+#else
+		    exit(1);
+#endif /* defined(__MPI__) */
+		}
 	    default:
 		argc -= 2;
 		argv += 2;
@@ -1194,7 +1210,7 @@ LOCAL boolean build_linear_element(
 	return FUNCTION_FAILED;
 }	/* end build_linear_element */
 
-LOCAL void collect_cell_ptst(
+LOCAL void collect_cell_ptst( //distance_between_positions's sqrt consumes ~10%
 	INTRP_CELL *blk_cell,
 	int *icoords,
 	double *coords,
@@ -1227,68 +1243,68 @@ LOCAL void collect_cell_ptst(
 	nv = 0;
 	switch (dim)
 	{
-	case 1:
-	    for (i = 0; i < 2; ++i)
-	    {
-	    	ic[0] = icoords[0] + i;
-	    	index = d_index1d(ic[0],gmax);
-	    	cell_comp1d[i] = gr_comp[index];
-	    	if (gr_comp[index] == comp || comp == NO_COMP)
-	    	{
-	    	    blk_cell->coords[nv][0] = L[0] + ic[0]*h[0];
-		    blk_cell->var[nv] = grid_array[index];
-		    blk_cell->dist[nv] = distance_between_positions(coords,
-				blk_cell->coords[nv],dim);
-		    nv++;
-	    	}
-	    	else
-	    	    blk_cell->is_bilinear = NO;
-	    }
-	    break;
-	case 2:
-	    for (i = 0; i < 2; ++i)
-	    for (j = 0; j < 2; ++j)
-	    {
-	    	ic[0] = icoords[0] + i;
-	    	ic[1] = icoords[1] + j;
-	    	index = d_index2d(ic[0],ic[1],gmax);
-	    	cell_comp2d[i][j] = gr_comp[index];
-	    	if (gr_comp[index] == comp || comp == NO_COMP)
-	    	{
-	    	    blk_cell->coords[nv][0] = L[0] + ic[0]*h[0];
-	    	    blk_cell->coords[nv][1] = L[1] + ic[1]*h[1];
-		    blk_cell->var[nv] = grid_array[index];
-		    blk_cell->dist[nv] = distance_between_positions(coords,
-				blk_cell->coords[nv],dim);
-		    nv++;
-	    	}
-	    	else
-	    	    blk_cell->is_bilinear = NO;
-	    }
-	    break;
+	//case 1:
+	//    for (i = 0; i < 2; ++i)
+	//    {
+	//    	ic[0] = icoords[0] + i;
+	//    	index = d_index1d(ic[0],gmax);
+	//    	cell_comp1d[i] = gr_comp[index];
+	//    	if (gr_comp[index] == comp || comp == NO_COMP)
+	//    	{
+	//    	    blk_cell->coords[nv][0] = L[0] + ic[0]*h[0];
+	//	    blk_cell->var[nv] = grid_array[index];
+	//	    blk_cell->dist[nv] = distance_between_positions(coords,
+	//			blk_cell->coords[nv],dim);
+	//	    nv++;
+	//    	}
+	//    	else
+	//    	    blk_cell->is_bilinear = NO;
+	//    }
+	//    break;
+	//case 2:
+	//    for (i = 0; i < 2; ++i)
+	//    for (j = 0; j < 2; ++j)
+	//    {
+	//    	ic[0] = icoords[0] + i;
+	//    	ic[1] = icoords[1] + j;
+	//    	index = d_index2d(ic[0],ic[1],gmax);
+	//    	cell_comp2d[i][j] = gr_comp[index];
+	//    	if (gr_comp[index] == comp || comp == NO_COMP)
+	//    	{
+	//    	    blk_cell->coords[nv][0] = L[0] + ic[0]*h[0];
+	//    	    blk_cell->coords[nv][1] = L[1] + ic[1]*h[1];
+	//	    blk_cell->var[nv] = grid_array[index];
+	//	    blk_cell->dist[nv] = distance_between_positions(coords,
+	//			blk_cell->coords[nv],dim);
+	//	    nv++;
+	//    	}
+	//    	else
+	//    	    blk_cell->is_bilinear = NO;
+	//    }
+	//    break;
 	case 3:
-	    for (i = 0; i < 2; ++i)
-	    for (j = 0; j < 2; ++j)
-	    for (k = 0; k < 2; ++k)
-	    {
-	    	ic[0] = icoords[0] + i;
-	    	ic[1] = icoords[1] + j;
-	    	ic[2] = icoords[2] + k;
-	    	index = d_index3d(ic[0],ic[1],ic[2],gmax);
-	    	cell_comp3d[i][j][k] = gr_comp[index];
-	    	if (gr_comp[index] == comp || comp == NO_COMP)
-	    	{
-	    	    blk_cell->coords[nv][0] = L[0] + ic[0]*h[0];
-	    	    blk_cell->coords[nv][1] = L[1] + ic[1]*h[1];
-	    	    blk_cell->coords[nv][2] = L[2] + ic[2]*h[2];
-		    blk_cell->var[nv] = grid_array[index];
-		    blk_cell->dist[nv] = distance_between_positions(coords,
-				blk_cell->coords[nv],dim);
-		    nv++;
-	    	}
-	    	else
-	    	    blk_cell->is_bilinear = NO;
-	    }
+	   // for (i = 0; i < 2; ++i)
+	   // for (j = 0; j < 2; ++j)
+	   // for (k = 0; k < 2; ++k)
+	   // {
+	   // 	ic[0] = icoords[0] + i;
+	   // 	ic[1] = icoords[1] + j;
+	   // 	ic[2] = icoords[2] + k;
+	   // 	index = d_index3d(ic[0],ic[1],ic[2],gmax);
+	   // 	cell_comp3d[i][j][k] = gr_comp[index];
+	   // 	if (gr_comp[index] == comp || comp == NO_COMP)
+	   // 	{
+	   // 	    blk_cell->coords[nv][0] = L[0] + ic[0]*h[0];
+	   // 	    blk_cell->coords[nv][1] = L[1] + ic[1]*h[1];
+	   // 	    blk_cell->coords[nv][2] = L[2] + ic[2]*h[2];
+	   //         blk_cell->var[nv] = grid_array[index];
+	   //         blk_cell->dist[nv] = distance_between_positions(coords,
+	   //     		blk_cell->coords[nv],dim);
+	   //         nv++;
+	   // 	}
+	   // 	else
+	   // 	    blk_cell->is_bilinear = NO;
+	   // }
 	    break;
 	}
 	if (blk_cell->is_bilinear == YES) 
@@ -1296,146 +1312,146 @@ LOCAL void collect_cell_ptst(
 	    blk_cell->nv = nv;
 	    return;
 	}
-	switch (dim)
-	{
-	case 1:
-	    for (i = 0; i < 2; ++i)
-	    {
-	    	ic[0] = icoords[0] + i;
-	    	if (cell_comp1d[i] == comp)
-		{
-	    	    if (cell_comp1d[(i+1)%2] != comp)
-		    {
-		    	dir = (i < (i+1)%2) ? EAST : WEST;
-			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
-				dir,comp,get_state,&state_at_crx,crx_coords);
-		    	if (fr_crx_grid_seg)
-		    	{
-		    	    blk_cell->var[nv] = state_at_crx;
-		    	    blk_cell->coords[nv][0] = crx_coords[0];
-		    	    blk_cell->dist[nv] = distance_between_positions(
-					coords,blk_cell->coords[nv],dim);
-		    	    nv++;
-		    	}
-		    }
-		}
-	    }
-	    break;
-	case 2:
-	    for (i = 0; i < 2; ++i)
-	    for (j = 0; j < 2; ++j)
-	    {
-	    	ic[0] = icoords[0] + i;
-	    	ic[1] = icoords[1] + j;
-	    	if (cell_comp2d[i][j] == comp)
-	    	{
-	    	    if (cell_comp2d[(i+1)%2][j] != comp)
-	    	    {
-		    	dir = (i < (i+1)%2) ? EAST : WEST;
-			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
-				dir,comp,get_state,&state_at_crx,crx_coords);
-		    	if (fr_crx_grid_seg)
-		    	{
-		    	    blk_cell->var[nv] = state_at_crx;
-		    	    blk_cell->coords[nv][0] = crx_coords[0];
-		    	    blk_cell->coords[nv][1] = crx_coords[1];
-		    	    blk_cell->dist[nv] = distance_between_positions(
-					coords,blk_cell->coords[nv],dim);
-		    	    if (debugging("the_pt"))
-		    	    {
-				printf("intfc: var[%d] = %f  d[%d] = %f\n",
-					nv,blk_cell->var[nv],nv,
-					blk_cell->dist[nv]);
-		    	    }
-		    	    nv++;
-		    	}
-	    	    }
-	    	    if (cell_comp2d[i][(j+1)%2] != comp)
-	    	    {
-		    	dir = (j < (j+1)%2) ? NORTH : SOUTH;
-			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
-				dir,comp,get_state,&state_at_crx,crx_coords);
-		    	if (fr_crx_grid_seg)
-		    	{
-		    	    blk_cell->var[nv] = state_at_crx;
-		    	    blk_cell->coords[nv][0] = crx_coords[0];
-		    	    blk_cell->coords[nv][1] = crx_coords[1];
-		    	    blk_cell->dist[nv] = distance_between_positions(
-					coords,blk_cell->coords[nv],dim);
-		    	    if (debugging("the_pt"))
-		    	    {
-				printf("intfc: var[%d] = %f  d[%d] = %f\n",
-					nv,blk_cell->var[nv],nv,
-					blk_cell->dist[nv]);
-		    	    }
-		    	    nv++;
-		    	}
-	    	    }
-	    	}
-	    }
-	    break;
-	case 3:
-	    for (i = 0; i < 2; ++i)
-	    for (j = 0; j < 2; ++j)
-	    for (k = 0; k < 2; ++k)
-	    {
-	    	ic[0] = icoords[0] + i;
-	    	ic[1] = icoords[1] + j;
-	    	ic[2] = icoords[2] + k;
-	    	if (cell_comp3d[i][j][k] == comp)
-	    	{
-	    	    if (cell_comp3d[(i+1)%2][j][k] != comp)
-	    	    {
-		    	dir = (i < (i+1)%2) ? EAST : WEST;
-			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
-				dir,comp,get_state,&state_at_crx,crx_coords);
-		    	if (fr_crx_grid_seg)
-		    	{
-		    	    blk_cell->var[nv] = state_at_crx;
-		    	    blk_cell->coords[nv][0] = crx_coords[0];
-		    	    blk_cell->coords[nv][1] = crx_coords[1];
-		    	    blk_cell->coords[nv][2] = crx_coords[2];
-		    	    blk_cell->dist[nv] = distance_between_positions(
-					coords,blk_cell->coords[nv],dim);
-		    	    nv++;
-		    	}
-	    	    }
-	    	    if (cell_comp3d[i][(j+1)%2][k] != comp)
-	    	    {
-		    	dir = (j < (j+1)%2) ? NORTH : SOUTH;
-			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
-				dir,comp,get_state,&state_at_crx,crx_coords);
-		    	if (fr_crx_grid_seg)
-		    	{
-		    	    blk_cell->var[nv] = state_at_crx;
-		    	    blk_cell->coords[nv][0] = crx_coords[0];
-		    	    blk_cell->coords[nv][1] = crx_coords[1];
-		    	    blk_cell->coords[nv][2] = crx_coords[2];
-		    	    blk_cell->dist[nv] = distance_between_positions(
-					coords,blk_cell->coords[nv],dim);
-		    	    nv++;
-		    	}
-	    	    }
-	    	    if (cell_comp3d[i][j][(k+1)%2] != comp)
-	    	    {
-		    	dir = (k < (k+1)%2) ? UPPER : LOWER;
-			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
-				dir,comp,get_state,&state_at_crx,crx_coords);
-		    	if (fr_crx_grid_seg)
-		    	{
-		    	    blk_cell->var[nv] = state_at_crx;
-		    	    blk_cell->coords[nv][0] = crx_coords[0];
-		    	    blk_cell->coords[nv][1] = crx_coords[1];
-		    	    blk_cell->coords[nv][2] = crx_coords[2];
-		    	    blk_cell->dist[nv] = distance_between_positions(
-					coords,blk_cell->coords[nv],dim);
-		    	    nv++;
-		    	}
-	    	    }
-	    	}
-	    }
-	    break;
-	}
+//	switch (dim)
+//	{
+//	case 1:
+//	    for (i = 0; i < 2; ++i)
+//	    {
+//	    	ic[0] = icoords[0] + i;
+//	    	if (cell_comp1d[i] == comp)
+//		{
+//	    	    if (cell_comp1d[(i+1)%2] != comp)
+//		    {
+//		    	dir = (i < (i+1)%2) ? EAST : WEST;
+//			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
+//				dir,comp,get_state,&state_at_crx,crx_coords);
+//		    	if (fr_crx_grid_seg)
+//		    	{
+//		    	    blk_cell->var[nv] = state_at_crx;
+//		    	    blk_cell->coords[nv][0] = crx_coords[0];
+//		    	    blk_cell->dist[nv] = distance_between_positions(
+//					coords,blk_cell->coords[nv],dim);
+//		    	    nv++;
+//		    	}
+//		    }
+//		}
+//	    }
+//	    break;
+//	case 2:
+//	    for (i = 0; i < 2; ++i)
+//	    for (j = 0; j < 2; ++j)
+//	    {
+//	    	ic[0] = icoords[0] + i;
+//	    	ic[1] = icoords[1] + j;
+//	    	if (cell_comp2d[i][j] == comp)
+//	    	{
+//	    	    if (cell_comp2d[(i+1)%2][j] != comp)
+//	    	    {
+//		    	dir = (i < (i+1)%2) ? EAST : WEST;
+//			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
+//				dir,comp,get_state,&state_at_crx,crx_coords);
+//		    	if (fr_crx_grid_seg)
+//		    	{
+//		    	    blk_cell->var[nv] = state_at_crx;
+//		    	    blk_cell->coords[nv][0] = crx_coords[0];
+//		    	    blk_cell->coords[nv][1] = crx_coords[1];
+//		    	    blk_cell->dist[nv] = distance_between_positions(
+//					coords,blk_cell->coords[nv],dim);
+//		    	    if (debugging("the_pt"))
+//		    	    {
+//				printf("intfc: var[%d] = %f  d[%d] = %f\n",
+//					nv,blk_cell->var[nv],nv,
+//					blk_cell->dist[nv]);
+//		    	    }
+//		    	    nv++;
+//		    	}
+//	    	    }
+//	    	    if (cell_comp2d[i][(j+1)%2] != comp)
+//	    	    {
+//		    	dir = (j < (j+1)%2) ? NORTH : SOUTH;
+//			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
+//				dir,comp,get_state,&state_at_crx,crx_coords);
+//		    	if (fr_crx_grid_seg)
+//		    	{
+//		    	    blk_cell->var[nv] = state_at_crx;
+//		    	    blk_cell->coords[nv][0] = crx_coords[0];
+//		    	    blk_cell->coords[nv][1] = crx_coords[1];
+//		    	    blk_cell->dist[nv] = distance_between_positions(
+//					coords,blk_cell->coords[nv],dim);
+//		    	    if (debugging("the_pt"))
+//		    	    {
+//				printf("intfc: var[%d] = %f  d[%d] = %f\n",
+//					nv,blk_cell->var[nv],nv,
+//					blk_cell->dist[nv]);
+//		    	    }
+//		    	    nv++;
+//		    	}
+//	    	    }
+//	    	}
+//	    }
+//	    break;
+//	case 3:
+//	    for (i = 0; i < 2; ++i)
+//	    for (j = 0; j < 2; ++j)
+//	    for (k = 0; k < 2; ++k)
+//	    {
+//	    	ic[0] = icoords[0] + i;
+//	    	ic[1] = icoords[1] + j;
+//	    	ic[2] = icoords[2] + k;
+//	    	if (cell_comp3d[i][j][k] == comp)
+//	    	{
+//	    	    if (cell_comp3d[(i+1)%2][j][k] != comp)
+//	    	    {
+//		    	dir = (i < (i+1)%2) ? EAST : WEST;
+//			fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
+//				dir,comp,get_state,&state_at_crx,crx_coords);
+//		    	if (fr_crx_grid_seg)
+//		    	{
+//		    	    blk_cell->var[nv] = state_at_crx;
+//		    	    blk_cell->coords[nv][0] = crx_coords[0];
+//		    	    blk_cell->coords[nv][1] = crx_coords[1];
+//		    	    blk_cell->coords[nv][2] = crx_coords[2];
+//		    	    blk_cell->dist[nv] = distance_between_positions(
+//					coords,blk_cell->coords[nv],dim);
+//		    	    nv++;
+//		    	}
+//	    	    }
+//	    	    if (cell_comp3d[i][(j+1)%2][k] != comp)
+//	    	    {
+//		    	dir = (j < (j+1)%2) ? NORTH : SOUTH;
+//		        fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
+//		        	dir,comp,get_state,&state_at_crx,crx_coords);
+//		    	if (fr_crx_grid_seg)
+//		    	{
+//		    	    blk_cell->var[nv] = state_at_crx;
+//		    	    blk_cell->coords[nv][0] = crx_coords[0];
+//		    	    blk_cell->coords[nv][1] = crx_coords[1];
+//		    	    blk_cell->coords[nv][2] = crx_coords[2];
+//		    	    blk_cell->dist[nv] = distance_between_positions(
+//		        		coords,blk_cell->coords[nv],dim);
+//		    	    nv++;
+//		    	}
+//	    	    }
+//	    	    if (cell_comp3d[i][j][(k+1)%2] != comp)
+//	    	    {
+//		    	dir = (k < (k+1)%2) ? UPPER : LOWER;
+//		        fr_crx_grid_seg = FT_StateVarAtGridCrossing(front,ic,
+//		        	dir,comp,get_state,&state_at_crx,crx_coords);
+//		    	if (fr_crx_grid_seg)
+//		    	{
+//		    	    blk_cell->var[nv] = state_at_crx;
+//		    	    blk_cell->coords[nv][0] = crx_coords[0];
+//		    	    blk_cell->coords[nv][1] = crx_coords[1];
+//		    	    blk_cell->coords[nv][2] = crx_coords[2];
+//		    	    blk_cell->dist[nv] = distance_between_positions(
+//		        		coords,blk_cell->coords[nv],dim);
+//		    	    nv++;
+//		    	}
+//	    	    }
+//	    	}
+//	    }
+//	    break;
+//	}
 	blk_cell->nv = nv;
 	sort_blk_cell(blk_cell);
 }	/* end collect_cell_ptst */
@@ -1648,8 +1664,7 @@ EXPORT  double FrontBilinIntrp(
         INTRP_CELL *blk_cell,
         boolean reuse_coeffs)
 {
-	//static double f[MAXD][2];
- double f[MAXD][2];
+	static double f[MAXD][2];
 	int i,j,k,il,iu,index;
 	int dim = blk_cell->dim;
 	double ans;

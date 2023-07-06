@@ -298,7 +298,7 @@ static  void melting_flow_driver(
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv3, NULL);
 #endif
-	    if (eqn_params->if_volume_force && front->time < 0.15)
+	    if (eqn_params->if_volume_force && front->time < 0.1)
 	    {
                 v_cartesian->solve(0.0);
 	    }
@@ -334,10 +334,10 @@ static  void melting_flow_driver(
             runtime=(tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
             totaltime += runtime;
 #ifdef __PRDNS_TIMER__
-            printf("\n atif1 :  %10.2f", (tv3.tv_usec - tv1.tv_usec)/1000000.0 + (tv3.tv_sec - tv1.tv_sec));
-            printf("\n atif2 :  %10.2f", (tv6.tv_usec - tv3.tv_usec)/1000000.0 + (tv6.tv_sec - tv3.tv_sec));
-            printf("\n atif3 :    %10.2f", t1);
-            printf("\n atif4 :  %10.2f", (tv2.tv_usec - tv6.tv_usec)/1000000.0 + (tv2.tv_sec - tv6.tv_sec));
+            printf("\n atif1 NavierStokes solver                    :  %10.2f", (tv3.tv_usec - tv1.tv_usec)/1000000.0 + (tv3.tv_sec - tv1.tv_sec));
+            printf("\n atif2 Particle Propagate + Vapor temperature :  %10.2f", (tv6.tv_usec - tv3.tv_usec)/1000000.0 + (tv6.tv_sec - tv3.tv_sec));
+            printf("\n atif3 Particle Propagate                     :      %10.2f", t1);
+            printf("\n atif4 FT Add Set TimeStep                    :  %10.2f", (tv2.tv_usec - tv6.tv_usec)/1000000.0 + (tv2.tv_sec - tv6.tv_sec));
 #endif
             printf("\nruntime = %10.2f,   total runtime = %10.2f,  time = %10.9f   step = %7d   dt = %10.9f\n\n\n",
                             runtime, totaltime, front->time,front->step,front->dt);
