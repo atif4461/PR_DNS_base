@@ -3,8 +3,7 @@ project (climate C CXX CUDA)
 
 set (CMAKE_C_FLAGS)
 set (CMAKE_CXX_FLAGS "-fopenmp -ljpeg")
-set (CMAKE_CUDA_FLAGS "-I/sdcc/u/tzhang/soft/openmpi-4.1.1/include -L//sdcc/u/tzhang/soft/openmpi-4.1.1/lib -lmpi")
-
+set (CMAKE_CUDA_FLAGS "-Xcompiler -rdynamic -lineinfo -D__CUDA__ -I/sdcc/u/kyu/lib/openmpi-4.1.1/include -L/sdcc/u/kyu/lib/openmpi-4.1.1/lib -lmpi -O3 -gencode=arch=compute_60,code=sm_60 -gencode=arch=compute_61,code=sm_61 -gencode=arch=compute_70,code=sm_70 -gencode=arch=compute_75,code=sm_75 -gencode=arch=compute_80,code=sm_80 -gencode=arch=compute_86,code=sm_86")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
