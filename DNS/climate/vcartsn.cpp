@@ -4310,8 +4310,8 @@ void VCARTESIAN::computeVaporSource()
 #ifdef __CUDA__
         printf("VCARTESIAN::computeVaporSource() : comp_size : %d\n", comp_size);
         printf("VCARTESIAN::computeVaporSource() : eqn_params->if_condensation : %d\n", eqn_params->if_condensation);
-        printf("VCARTESIAN::computeVaporSource() : particle_array[0].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[0].center[0], particle_array[0].center[1], particle_array[0].center[2], particle_array[0].radius, particle_array[0].vel[0], particle_array[0].vel[1], particle_array[0].vel[2]);   
-        printf("VCARTESIAN::computeVaporSource() : particle_array[9].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[9].center[0], particle_array[9].center[1], particle_array[9].center[2], particle_array[9].radius, particle_array[9].vel[0], particle_array[9].vel[1], particle_array[9].vel[2]);   
+        //printf("VCARTESIAN::computeVaporSource() : particle_array[0].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[0].center[0], particle_array[0].center[1], particle_array[0].center[2], particle_array[0].radius, particle_array[0].vel[0], particle_array[0].vel[1], particle_array[0].vel[2]);   
+        //printf("VCARTESIAN::computeVaporSource() : particle_array[9].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[9].center[0], particle_array[9].center[1], particle_array[9].center[2], particle_array[9].radius, particle_array[9].vel[0], particle_array[9].vel[1], particle_array[9].vel[2]);   
 
 	initOutput();
 #else
@@ -4469,10 +4469,14 @@ void VCARTESIAN::computeTemperatureSource()
         //double* source_temp = new double[comp_size];
         initOutput(); 
         if (eqn_params->if_condensation) {
+           //printf("VCARTESIAN::computeTemperatureSource() : Before uploadSupersat() called!\n");
            uploadSupersat();
            if(initFlg) uploadParticle();
+           //printf("VCARTESIAN::computeTemperatureSource() : Before CUDA called!\n");
            computeVaporSource_CUDA(num_drops, eqn_params, top_gmax[0], top_gmax[1], rho_0, a3, L/cp); 
+           //printf("VCARTESIAN::computeTemperatureSource() : After CUDA called!\n");
            retrieveSource(source);
+           //printf("VCARTESIAN::computeTemperatureSource() : After retrieveSource() called!\n");
            //retrieveSource(source_temp);
     
         }

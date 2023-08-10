@@ -190,9 +190,19 @@ int main(int argc, char **argv)
 
 	if (debugging("trace")) printf("Passed FT_InitVeloFunc()\n");
 
+#ifdef __CUDA__
+        initDeviceParticle();
+#endif
+
+
+
 	FT_SetGlobalIndex(&front);
 	/* Propagate the front */
 	melting_flow_driver(&front,v_cartesian,l_cartesian);
+
+#ifdef __CUDA__
+        clearDeviceParticle();
+#endif
 
 	PetscFinalize();
 	clean_up(0);
@@ -210,7 +220,7 @@ static  void melting_flow_driver(
 	MOVIE_OPTION *movie_option;
     static LEVEL_FUNC_PACK level_func_pack;
     struct timeval tv1,tv2;
-    double runtime;
+    double runtime, time;
     double totaltime = 0.0;
 
 	if (debugging("trace"))
@@ -282,8 +292,12 @@ static  void melting_flow_driver(
 	    v_cartesian->output();
 
 #ifdef __CUDA__
+    // Before ParticlePropagate_CUDA() implementation
     v_cartesian->uploadParticle();
     v_cartesian->initFlg = 0;
+    
+    
+
 #endif
     for (;;)
     {
@@ -295,21 +309,34 @@ static  void melting_flow_driver(
 
 	    if (eqn_params->if_volume_force && front->time < 1.0)
 	    {
+//#ifdef __CUDA__
+//                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
+//#endif
                 v_cartesian->solve(0.0);
 	    }
 	    else
 	    {
-                 v_cartesian->solve(front->dt);
-                 printf("Passed solving vapor and temperature equations\n");
-
-                 if (eqn_params->prob_type == PARTICLE_TRACKING)
-                 {
-                    ParticlePropagate(front);
 #ifdef __CUDA__
-                    v_cartesian->uploadParticle();
+                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 #endif
+                v_cartesian->solve(front->dt);
+                printf("Passed solving vapor and temperature equations\n");
+
+                if (eqn_params->prob_type == PARTICLE_TRACKING)
+                {
+                    gettimeofday(&tv1, NULL);
+                    ParticlePropagate(front);
+                    // Before ParticlePropagate_CUDA() implementation
+                    //v_cartesian->uploadParticle();
+
+                    //downloadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
+
+                    gettimeofday(&tv2, NULL);
+                    time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+                    printf("ParticlePropagate() : running time : %f\n", time);
+
                     printf("Passed solving particle equations\n");
-                 }
+                }
 	    }
 
 	    FT_AddTimeStepToCounter(front);
