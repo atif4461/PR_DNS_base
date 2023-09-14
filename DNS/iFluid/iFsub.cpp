@@ -399,12 +399,12 @@ static void iF_flowThroughBoundaryState3d(
 	{
 	    double vtmp;
 	    FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],
-			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i],timer);
+			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i]);
 	    u[1] += vtmp*dir[i];
 	    newst->vel[i] = vtmp;
 	}
 	FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],field->pres,
-                            getStatePres,&pres[2],&oldst->pres,timer);
+                            getStatePres,&pres[2],&oldst->pres);
 
 	f_pres = linear_flux(u[1],pres[0],pres[1],pres[2]);
 	newst->pres = oldst->pres - dt/dn*f_pres;
@@ -529,15 +529,15 @@ static void iF_flowThroughBoundaryState2d(
 	{
 	    double vtmp;
 	    FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],
-			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i],timer);
+			field->vel[i],getStateVel[i],&vtmp,&oldst->vel[i]);
 	    u[1] += vtmp*dir[i];
 	    newst->vel[i] = vtmp;
 	}
 
 	FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],field->vort,
-                            getStateVort,&vort[2],&oldst->vort,timer);
+                            getStateVort,&vort[2],&oldst->vort);
 	FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],field->pres,
-                            getStatePres,&pres[2],&oldst->pres,timer);
+                            getStatePres,&pres[2],&oldst->pres);
 
 	f_vort = linear_flux(u[1],vort[0],vort[1],vort[2]);
 	f_pres = linear_flux(u[1],pres[0],pres[1],pres[2]);
@@ -680,7 +680,7 @@ static  void neumann_point_propagate(
             FT_RecordMaxFrontSpeed(i,0.0,NULL,Coords(newp),front);
 	}
 	FT_IntrpStateVarAtCoords(front,comp,p1,m_pre,
-			getStatePres,&newst->pres,&oldst->pres,timer);
+			getStatePres,&newst->pres,&oldst->pres);
 	/*
 	FT_IntrpStateVarAtCoords(front,comp,p1,m_phi,
 			getStatePhi,&newst->phi,&oldst->phi);
@@ -688,7 +688,7 @@ static  void neumann_point_propagate(
 	if (dim == 2)
 	{
 	    FT_IntrpStateVarAtCoords(front,comp,p1,m_vor,
-			getStateVort,&newst->vort,&oldst->vort,timer);
+			getStateVort,&newst->vort,&oldst->vort);
 	}
 	FT_RecordMaxFrontSpeed(dim,0.0,NULL,Coords(newp),front);
         return;
@@ -815,11 +815,11 @@ static  void contact_point_propagate(
 	oldst = (STATE*)sl;
 	p0 = Coords(newp);
 	FT_IntrpStateVarAtCoords(front,-1,p0,m_pre,getStatePres,&pres,
-				&oldst->pres,timer);
+				&oldst->pres);
 	if (dim == 2)
 	{
 	    FT_IntrpStateVarAtCoords(front,-1,p0,m_vor,getStateVort,&vort,
-				&oldst->vort,timer);
+				&oldst->vort);
 	}
 
 	newst = (STATE*)left_state(newp);
@@ -911,11 +911,11 @@ static  void rgbody_point_propagate(
         }
 	for (i = 0; i < dim; ++i) newst->vel[i] = vel[i];
 	FT_IntrpStateVarAtCoords(front,comp,p1,m_pre,
-			getStatePres,&newst->pres,&oldst->pres,timer);
+			getStatePres,&newst->pres,&oldst->pres);
 	if (dim == 2)
 	{
 	    FT_IntrpStateVarAtCoords(front,comp,p1,m_vor,
-			getStateVort,&newst->vort,&oldst->vort,timer);
+			getStateVort,&newst->vort,&oldst->vort);
 	}
         return;
 }	/* end rgbody_point_propagate */

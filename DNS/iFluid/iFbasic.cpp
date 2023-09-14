@@ -280,16 +280,16 @@ void Incompress_Solver_Smooth_Basis::getVelocity(double *p, double *U)
 	double timer[3];
 
 	if (!FT_IntrpStateVarAtCoords(front,NO_COMP,p,vel[0],getStateXvel,
-					&U[0],NULL,timer))
+					&U[0],NULL))
 	{
 	    for (i = 0; i < dim; ++i) U[i] = 0.0;
 	    return;
 	}
 	FT_IntrpStateVarAtCoords(front,NO_COMP,p,vel[1],getStateYvel,&U[1],
-					NULL,timer);
+					NULL);
 	if (dim == 3)
 	    FT_IntrpStateVarAtCoords(front,NO_COMP,p,vel[2],getStateZvel,
-					&U[2],NULL,timer);
+					&U[2],NULL);
 }
 
 void Incompress_Solver_Smooth_Basis::getRectangleIndex(int index, int &i, int &j)

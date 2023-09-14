@@ -195,6 +195,12 @@ int main(int argc, char **argv)
 
 	if (debugging("trace")) printf("Passed FT_InitVeloFunc()\n");
 
+#ifdef __CUDA__
+        initDeviceParticle();
+#endif
+
+
+
 	FT_SetGlobalIndex(&front);
 #ifdef __PRDNS_TIMER__
         gettimeofday(&tv2, NULL);
@@ -206,6 +212,10 @@ int main(int argc, char **argv)
 #ifdef __PRDNS_TIMER__
         gettimeofday(&tv3, NULL);
 #endif
+#ifdef __CUDA__
+        clearDeviceParticle();
+#endif
+
 	PetscFinalize();
 #ifdef __PRDNS_TIMER__
         gettimeofday(&tv4, NULL);
@@ -232,6 +242,7 @@ static  void melting_flow_driver(
         static LEVEL_FUNC_PACK level_func_pack;
         double runtime, t1(0.);
         double totaltime = 0.0;
+    double time;
 
 	if (debugging("trace"))
 	    printf("Entering melting_flow_driver()\n");
@@ -324,6 +335,9 @@ static  void melting_flow_driver(
 #endif
 	    if (eqn_params->if_volume_force && front->time < 0.025)
 	    {
+//#ifdef __CUDA__
+//                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
+//#endif
                 v_cartesian->solve(0.0);
 	    }
 	    else
@@ -338,13 +352,31 @@ static  void melting_flow_driver(
                  {
                     ParticlePropagate(front);
 #ifdef __CUDA__
-                    v_cartesian->uploadParticle();
+                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 #endif
                  }
 #ifdef __PRDNS_TIMER__
                  gettimeofday(&tv5, NULL);
                  t1 = (tv5.tv_usec - tv4.tv_usec)/1000000.0 + (tv5.tv_sec - tv4.tv_sec);
 #endif
+                v_cartesian->solve(front->dt);
+                printf("Passed solving vapor and temperature equations\n");
+
+                if (eqn_params->prob_type == PARTICLE_TRACKING)
+                {
+                    gettimeofday(&tv1, NULL);
+                    ParticlePropagate(front);
+                    // Before ParticlePropagate_CUDA() implementation
+                    //v_cartesian->uploadParticle();
+
+                    //downloadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
+
+                    gettimeofday(&tv2, NULL);
+                    time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+                    printf("ParticlePropagate() : running time : %f\n", time);
+
+                    printf("Passed solving particle equations\n");
+                }
 	    }
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv6, NULL);

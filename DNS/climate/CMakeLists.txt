@@ -38,6 +38,9 @@ target_include_directories(climate PUBLIC
 				   ${ifluid_include_dir}
 				   ${external_include_dir})
 
+set_target_properties(climate PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")			   
+include_directories("${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
+target_include_directories(climate PRIVATE ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 #link libraries
 target_link_libraries(climate frontier solver ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
 

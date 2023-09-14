@@ -1,6 +1,5 @@
 cmake_minimum_required (VERSION 3.20.0)
-project (climate C CXX)
-##project (climate C CXX CUDA)
+project (climate C CXX CUDA)
 
 set (CMAKE_C_FLAGS "-Wno-implicit-function-declaration")
 set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fopenmp -D__HDF5__ ") 
@@ -12,19 +11,14 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__PRDNS_TIMER__") # uncomment to enab
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ljpeg")
 ##set (CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -D__CUDA__ -I/hpcgpfs01/software/openmpi/4.1.1-gcc9.3.0/include -L/hpcgpfs01/software/openmpi/4.1.1-gcc9.3.0/lib -lmpi -O3 \
 ##-gencode=arch=compute_60,code=sm_60 \
-##-gencode=arch=compute_61,code=sm_61 \
-##-gencode=arch=compute_70,code=sm_70 \
-##-gencode=arch=compute_75,code=sm_75 \
-##-gencode=arch=compute_80,code=sm_80 \
-##-gencode=arch=compute_86,code=sm_86 \
 ##")
-set (CMAKE_CUDA_FLAGS "-I/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/include/ -L/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/lib -lmpi")
+set (CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xcompiler -rdynamic -lineinfo -D__CUDA__ -I/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/include/ -L/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/lib -lmpi -O3 -gencode=arch=compute_75,code=sm_75 -gencode=arch=compute_80,code=sm_80 -gencode=arch=compute_86,code=sm_86")
+##set (CMAKE_CUDA_FLAGS "-Xcompiler -rdynamic -lineinfo -D__CUDA__ -I/sdcc/u/kyu/lib/openmpi-4.1.1/include -L/sdcc/u/kyu/lib/openmpi-4.1.1/lib -lmpi -O3 -gencode=arch=compute_60,code=sm_60 -gencode=arch=compute_61,code=sm_61 -gencode=arch=compute_70,code=sm_70 -gencode=arch=compute_75,code=sm_75 -gencode=arch=compute_80,code=sm_80 -gencode=arch=compute_86,code=sm_86")
 ##set (CMAKE_CUDA_FLAGS "-I/global/homes/a/atif/packages/openmpi-4.1.1/include -L/global/homes/a/atif/packages/openmpi-4.1.1/lib -lmpi -O3")
 ##set (CMAKE_CUDA_FLAGS "-I/global/common/software/nersc/pe/mpich/4.1.1/gnu/include -L/global/common/software/nersc/pe/mpich/4.1.1/gnu/lib -lmpi")
 
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
-
 
 #detect dependencies
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")

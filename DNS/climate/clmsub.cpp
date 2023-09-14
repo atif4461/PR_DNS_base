@@ -30,6 +30,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <iostream>
 #include <sched.h>
 #include <omp.h>
+
+
+
         /*  Function Declarations */
 static void zero_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
 static void rand_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
@@ -185,19 +188,19 @@ extern void melt_flowThroughBoundaryState(
         {
             double vtmp;
             FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],
-                        iF_field->vel[i],getStateVel[i],&vtmp,&sts[0]->vel[i],timer);
+                        iF_field->vel[i],getStateVel[i],&vtmp,&sts[0]->vel[i]);
             u[2] += vtmp*dir[i];
             v[2][i] = vtmp*(1.0 - dir[i]);
         }
         if (dim == 2)
         {
             FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],
-                        iF_field->vort,getStateVort,&vort[2],&sts[1]->vort,timer);
+                        iF_field->vort,getStateVort,&vort[2],&sts[1]->vort);
         }
         FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],iF_field->pres,
-                            getStatePres,&pres[2],&sts[1]->pres,timer);
+                            getStatePres,&pres[2],&sts[1]->pres);
         FT_IntrpStateVarAtCoords(front,comp,nsten->pts[1],pH_field->temperature,
-                            getStateTemperature,&temp[2],&sts[1]->temperature,timer);
+                            getStateTemperature,&temp[2],&sts[1]->temperature);
 
         f_u = burger_flux(u[0],u[1],u[2]);
         for (i = 0; i < dim; ++i)
@@ -1085,17 +1088,17 @@ extern void ParticlePropagate(Front *fr)
     	double *gravity = iFparams->gravity;
         int *gmax = FT_GridIntfcTopGmax(fr);
 	int dim = gr->dim;
-        //double T;
-        //int ic[MAXD];
-	//double u[MAXD];
-	//double *center;
-	//double s; /*restore local supersaturation*/
-	//double *cvel; /*center velocity for droplets*/
-	//double a;  /*acceleration*/
+        double T;
+        int ic[MAXD];
+	double u[MAXD];
+	double *center;
+	double s; /*restore local supersaturation*/
+	double *cvel; /*center velocity for droplets*/
+	double a;  /*acceleration*/
     	double dt = fr->dt;
 
         /*computing finite respone time*/
-	//double R, rho, tau_p, delta_R;
+	double R, rho, tau_p, delta_R;
         double rho_0    = iFparams->rho2;/*fluid density*/
         double mu       = iFparams->mu2;/*viscosity*/
 	double R_max = 0;
@@ -1106,7 +1109,70 @@ extern void ParticlePropagate(Front *fr)
         gettimeofday(&tv2, NULL);
 #endif
 
-        //#pragma omp parallel for num_threads(8) //private(R_min)	
+        printf("ParticlePropagate() : if_sedimentation? : %d\n", eqn_params->if_sedimentation);
+
+#ifdef __CUDA__
+
+	for (int i = 0; i < eqn_params->num_drops; i++)
+	{
+            //printf("ParticlePropagate() : 1?\n");
+            /*computing finite respone time*/
+            R        = particle_array[i].radius;/*droplet radius*/
+            rho      = particle_array[i].rho;/*water droplet density*/
+            tau_p    = 2 * rho*R*R/(9*rho_0*mu);/*response time*/
+
+            //printf("ParticlePropagate() : 2?\n");
+	    if (R == 0)
+	    {
+		R_min = 0;
+	        continue;
+	    }
+            //printf("ParticlePropagate() : 3?\n");
+	    /*find index at coords*/
+	    center = particle_array[i].center;
+            rect_in_which(center,ic,gr);
+	    int index = d_index(ic,gmax,dim);
+	    cvel = particle_array[i].vel;
+            //printf("ParticlePropagate() : 4?\n");
+            //printf("ParticlePropagate() : index=%d\n", index);
+	    /*compute radius for particle[i]*/
+	    s = supersat[index];
+            //printf("ParticlePropagate() : 5?\n");
+
+	    for (int j = 0; j < dim; j++) {
+	      FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center, vel[j],getStateVel[j],&u[j],&vel[j][index]);
+              g_particle_input[i + j*eqn_params->num_drops] = u[j];
+            }
+            //printf("ParticlePropagate() : 6?\n");
+	    FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center,supersat,getStateSuper,&s,&s);
+
+            //printf("ParticlePropagate() : supersat[index] == s? : %d\n", supersat[index] == s);
+            
+
+            g_particle_input[i + 3*eqn_params->num_drops] = s;
+            
+            
+        }
+
+	if(pp_numnodes() > 1)
+            ParticlePropagate_CUDA(eqn_params->num_drops, eqn_params->if_condensation, eqn_params->if_sedimentation, rho_0*mu, eqn_params->K, dt, gravity[0], gravity[1], gravity[2]);
+        else
+            ParticlePropagate_CUDA_1node(eqn_params->num_drops, eqn_params->if_condensation, eqn_params->if_sedimentation, rho_0*mu, eqn_params->K, dt, gravity[0], gravity[1], gravity[2], rect_grid->U[0], rect_grid->L[0], rect_grid->U[1], rect_grid->L[1], rect_grid->U[2], rect_grid->L[2]);
+
+        downloadParticle(eqn_params->num_drops, eqn_params->particle_array);
+
+        /*
+        PARTICLE temp_particle[10];
+        downloadParticle(eqn_params->num_drops, temp_particle);
+        for(int i=0 ; i<eqn_params->num_drops ; i++) {
+            center = temp_particle[i].center;
+            printf("ParticlePropagator() : GPU (x,y,z) = (%e, %e, %e)\n", center[0], center[1], center[2]);
+        }
+        */
+
+
+#else
+	
 	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
 #ifdef __PRDNS_TIMER__
@@ -1145,9 +1211,9 @@ extern void ParticlePropagate(Front *fr)
 #endif
 	    for (j = 0; j < dim; j++)
 	     FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center,
-				vel[j],getStateVel[j],&u[j],&vel[j][index],timer_intrp);
+				vel[j],getStateVel[j],&u[j],&vel[j][index]);
 	    FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center,
-				supersat,getStateSuper,&s,&s,timer_intrp);
+				supersat,getStateSuper,&s,&s);
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv9, NULL);
 #endif
@@ -1281,6 +1347,7 @@ extern void ParticlePropagate(Front *fr)
 	}
             
         gettimeofday(&tv3, NULL);
+#endif
 
 	if(pp_numnodes() > 1)
 	{
@@ -1306,6 +1373,15 @@ extern void ParticlePropagate(Front *fr)
         printf("\n atif11 Loop over dim + sedimentation         :              %10.2f", t2);
         printf("\n atif12 ParallelExchParticle + particle array :          %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
 #endif
+
+        /*
+        for(int i=0 ; i<eqn_params->num_drops ; i++) {
+            center = particle_array[i].center;
+            printf("ParticlePropagator() : (x,y,z) = (%e, %e, %e)\n", center[0], center[1], center[2]);
+        }
+        */
+
+
 }
 
 extern void setParticleGroupIndex(
@@ -1772,6 +1848,10 @@ extern double* ComputePDF(
 
 	var_min =  HUGE;
 	var_max = -HUGE;
+
+        struct timeval tv1,tv2;
+        double time;
+
 	
 	if (debugging("trace"))
 	    printf("Entering computePDF\n");
@@ -1783,12 +1863,22 @@ extern double* ComputePDF(
 		var_max = array[i];
 	}
 
+
+
+        gettimeofday(&tv1, NULL);
 #if defined __MPI__
 	pp_gsync();
 	pp_global_max(&var_max,1);	
 	pp_global_min(&var_min,1);	
 
 #endif
+        gettimeofday(&tv2, NULL);
+        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        //printf("ComputePDF() : part 1 : %f\n", time);
+
+
+
+        gettimeofday(&tv1, NULL);
 	bin_size = (var_max - var_min)/(num_bins-1);
 	//num_bins = ceil((var_max - var_min)/bin_size);
 	if (num_bins > max_bin_num)
@@ -1806,6 +1896,9 @@ extern double* ComputePDF(
 	    num_bins = 1;
 	    return PDF;
 	}
+
+        //printf("VCARTESIAN::ComputePDF() : num_bins : %d, size : %d\n", num_bins, size);
+
 	for (j = 0; j < num_bins; j++)
 		PDF[j] = 0.0;
 
@@ -1823,10 +1916,20 @@ extern double* ComputePDF(
 	        }
 	    }
 	}
+        gettimeofday(&tv2, NULL);
+        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        //printf("ComputePDF() : part 2 : %f\n", time);
+
+        gettimeofday(&tv1, NULL);
 #if defined __MPI__	
 	pp_gsync();
 	pp_global_sum(PDF,num_bins);
- #endif
+#endif
+        gettimeofday(&tv2, NULL);
+        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        //printf("ComputePDF() : part 3 : %f\n", time);
+
+        gettimeofday(&tv1, NULL);
 	total_num = 0;
 	/*normalize PDF*/
 	for (j = 0; j < num_bins; j++)
@@ -1836,5 +1939,11 @@ extern double* ComputePDF(
 	    PDF[j] = double(PDF[j])/(bin_size*double(total_num));
 	if (debugging("trace"))
 	    printf("Leaving computePDF\n");
+        gettimeofday(&tv2, NULL);
+        time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        //printf("ComputePDF() : part 4 : %f\n", time);
+
+
+
 	return PDF;
 }

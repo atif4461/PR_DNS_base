@@ -2065,12 +2065,12 @@ void VCARTESIAN::recordParticles(char* filename, PARTICLE* particle_array, int n
 		buffer[j+1] = particle_array[i].center[j];
 		buffer[j+4] = particle_array[i].vel[j];
 		FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->vel[j],getStateVel[j],buffer+9+j,NULL,timer);
+					field->vel[j],getStateVel[j],buffer+9+j,NULL);
 	    }
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->supersat,NULL,buffer+7,NULL,timer);
+					field->supersat,NULL,buffer+7,NULL);
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->temperature,NULL,buffer+8,NULL,timer);
+					field->temperature,NULL,buffer+8,NULL);
 	    MPI_File_write(fh, buffer, num_cols, MPI_DOUBLE, &status);
 	}
 	delete[] offset;
@@ -2799,7 +2799,7 @@ void VCARTESIAN::recordCondensationRate(char* outname){
 		index = d_index(ic,top_gmax,dim);
 		s = field->supersat[index];
 		FT_IntrpStateVarAtCoords(front,LIQUID_COMP,coords,
-                                field->supersat,getStateSuper,&s,&s,timer);
+                                field->supersat,getStateSuper,&s,&s);
 		Cd_mean += R * s;
 	}
 	pp_gsync();
@@ -3373,7 +3373,7 @@ void VCARTESIAN::recordLagrangSupersat(const char *out_name)
 	    index = d_index(ic,top_gmax,dim);
 	    s = field->supersat[index];
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP,center,
-                                field->supersat,getStateSuper,&s,&s,timer);
+                                field->supersat,getStateSuper,&s,&s);
 	    supersat_array[count++] = s;
 	}
 	bin_num = 200;
@@ -4337,8 +4337,8 @@ void VCARTESIAN::computeVaporSource()
 #ifdef __CUDA__
         printf("VCARTESIAN::computeVaporSource() : comp_size : %d\n", comp_size);
         printf("VCARTESIAN::computeVaporSource() : eqn_params->if_condensation : %d\n", eqn_params->if_condensation);
-        printf("VCARTESIAN::computeVaporSource() : particle_array[0].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[0].center[0], particle_array[0].center[1], particle_array[0].center[2], particle_array[0].radius, particle_array[0].vel[0], particle_array[0].vel[1], particle_array[0].vel[2]);   
-        printf("VCARTESIAN::computeVaporSource() : particle_array[9].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[9].center[0], particle_array[9].center[1], particle_array[9].center[2], particle_array[9].radius, particle_array[9].vel[0], particle_array[9].vel[1], particle_array[9].vel[2]);   
+        //printf("VCARTESIAN::computeVaporSource() : particle_array[0].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[0].center[0], particle_array[0].center[1], particle_array[0].center[2], particle_array[0].radius, particle_array[0].vel[0], particle_array[0].vel[1], particle_array[0].vel[2]);   
+        //printf("VCARTESIAN::computeVaporSource() : particle_array[9].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[9].center[0], particle_array[9].center[1], particle_array[9].center[2], particle_array[9].radius, particle_array[9].vel[0], particle_array[9].vel[1], particle_array[9].vel[2]);   
 
 	initOutput();
 #else
@@ -4496,10 +4496,14 @@ void VCARTESIAN::computeTemperatureSource()
         //double* source_temp = new double[comp_size];
         initOutput(); 
         if (eqn_params->if_condensation) {
+           //printf("VCARTESIAN::computeTemperatureSource() : Before uploadSupersat() called!\n");
            uploadSupersat();
            if(initFlg) uploadParticle();
+           //printf("VCARTESIAN::computeTemperatureSource() : Before CUDA called!\n");
            computeVaporSource_CUDA(num_drops, eqn_params, top_gmax[0], top_gmax[1], rho_0, a3, L/cp); 
+           //printf("VCARTESIAN::computeTemperatureSource() : After CUDA called!\n");
            retrieveSource(source);
+           //printf("VCARTESIAN::computeTemperatureSource() : After retrieveSource() called!\n");
            //retrieveSource(source_temp);
     
         }

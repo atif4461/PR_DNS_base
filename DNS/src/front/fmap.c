@@ -831,8 +831,7 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 	double *grid_array,
 	double (*get_state)(Locstate),
 	double *ans,
-	double *default_ans,
-	double *timer)
+	double *default_ans)
 {
 #ifdef __PRDNS_TIMER__
         struct timeval tv1,tv2,tv3,tv4,tv5;
@@ -879,9 +878,9 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 	    *ans = FrontBilinIntrp(coords,blk_cell,NO);
 #ifdef __PRDNS_TIMER__
    	gettimeofday(&tv4, NULL);
-        timer[0] += (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        timer[1] += (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec);
-        timer[2] += (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec);
+        //timer[0] += (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+        //timer[1] += (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec);
+        //timer[2] += (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec);
 #endif
 	    return YES;
 	}

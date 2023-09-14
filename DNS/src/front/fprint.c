@@ -3258,7 +3258,7 @@ LOCAL	void	hdf_plot_var2d(
 		continue;
 	    }
 	    FT_IntrpStateVarAtCoords(front,c,coords,var,get_state_var,
-					var_val+k,NULL,timer);
+					var_val+k,NULL);
 	    if (var_val[k] < min_val)
 		min_val = var_val[k];
 	    if (var_val[k] > max_val)
@@ -3478,7 +3478,7 @@ LOCAL	void	hdf_plot_var3d(
 	    k = j + (height - i - 1)*width;
 	    if (comps[k] == obs_comp) continue;
 	    FT_IntrpStateVarAtCoords(front,comps[k],coords,var,
-				get_state_var,var_val+k,NULL,timer);
+				get_state_var,var_val+k,NULL);
 	    if (var_val[k] < min_val) min_val = var_val[k];
 	    if (var_val[k] > max_val) max_val = var_val[k];
 	}

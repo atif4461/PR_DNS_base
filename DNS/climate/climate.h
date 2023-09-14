@@ -10,8 +10,17 @@
 #define		alternate_comp(comp) 					\
 		(comp) == LIQUID_COMP2 ? SOLID_COMP : LIQUID_COMP2
 #ifndef __CUDA__
-//#define __CUDA__
+#define __CUDA__
 #endif
+
+#ifdef __CUDA__
+extern double* g_particle_buffer;
+extern double* g_particle_buffer_D;
+extern int g_max_num_particle;
+extern double* g_particle_input;
+extern double* g_particle_input_D;
+#endif
+
 
 enum _CL_PROB_TYPE {
 	PARTICLE_TRACKING = 1,
@@ -223,9 +232,10 @@ public:
 
 public:
 #ifdef __CUDA__
-        double* particle_buffer;
-        double* particle_buffer_D;
-        int max_num_particle;
+        // These three are moved to global scope.
+        //double* particle_buffer;
+        //double* particle_buffer_D;
+        //int max_num_particle;
 
         double* source_D;
         double* drops_D;
@@ -415,6 +425,14 @@ extern void initWaterDrops(Front*);
 extern void compute_ice_particle_force(Front*,HYPER_SURF*,double, double*, double*);
 extern void CondensationPreAdvance(Front*);
 extern void ParticlePropagate(Front*);
+#ifdef __CUDA__
+extern void ParticlePropagate_CUDA(int num_drops, bool condensation, bool sedimentation, double rho0mu, double K, double dt, double gx, double gy, double gz);
+extern void ParticlePropagate_CUDA_1node(int num_drops, bool condensation, bool sedimentation, double rho0mu, double K, double dt, double gx, double gy, double gz, double Ux, double Lx, double Uy, double Ly, double Uz, double Lz);
+extern void initDeviceParticle();
+extern void clearDeviceParticle();
+extern void uploadParticle(int num_drops, PARTICLE* particles);
+extern void downloadParticle(int num_drops, PARTICLE* particles);
+#endif
 extern void setParticleGlobalIndex(PARTICLE*,int);
 extern void setParticleGroupIndex(PARTICLE*,int,int,int*,double*,double*);
 extern void read_CL_prob_type(Front*);

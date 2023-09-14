@@ -57,3 +57,10 @@ cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc .
 salloc --nodes 1 --qos interactive --time 1:00:00 --constraint gpu --gpus 4 --account=m2845
 sbatch submit.sh
 mpirun --mca opal_common_ucx_opal_mem_hooks 1 --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/ -log_view |& tee srun.log &
+
+#For GPU aware MPI use compilers
+/opt/cray/pe/craype/2.7.20/bin/cc
+/opt/cray/pe/craype/2.7.20/bin/CC
+https://docs.nersc.gov/development/programming-models/mpi/cray-mpich/
+
+
