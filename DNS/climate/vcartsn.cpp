@@ -1066,26 +1066,50 @@ void VCARTESIAN::computeAdvectionCN(COMPONENT sub_comp,double* Temp,const double
 // 		computeSourceTerm();
 void VCARTESIAN::solve(double dt)
 {
+        struct timeval tv1,tv2,tv3,tv4,tv5,tv6,tv7;
 	if (debugging("trace")) printf("Entering solve()\n");
 	m_dt = dt;
 	start_clock("solve");
 
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv1, NULL);
+#endif
 	setDomain();
         if (debugging("trace")) printf("Passing setDomain()\n");
-
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv2, NULL);
+#endif
 	setComponent();
 	if (debugging("trace")) printf("Passing setComponent()\n");
-	
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv3, NULL);
+#endif
 	computeSource();
 	if (debugging("trace")) printf("Passing computeSource()\n");
-	
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv4, NULL);
+#endif
 	computeAdvection();
 	if (debugging("trace")) printf("Passing computeAdvection()\n");
-	
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv5, NULL);
+#endif
 	computeSupersat();
 	if (debugging("trace")) printf("Passing computeSupersat()\n");
-
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv6, NULL);
+#endif
 	setAdvectionDt();
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv7, NULL);
+        printf("\n atif13 setDomain                                 :  %10.2f", (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec));
+        printf("\n atif14 setComponent                              :  %10.2f", (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec));
+        printf("\n atif15 computeSource                             :  %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
+        printf("\n atif16 computeAdvection                          :  %10.2f", (tv5.tv_usec - tv4.tv_usec)/1000000.0 + (tv5.tv_sec - tv4.tv_sec));
+        printf("\n atif17 computeSupersat                           :  %10.2f", (tv6.tv_usec - tv5.tv_usec)/1000000.0 + (tv6.tv_sec - tv5.tv_sec));
+        printf("\n atif18 setAdvection                              :  %10.2f \n", (tv7.tv_usec - tv6.tv_usec)/1000000.0 + (tv7.tv_sec - tv6.tv_sec));
+#endif
+
 	if (debugging("trace")) printf("Passing setAdvectionDt()\n");
 	stop_clock("solve");
 

@@ -18,12 +18,12 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__PRDNS_TIMER__") # uncomment to enab
 ##-gencode=arch=compute_80,code=sm_80 \
 ##-gencode=arch=compute_86,code=sm_86 \
 ##")
-##set (CMAKE_CUDA_FLAGS "-I/opt/cray/pe/mpich/8.1.25/ofi/intel/19.0/include/ -L//opt/cray/pe/mpich/8.1.25/ofi/intel/19.0/lib -lmpi")
-set (CMAKE_CUDA_FLAGS "-I/global/homes/a/atif/packages/openmpi-4.1.1/include -L/global/homes/a/atif/packages/openmpi-4.1.1/lib -lmpi -O3")
+set (CMAKE_CUDA_FLAGS "-I/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/include/ -L/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/lib -lmpi")
+##set (CMAKE_CUDA_FLAGS "-I/global/homes/a/atif/packages/openmpi-4.1.1/include -L/global/homes/a/atif/packages/openmpi-4.1.1/lib -lmpi -O3")
 ##set (CMAKE_CUDA_FLAGS "-I/global/common/software/nersc/pe/mpich/4.1.1/gnu/include -L/global/common/software/nersc/pe/mpich/4.1.1/gnu/lib -lmpi")
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
+#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
 
 
 #detect dependencies

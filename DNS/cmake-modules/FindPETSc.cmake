@@ -13,8 +13,7 @@ else()
     get_filename_component(PETSC_DIR ${PETSCMPIEXEC}/../.. ABSOLUTE)
 endif()
 
-set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.16.0-opt/")
-#set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.19.2-cuda/")
+set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.16.0-mpich/")
 MESSAGE(zhangao  ${PETSC_DIR})
 
 find_path(PETSc_INCLUDE_DIR petsc.h 

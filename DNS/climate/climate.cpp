@@ -56,6 +56,11 @@ int RestartStep;
 
 int main(int argc, char **argv)
 {
+#ifdef __PRDNS_TIMER__
+        struct timeval tv1,tv2,tv3,tv4;
+        gettimeofday(&tv1, NULL);
+#endif
+
 	static Front front;
 	static F_BASIC_DATA f_basic;
 	static LEVEL_FUNC_PACK level_func_pack;
@@ -191,10 +196,21 @@ int main(int argc, char **argv)
 	if (debugging("trace")) printf("Passed FT_InitVeloFunc()\n");
 
 	FT_SetGlobalIndex(&front);
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv2, NULL);
+        printf("\n atif0 Main initialize :  %10.2f", (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec));
+#endif
 	/* Propagate the front */
 	melting_flow_driver(&front,v_cartesian,l_cartesian);
 
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv3, NULL);
+#endif
 	PetscFinalize();
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv4, NULL);
+        printf("atif0 Main Finalize :  %10.2f \n", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
+#endif
 	clean_up(0);
 }
 
@@ -203,6 +219,10 @@ static  void melting_flow_driver(
 	VCARTESIAN *v_cartesian,
 	Incompress_Solver_Smooth_Basis *l_cartesian)
 {
+        struct timeval tv1,tv2,tv3,tv4,tv5,tv6,tv7,tv8;
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv7, NULL);
+#endif
 
         double CFL;
         int  dim = front->rect_grid->dim;
@@ -210,7 +230,6 @@ static  void melting_flow_driver(
 	PARAMS *eqn_params;
 	MOVIE_OPTION *movie_option;
         static LEVEL_FUNC_PACK level_func_pack;
-        struct timeval tv1,tv2,tv3,tv4,tv5,tv6;
         double runtime, t1(0.);
         double totaltime = 0.0;
 
@@ -287,6 +306,11 @@ static  void melting_flow_driver(
         v_cartesian->uploadParticle();
         v_cartesian->initFlg = 0;
 #endif
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv8, NULL);
+        printf("atif0 Melting flow driver initialize :  %10.2f \n", (tv8.tv_usec - tv7.tv_usec)/1000000.0 + (tv8.tv_sec - tv7.tv_sec));
+#endif
+
         for (;;)
         {
             gettimeofday(&tv1, NULL);
@@ -298,7 +322,7 @@ static  void melting_flow_driver(
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv3, NULL);
 #endif
-	    if (eqn_params->if_volume_force && front->time < 0.1)
+	    if (eqn_params->if_volume_force && front->time < 0.025)
 	    {
                 v_cartesian->solve(0.0);
 	    }

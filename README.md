@@ -47,10 +47,13 @@ srun /global/homes/a/atif/packages/openmpi-4.1.1/bin/mpirun --mca btl_openib_all
 ###############
 ## PERLMUTTER 
 ###############
+Currently Loaded Modules:
+  1) craype-x86-milan     4) xpmem/2.5.2-2.4_3.48__gd0f7936.shasta   7) cray-libsci/23.02.1.1  10) perftools-base/23.03.0  13) Nsight-Compute/2022.1.1  16) craype-accel-nvidia80
+  2) libfabric/1.15.2.0   5) PrgEnv-gnu/8.3.3                        8) craype/2.7.20          11) cpe/23.03               14) Nsight-Systems/2022.2.1  17) gpu/1.0
+  3) craype-network-ofi   6) cray-dsmml/0.2.2                        9) gcc/11.2.0             12) xalt/2.10.2             15) cudatoolkit/11.7         18) cray-mpich/8.1.25
 conda activate pr-dns
-export PATH=/global/homes/a/atif/packages/openmpi-4.1.1/bin/:$PATH
-export LD_LIBRARY_PATH=/global/homes/a/atif/packages/openmpi-4.1.1/bin/:$LD_LIBRARY_PATH
-export PATH=/global/homes/a/atif/packages/petsc-3.16.0-opt/lib/petsc/bin/:$PATH
+export PATH=/global/homes/a/atif/packages/petsc-3.16.0-mpich/lib/petsc/bin/:$PATH
 cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc .
 salloc --nodes 1 --qos interactive --time 1:00:00 --constraint gpu --gpus 4 --account=m2845
-mpirun --mca opal_common_ucx_opal_mem_hooks 1 --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/ |& tee srun.log &
+sbatch submit.sh
+mpirun --mca opal_common_ucx_opal_mem_hooks 1 --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/ -log_view |& tee srun.log &
