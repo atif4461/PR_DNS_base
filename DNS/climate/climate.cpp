@@ -333,7 +333,7 @@ static  void melting_flow_driver(
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv3, NULL);
 #endif
-	    if (eqn_params->if_volume_force && front->time < 0.025)
+	    if (eqn_params->if_volume_force && front->time < 0.04)
 	    {
 //#ifdef __CUDA__
 //                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);

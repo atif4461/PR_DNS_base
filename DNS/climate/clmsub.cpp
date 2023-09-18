@@ -1115,6 +1115,9 @@ extern void ParticlePropagate(Front *fr)
 
 	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv5, NULL);
+#endif
             //printf("ParticlePropagate() : 1?\n");
             /*computing finite respone time*/
             R        = particle_array[i].radius;/*droplet radius*/
@@ -1139,13 +1142,19 @@ extern void ParticlePropagate(Front *fr)
 	    s = supersat[index];
             //printf("ParticlePropagate() : 5?\n");
 
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv8, NULL);
+#endif
+
 	    for (int j = 0; j < dim; j++) {
 	      FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center, vel[j],getStateVel[j],&u[j],&vel[j][index]);
               g_particle_input[i + j*eqn_params->num_drops] = u[j];
             }
             //printf("ParticlePropagate() : 6?\n");
 	    FT_IntrpStateVarAtCoords(fr,LIQUID_COMP,center,supersat,getStateSuper,&s,&s);
-
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv9, NULL);
+#endif
             //printf("ParticlePropagate() : supersat[index] == s? : %d\n", supersat[index] == s);
             
 
@@ -1153,6 +1162,10 @@ extern void ParticlePropagate(Front *fr)
             
             
         }
+
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv6, NULL);
+#endif
 
 	if(pp_numnodes() > 1)
             ParticlePropagate_CUDA(eqn_params->num_drops, eqn_params->if_condensation, eqn_params->if_sedimentation, rho_0*mu, eqn_params->K, dt, gravity[0], gravity[1], gravity[2]);
@@ -1169,6 +1182,13 @@ extern void ParticlePropagate(Front *fr)
             printf("ParticlePropagator() : GPU (x,y,z) = (%e, %e, %e)\n", center[0], center[1], center[2]);
         }
         */
+#ifdef __PRDNS_TIMER__
+            gettimeofday(&tv7, NULL);
+            t1 += (tv8.tv_usec - tv5.tv_usec)/1000000.0 + (tv8.tv_sec - tv5.tv_sec);
+            t3 += (tv9.tv_usec - tv8.tv_usec)/1000000.0 + (tv9.tv_sec - tv8.tv_sec);
+            t4 += (tv6.tv_usec - tv9.tv_usec)/1000000.0 + (tv6.tv_sec - tv9.tv_sec);
+	    t2 += (tv7.tv_usec - tv6.tv_usec)/1000000.0 + (tv7.tv_sec - tv6.tv_sec);
+#endif
 
 
 #else
@@ -1346,8 +1366,8 @@ extern void ParticlePropagate(Front *fr)
 	    }
 	}
             
-        gettimeofday(&tv3, NULL);
 #endif
+        gettimeofday(&tv3, NULL);
 
 	if(pp_numnodes() > 1)
 	{
@@ -1369,9 +1389,9 @@ extern void ParticlePropagate(Front *fr)
         printf("\n atif13                                       :                  %10.2f", timer_intrp[0]);
         printf("\n atif14                                       :                  %10.2f", timer_intrp[1]);
         printf("\n atif15                                       :                  %10.2f", timer_intrp[2]);
-        printf("\n atif10 delta_R R computations                :              %10.2f", t4);
+        printf("\n atif10 delta_R R computations                :              %10.2f ignore for CUDA", t4);
         printf("\n atif11 Loop over dim + sedimentation         :              %10.2f", t2);
-        printf("\n atif12 ParallelExchParticle + particle array :          %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
+        printf("\n atif12 ParallelExchParticle + particle array :          %10.2f \n", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
 #endif
 
         /*

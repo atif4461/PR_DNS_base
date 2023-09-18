@@ -1,7 +1,7 @@
 Domain limit in 0-th dimension: 0 1.024 
 Domain limit in 1-th dimension: 0 1.024
 Domain limit in 2-th dimension: 0 1.024
-Computational grid: 512 512 512
+Computational grid: 128 128 128
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -9,7 +9,7 @@ Upper boundary in 1-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 2-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 2-th dimension: PERIODIC_BOUNDARY
 
-Max time: 0.05
+Max time: 0.2
 Max step: 100
 Print interval: 0.1
 Movie frame interval: 0.5 
