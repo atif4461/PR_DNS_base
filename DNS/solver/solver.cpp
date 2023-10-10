@@ -736,7 +736,7 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
 
 	if (debugging("trace"))
 	printf("Leaving Solve_withPureNeumann_HYPRE()\n");
-        fclose(infile);
+        //fclose(infile);
 }
 
 void PETSc::Solve_withPureNeumann_BCGSL(void)

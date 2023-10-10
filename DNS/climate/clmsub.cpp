@@ -1079,14 +1079,13 @@ extern void ParticlePropagate(Front *fr)
 	double R_max = 0;
 	double R_min = HUGE;
 	double w = 2*PI/5.0;
-<<<<<<< HEAD
 
 
         printf("ParticlePropagate() : if_sedimentation? : %d\n", eqn_params->if_sedimentation);
 
 #ifdef __CUDA__
 
-	for (i = 0; i < eqn_params->num_drops; i++)
+	for (int i = 0; i < eqn_params->num_drops; i++)
 	{
             //printf("ParticlePropagate() : 1?\n");
             /*computing finite respone time*/
@@ -1148,16 +1147,7 @@ extern void ParticlePropagate(Front *fr)
 
 #else
 	
-	for (i = 0; i < eqn_params->num_drops; i++)
-=======
-   
- 
-        std::cout << "inside particle propagate loop" << std::endl;
-        double start = omp_get_wtime(); 
-
-        #pragma omp parallel for //num_threads() //private(R_min)	
 	for (int i = 0; i < eqn_params->num_drops; i++)
->>>>>>> vanessa
 	{
             //if( 0 == i and 0 == omp_get_thread_num())
             //   printf("num threads = %d \n", omp_get_num_threads() );
@@ -1291,7 +1281,7 @@ extern void ParticlePropagate(Front *fr)
           if ( i%1548586 == 0)
           //if ( i%15485863 == 0)
           //if ( index % 46870 == 0)
-          printf("droplet %d index of %d drops %d thread %d of %d running on cpu ID %d at %f %f %f with u= %f %f %f cvel= %f %f %f\n", i, index, eqn_params->num_drops, omp_get_thread_num(), omp_get_num_threads(), sched_getcpu(), center[0], center[1], center[2],
+          printf("droplet %d index of %d drops %d thread %d of %d running on cpu ID %d at %f %f %f with u= %f %f %f cvel= %f %f %f\n", i, index, eqn_params->num_drops, sched_getcpu(), center[0], center[1], center[2],
           u[0], u[1], u[2], cvel[0], cvel[1], cvel[2]);
 
 	    if (debugging("single_particle"))
@@ -1309,14 +1299,8 @@ extern void ParticlePropagate(Front *fr)
 	        printf("Response time = %f\n",tau_p);
 	    }
 	}
-<<<<<<< HEAD
 #endif
-=======
             
-        double end = omp_get_wtime(); 
-        printf("Particle propagate time = %f seconds\n", end - start);  
->>>>>>> vanessa
-
 	if(pp_numnodes() > 1)
 	{
 	    start_clock("ParallelExchangeParticle");
