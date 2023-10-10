@@ -74,6 +74,14 @@ public:
 	PetscErrorCode ierr;
 	int its;			// numer of iterations;
 
+	int petsc_cuda;                 // VLM: flag to indicate whether to use cuda enabled PETSc functions
+	int petsc_hypre_pc;             // VLM: flag to indicate whether to use hypre's preconditioner
+	char hypre_thres[100];          // VLM: moved here from void PETSc::Solve_withPureNeumann_HYPRE(void)
+	int pureNeumann_gmres;          // VLM: flag to indicate whether to use GMRES to solve the pureNeumann problem 
+	int nonpureNeumann_gmres;       // VLM: flag to indicate whether to use GMRES to solve the non pureNeumann problem 
+	int petsc_solver_first_time;    // VLM: flag to record if the first instance of a solver
+	int petsc_use_pcgamg;           // VLM: flag to indicate whether to use PCGAMG as preconditioner for GMRES 
+
 public:
 	PETSc();
 	PETSc(int ilower, int iupper, int d_nz, int o_nz);		
@@ -83,7 +91,7 @@ public:
 		// same as Hypre(int, int)
 	void Create(MPI_Comm Comm, int ilower, int iupper, int d_nz, int o_nz);
 		// same as Hypre(int, int)
-	
+
 	void Reset_A();				// Set A[i][j]=0.0;
 	void Reset_b();
 	void Reset_x();
@@ -119,6 +127,16 @@ public:
 	void Solve_withPureNeumann_ML(void);
 	virtual void Print_A(const char *filename);
         virtual void Print_b(const char *filename);
+
+	void Set_petsc_input();   // VLM
+	
+//protected:   /*** VLM??????????????? To get rid of the warnings: 
+//                  /sdcc/u/vlopezmar/PR-DNS_dir/PR_DNS_base-GPU_Hackathon_2022/DNS/solver/solver.h(120): warning: function "SOLVER::Print_A(char *)" is hidden by "PETSc::Print_A" -- virtual function override intended?
+//             ***/
+        using SOLVER::Set_x;
+        using SOLVER::Set_b;
+        using SOLVER::Print_A;
+        using SOLVER::Print_b;
 };
 
 class PARABOLIC_SOLVER{

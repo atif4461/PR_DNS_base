@@ -202,7 +202,7 @@ int two_dim_filter()
 	int dim[2];
 	dim [0] = M; dim[1] = N;
 
-	srand(time(NULL));
+	//srand(time(NULL));
 
 	for (i = 0; i < M; i++)
 	for (j = 0; j < N/2+1; j++)

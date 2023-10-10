@@ -1,7 +1,7 @@
 Domain limit in 0-th dimension: 0 0.512 
 Domain limit in 1-th dimension: 0 0.512
 Domain limit in 2-th dimension: 0 0.512
-Computational grid: 32 32 32
+Computational grid: 64 64 64
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -9,9 +9,9 @@ Upper boundary in 1-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 2-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 2-th dimension: PERIODIC_BOUNDARY
 
-Max time: 1
-Max step: 1000000000
-Print interval: 0.1
+Max time: 1.1
+Max step: 10  
+Print interval: 0.5
 Movie frame interval: 0.5 
 CFL factor: 0.75
 Redistribution interval: 10000000
@@ -21,6 +21,7 @@ Enter problem type: ENTRAINMENT
 Enter case type: 1
 Enter yes to use big data: no
 Enter fraction of cloudy air: 0.502769
+
 ******************Initial phase conditions***********
 Enter initial temperature(K): 270.75
 Enter initial vapor mixing ratio(g/kg): 0.03138
@@ -36,19 +37,22 @@ Enter number of clips in direction: 4 4 4
 ********************Numerical scheme**************
 Choose numerical scheme
         UNSPLIT_EXPLICIT (EX)
-        UNSPLIT_IMPLICIT (IM)
-        CRANK_NICOLSON (CN)
+	UNSPLIT_IMPLICIT (IM)
+	CRANK_NICOLSON (CN)
 Enter scheme: CN 
 Enter reference pressure(Pa): 82844.139706
 Enter yes to enable volume force: yes 
-Enter pc_hypre_boomeramg_strong_threshold: 0.5
+
+Use GMRES for pure Neumman solver (0/1): 1
+Use PCGAMG as preconditioner for GMRES (0/1): 1
+Use GMRES for non pure Neumman solver (0/1): 1
 
 ********************Droplets********************* 
 Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
 Enter phase state of water drop: I
-Enter number of water drops: 10000000 
+Enter number of water drops: 100000 
 Enter density of water drops: 1000
 Two methods for initialization:
         Prompt initialization (P)
@@ -78,12 +82,10 @@ Type y to make movie of particles: n
 Type y to make vector velocity field movie: n
 
 ************Debugging options*****************
-
-Enter yes for debugging: no 
+Enter yes for debugging: yes 
 Enter the debugging string: tvolume_force 
 Enter the debugging string: tMPIIO
 Enter the debugging string: PETSc
 Enter the debugging string: tparticles 
-Enter the debugging string: tCLOCK
-Enter the debugging string: tstep_size
-
+Enter the debugging string: CLOCK
+Enter the debugging string: step_size

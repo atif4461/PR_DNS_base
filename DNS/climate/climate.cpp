@@ -213,6 +213,7 @@ static  void melting_flow_driver(
 	VCARTESIAN *v_cartesian,
 	Incompress_Solver_Smooth_Basis *l_cartesian)
 {
+
     double CFL;
     int  dim = front->rect_grid->dim;
 	IF_PARAMS *iFparams;
@@ -307,7 +308,7 @@ static  void melting_flow_driver(
 	    printf("Passed solving NS equations\n");
 	    v_cartesian->recordTKE();
 
-	    if (eqn_params->if_volume_force && front->time < 1.0)
+	    if (eqn_params->if_volume_force && front->time < 0.1)
 	    {
 //#ifdef __CUDA__
 //                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
