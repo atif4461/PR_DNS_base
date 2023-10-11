@@ -4335,6 +4335,7 @@ void VCARTESIAN::computeVaporSource()
 	    a3 *= top_h[i];
 
 #ifdef __CUDA__
+        printf("VCARTESIAN::computeVaporSource() : CUDA called!\n");
         printf("VCARTESIAN::computeVaporSource() : comp_size : %d\n", comp_size);
         printf("VCARTESIAN::computeVaporSource() : eqn_params->if_condensation : %d\n", eqn_params->if_condensation);
         //printf("VCARTESIAN::computeVaporSource() : particle_array[0].center : (%f, %f, %f), radius : %f, vel : (%f, %f, %f) \n",particle_array[0].center[0], particle_array[0].center[1], particle_array[0].center[2], particle_array[0].radius, particle_array[0].vel[0], particle_array[0].vel[1], particle_array[0].vel[2]);   

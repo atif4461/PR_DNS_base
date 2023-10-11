@@ -1390,7 +1390,7 @@ extern void ParticlePropagate(Front *fr)
         printf("\n atif14                                       :                  %10.2f", timer_intrp[1]);
         printf("\n atif15                                       :                  %10.2f", timer_intrp[2]);
         printf("\n atif10 delta_R R computations                :              %10.2f ignore for CUDA", t4);
-        printf("\n atif11 Loop over dim + sedimentation         :              %10.2f", t2);
+        printf("\n atif11 Loop over dim + sedimentation         :              %10.2f Particle propagate and download for CUDA", t2);
         printf("\n atif12 ParallelExchParticle + particle array :          %10.2f \n", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
 #endif
 

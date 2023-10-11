@@ -229,11 +229,10 @@ static  void melting_flow_driver(
 	VCARTESIAN *v_cartesian,
 	Incompress_Solver_Smooth_Basis *l_cartesian)
 {
-        struct timeval tv1,tv2,tv3,tv4,tv5,tv6,tv7,tv8;
+        struct timeval tv1,tv2,tv3,tv4,tv5,tv6,tv7,tv8,tv9;
 #ifdef __PRDNS_TIMER__
         gettimeofday(&tv7, NULL);
 #endif
-
         double CFL;
         int  dim = front->rect_grid->dim;
 	IF_PARAMS *iFparams;
@@ -242,7 +241,7 @@ static  void melting_flow_driver(
         static LEVEL_FUNC_PACK level_func_pack;
         double runtime, t1(0.);
         double totaltime = 0.0;
-    double time;
+        double time;
 
 	if (debugging("trace"))
 	    printf("Entering melting_flow_driver()\n");
@@ -333,7 +332,7 @@ static  void melting_flow_driver(
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv3, NULL);
 #endif
-	    if (eqn_params->if_volume_force && front->time < 0.04)
+	    if (eqn_params->if_volume_force && front->time < 0.005)
 	    {
 //#ifdef __CUDA__
 //                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
@@ -342,45 +341,41 @@ static  void melting_flow_driver(
 	    }
 	    else
 	    {
-                 v_cartesian->solve(front->dt);
-                 printf("Solved vapor and temperature equations\n");
-
 #ifdef __PRDNS_TIMER__
-                 gettimeofday(&tv4, NULL);
+                gettimeofday(&tv9, NULL);
 #endif
-                 if (eqn_params->prob_type == PARTICLE_TRACKING)
-                 {
-                    ParticlePropagate(front);
 #ifdef __CUDA__
                 uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 #endif
-                 }
 #ifdef __PRDNS_TIMER__
-                 gettimeofday(&tv5, NULL);
-                 t1 = (tv5.tv_usec - tv4.tv_usec)/1000000.0 + (tv5.tv_sec - tv4.tv_sec);
+                gettimeofday(&tv4, NULL);
 #endif
                 v_cartesian->solve(front->dt);
                 printf("Passed solving vapor and temperature equations\n");
-
+#ifdef __PRDNS_TIMER__
+                gettimeofday(&tv5, NULL);
+#endif
                 if (eqn_params->prob_type == PARTICLE_TRACKING)
                 {
-                    gettimeofday(&tv1, NULL);
+                    struct timeval tv1_,tv2_;
+		    gettimeofday(&tv1_, NULL);
                     ParticlePropagate(front);
                     // Before ParticlePropagate_CUDA() implementation
                     //v_cartesian->uploadParticle();
 
                     //downloadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 
-                    gettimeofday(&tv2, NULL);
-                    time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+                    gettimeofday(&tv2_, NULL);
+                    time = (tv2_.tv_usec - tv1_.tv_usec)/1000000.0 + (tv2_.tv_sec - tv1_.tv_sec);
                     printf("ParticlePropagate() : running time : %f\n", time);
 
                     printf("Passed solving particle equations\n");
                 }
-	    }
 #ifdef __PRDNS_TIMER__
             gettimeofday(&tv6, NULL);
+            t1 = (tv6.tv_usec - tv5.tv_usec)/1000000.0 + (tv6.tv_sec - tv5.tv_sec);
 #endif
+	    }
 
 	    FT_AddTimeStepToCounter(front);
 	    FT_SetTimeStep(front);
@@ -393,6 +388,7 @@ static  void melting_flow_driver(
             printf("\n atif1 NavierStokes solver                    :  %10.2f", (tv3.tv_usec - tv1.tv_usec)/1000000.0 + (tv3.tv_sec - tv1.tv_sec));
             printf("\n atif2 Particle Propagate + Vapor temperature :  %10.2f", (tv6.tv_usec - tv3.tv_usec)/1000000.0 + (tv6.tv_sec - tv3.tv_sec));
             printf("\n atif3 Particle Propagate                     :      %10.2f", t1);
+            printf("\n atif3 Upload                                 :      %10.2f", (tv9.tv_usec - tv4.tv_usec)/1000000.0 + (tv9.tv_sec - tv4.tv_sec));
             printf("\n atif4 FT Add Set TimeStep                    :  %10.2f", (tv2.tv_usec - tv6.tv_usec)/1000000.0 + (tv2.tv_sec - tv6.tv_sec));
 #endif
             printf("\nruntime = %10.2f,   total runtime = %10.2f,  time = %10.9f   step = %7d   dt = %10.9f\n\n\n",
