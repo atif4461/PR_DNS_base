@@ -304,40 +304,37 @@ static  void melting_flow_driver(
     {
         gettimeofday(&tv1, NULL);
 	    FT_Propagate(front);
-	    l_cartesian->solve(front->dt);
+//	    l_cartesian->solve(front->dt);
 	    printf("Passed solving NS equations\n");
-	    v_cartesian->recordTKE();
+//	    v_cartesian->recordTKE();
 
-	    if (eqn_params->if_volume_force && front->time < 0.1)
+	    if (eqn_params->if_volume_force && front->time < 0.001)
+	    {
+//                v_cartesian->solve(0.0);
+	    }
+	    else
 	    {
 //#ifdef __CUDA__
 //                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 //#endif
-                v_cartesian->solve(0.0);
-	    }
-	    else
-	    {
-#ifdef __CUDA__
-                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
-#endif
                 v_cartesian->solve(front->dt);
                 printf("Passed solving vapor and temperature equations\n");
 
-                if (eqn_params->prob_type == PARTICLE_TRACKING)
-                {
-                    gettimeofday(&tv1, NULL);
-                    ParticlePropagate(front);
-                    // Before ParticlePropagate_CUDA() implementation
-                    //v_cartesian->uploadParticle();
-
-                    //downloadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
-
-                    gettimeofday(&tv2, NULL);
-                    time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-                    printf("ParticlePropagate() : running time : %f\n", time);
-
-                    printf("Passed solving particle equations\n");
-                }
+//                if (eqn_params->prob_type == PARTICLE_TRACKING)
+//                {
+//                    gettimeofday(&tv1, NULL);
+//                    ParticlePropagate(front);
+//                    // Before ParticlePropagate_CUDA() implementation
+//                    //v_cartesian->uploadParticle();
+//
+//                    //downloadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
+//
+//                    gettimeofday(&tv2, NULL);
+//                    time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
+//                    printf("ParticlePropagate() : running time : %f\n", time);
+//
+//                    printf("Passed solving particle equations\n");
+//                }
 	    }
 
 	    FT_AddTimeStepToCounter(front);
@@ -351,32 +348,32 @@ static  void melting_flow_driver(
                         runtime, totaltime, front->time,front->step,front->dt);
         fflush(stdout);
 	    
-        if (FT_IsSaveTime(front))
-	    {
-                printf("Recording data for post analysis ...\n");
-		if (eqn_params->prob_type == PARTICLE_TRACKING)
-		    v_cartesian->output();
-	    }
-        if (FT_IsMovieFrameTime(front))
-	    {
-		printf("Output movie frame...\n");
-		// Front standard output
-	 	if(movie_option->plot_particles == YES)
-		{
-		    vtk_plot_scatter(front);
-		    vtk_plot_sample_traj(front);
-		}
-                FT_AddMovieFrame(front,out_name,YES);
-	    }
-
-            if (FT_TimeLimitReached(front))
-	    {
-		if(movie_option->plot_particles == YES)
-                    vtk_plot_scatter(front);
-	    	FT_AddMovieFrame(front,out_name,YES);
-                break;
-	    }
-	    /* Output section, next dt may be modified */
+//        if (FT_IsSaveTime(front))
+//	    {
+//                printf("Recording data for post analysis ...\n");
+//		if (eqn_params->prob_type == PARTICLE_TRACKING)
+//		    v_cartesian->output();
+//	    }
+//        if (FT_IsMovieFrameTime(front))
+//	    {
+//		printf("Output movie frame...\n");
+//		// Front standard output
+//	 	if(movie_option->plot_particles == YES)
+//		{
+//		    vtk_plot_scatter(front);
+//		    vtk_plot_sample_traj(front);
+//		}
+//                FT_AddMovieFrame(front,out_name,YES);
+//	    }
+//
+//            if (FT_TimeLimitReached(front))
+//	    {
+//		if(movie_option->plot_particles == YES)
+//                    vtk_plot_scatter(front);
+//	    	FT_AddMovieFrame(front,out_name,YES);
+//                break;
+//	    }
+//	    /* Output section, next dt may be modified */
 
 	    FT_TimeControlFilter(front);
         }

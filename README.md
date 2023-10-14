@@ -23,3 +23,14 @@ export LD_LIBRARY_PATH=/hpcgpfs01/software/spack2/spack/opt/spack/linux-rhel7-br
 
 mpirun --mca btl_openib_allow_ib 1 -n 16 tau_exec -T mpi,cupti -ebs -cupti /work/atif/PR_DNS_base/DNS/climate/climate -d 3 -p 4 2 2 -i input-pr-dns/in-entrainment3dd_short -o out-pr-dns
 
+
+
+
+
+#### alpha1
+conda activate pr-dns
+./clean.sh
+export PATH=/work/atif/petsc-3.16.0/lib/petsc/bin/:$PATH
+/work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc .
+make -j16
+mpirun --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1_vlm_test1 -o output-thermod-8 >& thermod.log &
