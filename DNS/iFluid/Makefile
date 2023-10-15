@@ -130,6 +130,20 @@ ifluid/fast:
 	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/build
 .PHONY : ifluid/fast
 
+# Convenience name for target.
+iFluid/CMakeFiles/iFluid.dir/rule:
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 iFluid/CMakeFiles/iFluid.dir/rule
+.PHONY : iFluid/CMakeFiles/iFluid.dir/rule
+
+# Convenience name for target.
+iFluid: iFluid/CMakeFiles/iFluid.dir/rule
+.PHONY : iFluid
+
+# fast build rule for target.
+iFluid/fast:
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/iFluid.dir/build.make iFluid/CMakeFiles/iFluid.dir/build
+.PHONY : iFluid/fast
+
 iFbasic.o: iFbasic.cpp.o
 .PHONY : iFbasic.o
 
@@ -226,6 +240,30 @@ iFinit.cpp.s:
 	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/ifluid.dir/build.make iFluid/CMakeFiles/ifluid.dir/iFinit.cpp.s
 .PHONY : iFinit.cpp.s
 
+iFluid.o: iFluid.cpp.o
+.PHONY : iFluid.o
+
+# target to build an object file
+iFluid.cpp.o:
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/iFluid.dir/build.make iFluid/CMakeFiles/iFluid.dir/iFluid.cpp.o
+.PHONY : iFluid.cpp.o
+
+iFluid.i: iFluid.cpp.i
+.PHONY : iFluid.i
+
+# target to preprocess a source file
+iFluid.cpp.i:
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/iFluid.dir/build.make iFluid/CMakeFiles/iFluid.dir/iFluid.cpp.i
+.PHONY : iFluid.cpp.i
+
+iFluid.s: iFluid.cpp.s
+.PHONY : iFluid.s
+
+# target to generate assembly for a file
+iFluid.cpp.s:
+	cd /work/atif/PR_DNS_base/DNS && $(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/iFluid.dir/build.make iFluid/CMakeFiles/iFluid.dir/iFluid.cpp.s
+.PHONY : iFluid.cpp.s
+
 iFsub.o: iFsub.cpp.o
 .PHONY : iFsub.o
 
@@ -258,6 +296,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... iFluid"
 	@echo "... ifluid"
 	@echo "... iFbasic.o"
 	@echo "... iFbasic.i"
@@ -271,6 +310,9 @@ help:
 	@echo "... iFinit.o"
 	@echo "... iFinit.i"
 	@echo "... iFinit.s"
+	@echo "... iFluid.o"
+	@echo "... iFluid.i"
+	@echo "... iFluid.s"
 	@echo "... iFsub.o"
 	@echo "... iFsub.i"
 	@echo "... iFsub.s"

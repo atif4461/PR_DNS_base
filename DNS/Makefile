@@ -143,6 +143,19 @@ ifluid/fast:
 .PHONY : ifluid/fast
 
 #=============================================================================
+# Target rules for targets named iFluid
+
+# Build rule for target.
+iFluid: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 iFluid
+.PHONY : iFluid
+
+# fast build rule for target.
+iFluid/fast:
+	$(MAKE) $(MAKESILENT) -f iFluid/CMakeFiles/iFluid.dir/build.make iFluid/CMakeFiles/iFluid.dir/build
+.PHONY : iFluid/fast
+
+#=============================================================================
 # Target rules for targets named frontier
 
 # Build rule for target.
@@ -178,6 +191,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... climate"
 	@echo "... frontier"
+	@echo "... iFluid"
 	@echo "... ifluid"
 	@echo "... solver"
 .PHONY : help

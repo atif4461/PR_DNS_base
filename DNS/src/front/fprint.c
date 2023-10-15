@@ -1217,7 +1217,6 @@ LOCAL	void show_front_vtk(
 	if (pp_numnodes() > 1)
 	{
             sprintf(dirname,"%s-nd%s",dirname,right_flush(pp_mynode(),4));
-            sprintf(sdirname,"%s-nd",right_flush(pp_mynode(),4));
 	}
 	if (!create_directory(dirname,YES))
 	{
@@ -1274,31 +1273,41 @@ LOCAL	void show_front_vtk(
 		{
 	    	    sprintf(fname,"%s/%s.visit",vdirname,vnames[i]);
 		    vfiles[i] = fopen(fname,"w");
+		    fprintf(vfiles[i],"!NBLOCKS %d\n", pp_numnodes() );
 		}
-	    	fprintf(vfiles[i],"%s/%s.vtk\n",sdirname,vnames[i]);
-	    	fflush(vfiles[i]);
+		for ( int rank = 0; rank < pp_numnodes(); rank++ ) {
+		    fprintf(vfiles[i],"%s-nd%s/%s.vtk\n",sdirname,right_flush(rank,4),vnames[i]);
+	    	    fflush(vfiles[i]);
+		}
 	    }
 	    for (i = 0; i < vtk_movie_var->num_scalar_var; ++i)
 	    {
 	    	vtk_plot_scalar_field(dirname,front,i);
-		if (first == YES)
-		{
+	        if (first == YES)
+	        {
 	    	    sprintf(fname,"%s/%s.visit",vdirname,snames[i]);
-		    sfiles[i] = fopen(fname,"w");
-		}
-	    	fprintf(sfiles[i],"%s/%s.vtk\n",sdirname,snames[i]);
-	    	fflush(sfiles[i]);
+	            sfiles[i] = fopen(fname,"w");
+	            fprintf(sfiles[i],"!NBLOCKS %d\n", pp_numnodes() );
+	        }
+	        for ( int rank = 0; rank < pp_numnodes(); rank++ ) {
+	    	    fprintf(sfiles[i],"%s-nd%s/%s.vtk\n",sdirname,right_flush(rank,4),snames[i]);
+	    	    fflush(sfiles[i]);
+	        }
 	    }
 	    if (vtk_movie_var->plot_intfc_var == YES);
 	    {
-		//vtk_plot_intfc_color(dirname,front);
-		if (first == YES)
-		{
+	        //vtk_plot_intfc_color(dirname,front);
+	        if (first == YES)
+	        {
 	    	    sprintf(fname,"%s/%s.visit",vdirname,cname);
-		    cfiles = fopen(fname,"w");
-		}
-	    	fprintf(cfiles,"%s/%s.vtk\n",sdirname,cname);
-	    	fflush(cfiles);
+	            cfiles = fopen(fname,"w");
+	            fprintf(cfiles,"!NBLOCKS %d\n", pp_numnodes() );
+	        }
+	        for ( int rank = 0; rank < pp_numnodes(); rank++ ) {
+	    	    fprintf(cfiles,"%s-nd%s/%s.vtk\n",sdirname,right_flush(rank,4),cname);
+	    	    fflush(cfiles);
+	        }
+
 	    }
 	}
 	first = NO;
