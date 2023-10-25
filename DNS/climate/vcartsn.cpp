@@ -3911,7 +3911,8 @@ static double computeUrms(double **vel,int dim,int *lmin,int *lmax,int *top_gmax
 
 void VCARTESIAN::computeVolumeForce()
 {
-	return computeVolumeForceFourier();
+	return computeVolumeForceLinear();
+	//return computeVolumeForceFourier();
 }
 
 void VCARTESIAN::computeVolumeForceLinear()

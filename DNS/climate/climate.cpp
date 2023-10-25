@@ -304,9 +304,9 @@ static  void melting_flow_driver(
     {
         gettimeofday(&tv1, NULL);
 	    FT_Propagate(front);
-//	    l_cartesian->solve(front->dt);
+	    l_cartesian->solve(front->dt);
 	    printf("Passed solving NS equations\n");
-//	    v_cartesian->recordTKE();
+	    v_cartesian->recordTKE();
 
 	    if (eqn_params->if_volume_force && front->time < 0.001)
 	    {
@@ -317,7 +317,7 @@ static  void melting_flow_driver(
 //#ifdef __CUDA__
 //                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 //#endif
-                v_cartesian->solve(front->dt);
+//                v_cartesian->solve(front->dt);
                 printf("Passed solving vapor and temperature equations\n");
 
 //                if (eqn_params->prob_type == PARTICLE_TRACKING)
