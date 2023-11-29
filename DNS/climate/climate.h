@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iFluid.h>
 #include "fftw3.h"
+#include "heffte.h"
 
 #define         LIQUID_COMP2           3
 #define         SOLID_COMP             1
@@ -344,6 +345,7 @@ public:
 	void recordTKE();
 	void computeVolumeForce();
 	void computeVolumeForceFourier();
+	void computeVolumeForceFourierHeffte();
 	void computeVolumeForceLinear();
 	double computeDspRate();
 	double computeDspRateLinear();

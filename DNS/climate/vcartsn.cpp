@@ -5,6 +5,7 @@
 #include <iFluid.h>
 #include "solver.h"
 #include "climate.h"
+#include "heffte.h"
 
 #include <sys/time.h>
 
@@ -3911,8 +3912,9 @@ static double computeUrms(double **vel,int dim,int *lmin,int *lmax,int *top_gmax
 
 void VCARTESIAN::computeVolumeForce()
 {
-	return computeVolumeForceLinear();
+	//return computeVolumeForceLinear();
 	//return computeVolumeForceFourier();
+	return computeVolumeForceFourierHeffte();
 }
 
 void VCARTESIAN::computeVolumeForceLinear()
@@ -3953,6 +3955,40 @@ void VCARTESIAN::computeVolumeForceLinear()
 	eps_in = computeInputEnergy(ext_accel,vel,dim,lmin,lmax,top_gmax);
 }
 
+void VCARTESIAN::computeVolumeForceFourierHeffte()
+{
+	if (eqn_params->if_volume_force == NO)
+	    return;
+
+	if (dim != 3) {
+	    printf("heFFTe implemented only for 3D, switch to FFTW");
+	    exit(0);
+	}
+        heffte::box3d<> const my_box  = { {0,0,0}, {1,1,1} };
+	static int Nr, N[MAXD];
+       	static int N0 = 6; //number of modes
+
+	static boolean first = YES;
+	static double eps; /*mean kinetic energy dissipation*/
+
+	/*for parallelization, global rectangle grid*/
+	PP_GRID *pp_grid = front->pp_grid;
+	RECT_GRID *global_grid = &(pp_grid->Global_grid);
+
+	if (first == YES)
+	{
+	    first = NO;
+	    eps = computeDspRate(); 	    
+	    eqn_params->disp_rate = eps;
+
+	
+	}
+
+        printf("global grid %d %d %d \n", global_grid->gmax[0], global_grid->gmax[1], global_grid->gmax[2] );
+        printf("pp grid %d %d %d \n", pp_grid->gmax[0], pp_grid->gmax[1], pp_grid->gmax[2] );
+	exit(0);
+}
+
 void VCARTESIAN::computeVolumeForceFourier()
 {
 	int i, j, k, l, index0;
@@ -3967,7 +4003,6 @@ void VCARTESIAN::computeVolumeForceFourier()
 	int count = 0;
         struct timeval tv1,tv2;
         double time;
-
 
 
         gettimeofday(&tv1, NULL);
