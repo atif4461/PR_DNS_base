@@ -79,8 +79,8 @@ Type y to make vector velocity field movie: n
 
 ************Debugging options*****************
 
-Enter yes for debugging: no 
-Enter the debugging string: tvolume_force 
+Enter yes for debugging: yes 
+Enter the debugging string: volume_force 
 Enter the debugging string: tMPIIO
 Enter the debugging string: PETSc
 Enter the debugging string: tparticles 
