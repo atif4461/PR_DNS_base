@@ -82,6 +82,7 @@ extern bool fftnd(
 		{
 		    cplx_array[i][0] = in[i][0]; /*normalization*/
 		    cplx_array[i][1] = in[i][1]; /*normalization*/
+		    //printf("ifftw3 %d %f %f\n", i,cplx_array[i][0],cplx_array[i][1]);
 		}
 		break;
 	    default:
@@ -134,15 +135,17 @@ int one_dim_test()
 	    mycomplex[i][1] = 0.0;
 	}
 
+	printMatrix("fft1d_input",mycomplex,N);
 	fftnd(mycomplex,1,dim,1);
+	printMatrix("fft1d_fft",mycomplex,N);
 	fftnd(mycomplex,1,dim,-1);
-	printMatrix("fft1d_test",mycomplex,N);
+	printMatrix("fft1d_ifft",mycomplex,N);
 	return 1;
 }
 
 int two_dim_test()
 {
-	const static int M = 64, N = 64;
+	const static int M = 48, N = 64;
 	int i,j,index;
 	int dim[2];
 	dim[0] = M; dim[1] = N;
@@ -156,18 +159,20 @@ int two_dim_test()
 	{
 	    wn = (2*M_PI/L)*sqrt(i*i+j*j);
 	    index = j * M + i;
-	    myarray[index][0] = sin(2*M_PI*i/M)*cos(2*M_PI*j/N); 
+	    myarray[index][0] = index;//sin(2*M_PI*i/M)+cos(2*M_PI*j/N); 
 	    myarray[index][1] = 0.0;
 	}
+	printMatrix("fft2d_input",myarray,M*N);
 	fftnd(myarray,2,dim,1);
+	printMatrix("fft2d_fft",myarray,M*N);
 	fftnd(myarray,2,dim,-1);
-	printMatrix("fft2d_test",myarray,M*N);
+	printMatrix("fft2d_ifft",myarray,M*N);
         return 1;
 }
 
 int three_dim_test()
 {
-	const static int Nx = 32, Ny = 64, Nz = 128;
+	const static int Nx = 8, Ny = 16, Nz = 32;
 	int i,j,k,index;
 	FILE *file;
 	double wn, L = 1.0;
@@ -176,20 +181,50 @@ int three_dim_test()
 
 	fftw_complex myarray[Nx*Ny*Nz];
 
-	for (k = 0; k < Nz; k++)
-	for (j = 0; j < Ny; j++)
 	for (i = 0; i < Nx; i++)
+	for (j = 0; j < Ny; j++)
+	for (k = 0; k < Nz; k++)
 	{
 	    wn = (2*M_PI/L)*sqrt(i*i+j*j+k*k);
 	    index = Nx*(Ny * k + j) + i;
-	    myarray[index][0] = cos(2*M_PI*i/Nx)*cos(2*M_PI*j/Ny)*sin(2*M_PI*k/Nz); 
+	    myarray[index][0] = index;//cos(2*M_PI*i/Nx)*cos(2*M_PI*j/Ny)*sin(2*M_PI*k/Nz); 
 	    myarray[index][1] = 0.0;
 	}
+	printMatrix("fft3d_input",myarray,Nx*Ny*Nz);
 	fftnd(myarray,3,dim,1);
+	printMatrix("fft3d_fft",myarray,Nx*Ny*Nz);
 	fftnd(myarray,3,dim,-1);
-	printMatrix("fft3d_test",myarray,Nx*Ny*Nz);
+	printMatrix("fft3d_ifft",myarray,Nx*Ny*Nz);
         return 1;
 }
+
+int three_dim_ifft_test()
+{
+	//const static int Nx = 8, Ny = 1, Nz = 1;//1
+	const static int Nx = 4, Ny = 4, Nz = 4;
+	int i,j,k,index;
+	FILE *file;
+	double wn, L = 1.0;
+	int dim[3];
+	dim[0] = Nx; dim[1] = Ny; dim[2] = Nz;
+
+	fftw_complex myarray[Nx*Ny*Nz];
+
+	for (i = 0; i < Nx; i++)
+	for (j = 0; j < Ny; j++)
+	for (k = 0; k < Nz; k++)
+	{
+	    index = Nx*(Ny * k + j) + i;
+	    myarray[index][0] = 64-index;//cos(2*M_PI*i/Nx)*cos(2*M_PI*j/Ny)*sin(2*M_PI*k/Nz); 
+	    myarray[index][1] = 0.0;
+	}
+	printMatrix("fft3d_input",myarray,Nx*Ny*Nz);
+	fftnd(myarray,3,dim,-1);
+	printMatrix("fft3d_ifft",myarray,Nx*Ny*Nz);
+        return 1;
+}
+
+
 
 int two_dim_filter()
 {
