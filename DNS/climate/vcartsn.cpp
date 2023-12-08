@@ -3958,6 +3958,7 @@ void VCARTESIAN::computeVolumeForceLinear()
 // These are already defined in climate/fft.cpp
 void printMatrix(const char* filename,fftw_complex* complex_array,int size);
 int one_dim_test();
+int one_dim_ifft_test();
 int two_dim_test();
 int three_dim_test();
 int three_dim_ifft_test();
@@ -3966,7 +3967,7 @@ int three_dim_ifft_test();
 // Test for multiple MPI ranks
 // Test for a different domain size
 void VCARTESIAN::computeVolumeForceFourierHeffte()
-{
+{       
         /* * * 1D TEST for HEFFTE * * */
 	//one_dim_test();
         //heffte::box3d<> const my_box_test = {{0,0,0},{99,0,0}};
@@ -3982,8 +3983,8 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	//for (int i = 0; i < 100; i++) {
 	//   std::cout << in.at(i).real() << " " << out.at(i).real() << " " << out.at(i).imag() << std::endl;
 	//}
-        
-        /* * * 2D TEST for HEFFTE * * */
+ 
+	/* * * 2D TEST for HEFFTE * * */
         //two_dim_test();	
         //heffte::box3d<> const my_box_test = {{0,0,0},{63,47,0}};
 	//heffte::fft3d<heffte::backend::fftw> fft_test(my_box_test, my_box_test, MPI_COMM_WORLD);
@@ -4023,47 +4024,87 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	//   std::cout << "heffte3d " << i << " " << in.at(i).real() << " " << out.at(i).real() << " " << out.at(i).imag() << " " << ifft.at(i).real() << " " << ifft.at(i).imag() << std::endl;
 	//}
 
-	/* * * 3D iFFT TEST for HEFFTE * * */
-        three_dim_ifft_test();
-        //int Nx = 1, Ny = 1, Nz = 8;//1
-        int Nx = 4, Ny = 4, Nz = 4;//2
-       	int ct = 0;;	
-        heffte::box3d<> const my_box_test = {{0,0,0},{Nx-1,Ny-1,Nz-1}};
-	heffte::fft3d<heffte::backend::fftw> fft_test(my_box_test, my_box_test, MPI_COMM_WORLD);
-        std::vector<std::complex<double>> in(fft_test.size_inbox());
-        std::vector<std::complex<double>> inrs(fft_test.size_inbox());
-	std::vector<std::complex<double>> out(fft_test.size_outbox());
-	for (int i = 0; i < Nx; i++) 
-	for (int j = 0; j < Ny; j++)
-	for (int k = 0; k <= Nz/2+1; k++)
-	{
-	   //int index = 32*(1 * k + j) + i;
-           in.at(ct).real(64-ct);
-           in.at(ct).imag(0.0);
-           ct++;	   
-	}
-	for (int i = 0; i < Nx; i++) 
-	for (int j = 0; j < Ny; j++)
-	{
-	    int index = 0, index1 = 0;
-            for (int k = 0; k <= Nz/2+1; k++)
-	    {
-                inrs.at(index) = in.at(index1);
-		index++;
-		index1++;
-	    }
-	    for (int k = Nz/2+2; k < Nz; k++)
-	    {
-                inrs.at(index) = 0.;
-		index++;
-                index1++;
-	    }
-	}
-	fft_test.backward(in.data(), out.data());//, heffte::scale::full 
-	std::cout << std::endl;
-	for (int i = 0; i < out.size(); i++) {
-	   std::cout << "heffte3d " << i << " " << in.at(i).real() << " " << inrs.at(i).real() << " " << out.at(i).real() << " " << out.at(i).imag() << std::endl;
-	}
+	/* * * 1D iFFT TEST for HEFFTE * * */
+	//one_dim_test();
+	//one_dim_ifft_test();
+        //heffte::box3d<> const my_box_test = {{0,0,0},{99,0,0}};
+	//heffte::fft3d<heffte::backend::fftw> fft_test(my_box_test, my_box_test, MPI_COMM_WORLD);
+        //std::vector<std::complex<double>> in(fft_test.size_inbox());
+	//std::vector<std::complex<double>> out(fft_test.size_outbox());
+	//std::vector<std::complex<double>> out1(fft_test.size_outbox());
+	//for (int i = 0; i < 100; i++) {
+        //   in.at(i).real(i);
+        //   in.at(i).imag(0.0);	   
+	//}
+	//fft_test.backward(in.data(),out.data(),heffte::scale::full);
+	//fft_test.backward(out.data(),out1.data(),heffte::scale::full);
+	//std::cout << std::endl;
+	//for (int i = 0; i < 100; i++) {
+	//   std::cout << "heffte1d " << i << " "  << in.at(i).real() << " " << out.at(i).real() << " " << out.at(i).imag() << "  " << out1.at(i).real() << " " << out1.at(i).imag() << std::endl;
+	//}
+        
+
+//	/* * * 3D iFFT TEST for HEFFTE * * */
+//        three_dim_ifft_test();
+//        //int Nx = 1, Ny = 1, Nz = 8;//1
+//        int Nx = 4, Ny = 4, Nz = 8;//2
+//       	int ct = 0;;	
+//        heffte::box3d<> const my_box_test = {{0,0,0},{Nx-1,Ny-1,Nz-1}};
+//	heffte::fft3d<heffte::backend::fftw> fft_test(my_box_test, my_box_test, MPI_COMM_WORLD);
+//        std::vector<std::complex<double>> in(fft_test.size_inbox());
+//        std::vector<std::complex<double>> inrs(fft_test.size_inbox());
+//	std::vector<std::complex<double>> out(fft_test.size_outbox());
+// for(int pos1 = 1; pos1 < 64; pos1++)
+// for(int pos2 = 1; pos2 < 64; pos2++)
+// {	 
+//	std::fill(in.begin(),  in.end(),  std::complex<double>(0.0, 0.0));
+//	in.at(pos1).real(64);
+//	in.at(pos2).real(32); 
+//	//in.at(24).real(16); 
+//	//in.at(3).real(8); 
+//	//for (int i = 0; i < Nx; i++) 
+//	//for (int j = 0; j < Ny; j++)
+//	//for (int k = 0; k <= Nz/2+1; k++)
+//	//{
+//	//   //int index = 32*(1 * k + j) + i;
+//        //   in.at(ct).real(64-ct);
+//        //   in.at(ct).imag(0.0);
+//        //   ct++;	   
+//	//}
+//	//for (int i = 0; i < Nx; i++) 
+//	//for (int j = 0; j < Ny; j++)
+//	//{
+//	//    int index = 0, index1 = 0;
+//        //    for (int k = 0; k <= Nz/2+1; k++)
+//	//    {
+//        //        inrs.at(index) = in.at(index1);
+//	//	index++;
+//	//	index1++;
+//	//    }
+//	//    for (int k = Nz/2+2; k < Nz; k++)
+//	//    {
+//        //        inrs.at(index) = 0.;
+//	//	index++;
+//        //        index1++;
+//	//    }
+//	//}
+//	fft_test.backward(in.data(), out.data());//, heffte::scale::full 
+//	std::cout << "pos " <<  pos1 << " " << pos2 << std::endl;
+//	for (int i = 0; i < out.size(); i++) {
+//	   std::cout << "heffte3d " << i << " " << in.at(i).real() << " " << inrs.at(i).real() << " " << out.at(i).real() << " " << out.at(i).imag() << std::endl;
+//	}
+// }
+
+//        fftw_complex myarray[Nx*Ny*Nz];
+//	for (int i = 0; i < out.size(); i++)
+//	{
+//	    myarray[i][0] = out.at(i).real();
+//            myarray[i][1] = out.at(i).imag();
+//	}
+//	int dim3[3] = {Nx,Ny,Nz};
+//        fftnd(myarray,3,dim3,-1);
+//        for (int k = 0; k < Nx*Ny*Nz; k++)
+//		std::cout << "fftndcross " << k << " " << myarray[k][0] << " " << myarray[k][1] << std::endl;
 
         struct timeval tv1,tv2;
         double time;
@@ -4073,17 +4114,15 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	char filename[100];
 	if (debugging("volume_force"))
 	{
-	    sprintf(filename,"%s/vol_forc-%d",
-		    OutName(front),front->step);
-	    if (pp_mynode() == 0)
-	        outfile = fopen(filename,"w");
+	    sprintf(filename,"%s/vol_forc-%d-%d",
+		    OutName(front),front->step,pp_mynode());
+	    outfile = fopen(filename,"w");
 	}
 
 	if (eqn_params->if_volume_force == NO)
 	    return;
 
 	static int Nr, N[MAXD];
-       	static int N0 = 6; //number of modes
 	static boolean first = YES;
 	static double eps; /*mean kinetic energy dissipation*/
 
@@ -4137,16 +4176,34 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	printf("top gmax %d %d %d \n", top_gmax[0], top_gmax[1], top_gmax[2] );
 	printf("global grid %d %d %d \n", global_grid->gmax[0], global_grid->gmax[1], global_grid->gmax[2] );
         printf("pp grid %d %d %d \n", pp_grid->gmax[0], pp_grid->gmax[1], pp_grid->gmax[2] );
-	printf("absolute grid info x->%d,%d y->%d,%d z->%d,%d \n", imin, imax, jmin, jmax, kmin, kmax);
-	printf("absoluet grid info x->%d,%d y->%d,%d z->%d,%d \n", lmin[0], lmax[0], lmin[1], lmax[1], lmin[2], lmax[2]);
+	printf("grid info ijk minmax->%d,%d y->%d,%d z->%d,%d \n", imin, imax, jmin, jmax, kmin, kmax);
+	printf("grid info l012 minmax->%d,%d y->%d,%d z->%d,%d \n", lmin[0], lmax[0], lmin[1], lmax[1], lmin[2], lmax[2]);
 	printf("size of  grid info x->%d y->%d z->%d %d \n", N[0], N[1], N[2], Nr);
 	//int pp_icoords[MAXD]; 
-	find_Cartesian_coordinates(pp_mynode(),pp_grid,pp_icoords);
         printf("find_Cartesian_coordinates %d %d %d \n", pp_icoords[0], pp_icoords[1], pp_icoords[2]);
+	printf("my rank %d \n",domain_id(pp_icoords,pp_grid->gmax,dim) );
         printf("my cooridnates x->%d,%d y->%d,%d z->%d,%d \n", N[0]*pp_icoords[0], N[0]*pp_icoords[0]+N[0]-1, 
 			                                       N[1]*pp_icoords[1], N[1]*pp_icoords[1]+N[1]-1, 
 							       N[2]*pp_icoords[2], N[2]*pp_icoords[2]+N[2]-1);
-	/**/
+	// decoding indices
+	// including halos	
+	for (int i = 0; i <= top_gmax[0]; i++)
+        for (int j = 0; j <= top_gmax[1]; j++)
+	for (int k = 0; k <= top_gmax[2]; k++)
+	// excluding halos
+	//for (int i = lmin[0]; i <= lmax[0]; i++)
+        //for (int j = lmin[1]; j <= lmax[1]; j++)
+	//for (int k = lmin[2]; k <= lmax[2]; k++)
+        {
+	    int icoords[3];
+	    icoords[0] = i; icoords[1] = j; icoords[2] = k;
+            int index0 = d_index(icoords,top_gmax,dim);
+	    int index1 = d_index3d(i,j,k,top_gmax);
+	    if (debugging("volume_force"))
+                printf("decoding indx %d,%d,%d %d %d  \n", i,j,k, index0,index1);
+	    //global_var[index1][0] = local_buff[index0];
+        }
+        /**/
 	
 
 	// define the heffte class and the input and output geometry
@@ -4184,7 +4241,8 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	    U.at(index).real( vel[0][index0] );
 	    V.at(index).real( vel[1][index0] );
 	    W.at(index).real( vel[2][index0] );
-            printf("index %d %f %f %f \n", index, U.at(index).real(),V.at(index).real(),W.at(index).real());
+	    if (debugging("volume_force"))
+                printf("U index %d %f %f %f \n", index, U.at(index).real(),V.at(index).real(),W.at(index).real());
 	    index++;
 	    //global_var[index1][0] = local_buff[index0];
         }
@@ -4217,13 +4275,17 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 		index1++;
 	}
         index = 0;
-        for (int i = lmin[0]; i <= lmax[0]; i++)
-        for (int j = lmin[1]; j <= lmax[1]; j++)
-	for (int k = lmin[2]; k <= lmax[2]; k++)
-        {
-            printf("heffte %d %f %f %f %f %f %f \n", index, Uhatrs.at(index).real(),Uhatrs.at(index).imag(),Vhatrs.at(index).real(),Vhatrs.at(index).imag(),Whatrs.at(index).real(),Whatrs.at(index).imag());
-            //printf("heffte %d %f %f %f %f %f %f \n", index, Uhat.at(index).real(),Uhat.at(index).imag(),Vhat.at(index).real(),Vhat.at(index).imag(),What.at(index).real(),What.at(index).imag());
+
+	if (debugging("volume_force")) 
+	{
+          for (int i = lmin[0]; i <= lmax[0]; i++)
+          for (int j = lmin[1]; j <= lmax[1]; j++)
+	  for (int k = lmin[2]; k <= lmax[2]; k++)
+          {
+            printf("Uhatrs heffte %d %f %f %f %f %f %f \n", index, Uhatrs.at(index).real(),Uhatrs.at(index).imag(),Vhatrs.at(index).real(),Vhatrs.at(index).imag(),Whatrs.at(index).real(),Whatrs.at(index).imag());
+            printf("Uhat   heffte %d %f %f %f %f %f %f \n", index, Uhat.at(index).real(),Uhat.at(index).imag(),Vhat.at(index).real(),Vhat.at(index).imag(),What.at(index).real(),What.at(index).imag());
 	    index++;
+	  }
 	}
         // vectors with the correct sizes to store the input data
 	std::vector<std::complex<double>> fxhat(fft.size_inbox());
@@ -4244,7 +4306,14 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	std::fill(fz.begin(),  fz.end(),  std::complex<double>(0.0, 0.0));
 
         /*construct forcing term in Fourier space*/
-	int icrds[MAXD], count = 0;
+	// TODO: calculation of forced indices can be done just once and maintained
+	// in a static vector
+	int icrds[MAXD], icrds_global[MAXD], count = 0;
+       	static int N0 = 6; //number of modes
+	int N_global_physical[MAXD] = {N[0]*pp_grid->gmax[0], 
+		                       N[1]*pp_grid->gmax[1], 
+				       N[2]*pp_grid->gmax[2]};
+	std::vector<int> forcing_indices; // maintain a list of indices that are forced for me
 	for (int i1 = -N0; i1 <= N0; i1++)
 	for (int j1 = -N0; j1 <= N0; j1++)
 	for (int k1 =   0; k1 <= N0; k1++)
@@ -4253,57 +4322,81 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 		continue;
 	    count ++;
 	    icrds[0] = i1; icrds[1] = j1; icrds[2] = k1;
+	    // since negative icrds are shifted by grid size 
 	    for (int l = 0; l < dim; l++)
             {
-                if (icrds[l] < 0)
-                    icrds[l] = N[l]+icrds[l];
+		icrds_global[l] = icrds[l];
+                if (icrds[l] < 0) 
+		{
+		    // local coordinate of the point of interest; required to figure out its index
+                    icrds[l] = icrds[l] + N[l] ;
+                    //global coordinate of the point of interest; required to figure out its MPI rank
+		    icrds_global[l] = N_global_physical[l]+icrds_global[l];
+		}
             }
 	    int index1 = icrds[2]+(N[2]/2+1)
-		    *(icrds[1]+N[1]*icrds[0]);
-	    double deno = sqr(Uhatrs.at(index1).real())+sqr(Uhatrs.at(index1).imag())
-                        + sqr(Vhatrs.at(index1).real())+sqr(Vhatrs.at(index1).imag())
-		        + sqr(Whatrs.at(index1).real())+sqr(Whatrs.at(index1).imag());
+		    *(icrds[1]+N[1]*icrds[0]);// atif: not convinced if this is being calculated correctly
+            // we should use this instead
+	    //int index0 = d_index(icrds,top_gmax,dim);
+	    
+	    int pp_coord[MAXD] = {icrds_global[0]/N[0], icrds_global[1]/N[1], icrds_global[2]/N[2]}; 
+	    int rank = domain_id(pp_coord,pp_grid->gmax,dim) ;
+	    if (pp_mynode() == rank) 
+		forcing_indices.push_back(index1);
+            
+	    // printf("mode %d %d,%d,%d %d,%d,%d %d,%d,%d\n",index1,i1,j1,k1, icrds_global[0],icrds_global[1],icrds_global[2], icrds[0],icrds[1],icrds[2] );
+	}
+
+	// for each rank calculate forces at the points with forcings
+	double one_by_2count = 1.0/(2.0*count);
+	for ( auto &pc : forcing_indices ) {
+	    double deno = sqr(Uhatrs.at(pc).real())+sqr(Uhatrs.at(pc).imag())
+                        + sqr(Vhatrs.at(pc).real())+sqr(Vhatrs.at(pc).imag())
+		        + sqr(Whatrs.at(pc).real())+sqr(Whatrs.at(pc).imag());
 	    double eps_by_deno = eps / deno;
-            fxhat.at(index1) = eps_by_deno * Uhatrs.at(index1);
-            fyhat.at(index1) = eps_by_deno * Vhatrs.at(index1);
-            fzhat.at(index1) = eps_by_deno * Whatrs.at(index1);
+            fxhat.at(pc) = eps_by_deno * Uhatrs.at(pc);
+            fyhat.at(pc) = eps_by_deno * Vhatrs.at(pc);
+            fzhat.at(pc) = eps_by_deno * Whatrs.at(pc);
 	   
 	    if (debugging("volume_force"))
 	    {
-		printf("index1 = %d, count = %d\n", index1,count);
-   	        printf("U[%d %d %d] = [%e %e], fx = [%e %e]\n",
-	        	i1,j1,k1,Uhatrs.at(index1).real(),Uhatrs.at(index1).imag(),
-	        	fxhat.at(index1).real(),fxhat.at(index1).imag());
-	        printf("V[%d %d %d] = [%e %e], fy = [%e %e]\n",
-	        	i1,j1,k1,Vhatrs.at(index1).real(),Vhatrs.at(index1).imag(),
-	        	fyhat.at(index1).real(),fyhat.at(index1).imag());
-	        printf("W[%d %d %d] = [%e %e], fz = [%e %e]\n",
-	        	i1,j1,k1,Whatrs.at(index1).real(),Whatrs.at(index1).imag(),
-	        	fzhat.at(index1).real(),fzhat.at(index1).imag());
+		printf("index1 = %d, count = %d\n", pc,count);
+   	        printf("U[] = [%e %e], fx = [%e %e]\n",
+	        	Uhatrs.at(pc).real(),Uhatrs.at(pc).imag(),
+	        	fxhat.at(pc).real(),fxhat.at(pc).imag());
+	        printf("V[] = [%e %e], fy = [%e %e]\n",
+	        	Vhatrs.at(pc).real(),Vhatrs.at(pc).imag(),
+	        	fyhat.at(pc).real(),fyhat.at(pc).imag());
+	        printf("W[] = [%e %e], fz = [%e %e]\n",
+	        	Whatrs.at(pc).real(),Whatrs.at(pc).imag(),
+	        	fzhat.at(pc).real(),fzhat.at(pc).imag());
 	    }
-        }
+	    fxhat.at(pc) = one_by_2count * fxhat.at(pc);    
+	    fyhat.at(pc) = one_by_2count * fyhat.at(pc);    
+	    fzhat.at(pc) = one_by_2count * fzhat.at(pc);    
+	}	
 
-	double one_by_2count = 1.0/(2.0*count);
-	for (int i = 0; i < N[0];   i++)
-        for (int j = 0; j < N[1];   j++)
-        for (int k = 0; k < N[2]/2+1; k++)
-        {
-            int index1 = k + (N[2]/2+1)*(j + N[1]*i);
-	    fxhat.at(index1) = one_by_2count * fxhat.at(index1);    
-	    fyhat.at(index1) = one_by_2count * fyhat.at(index1);    
-	    fzhat.at(index1) = one_by_2count * fzhat.at(index1);    
-        }
-
-	for (int id = 0; id < Nr; id++)
-            printf("fxhat %d %f %f %f %f %f %f \n", id, fxhat.at(id).real(),fxhat.at(id).imag(),fyhat.at(id).real(),fyhat.at(id).imag(),fzhat.at(id).real(),fzhat.at(id).imag());
+	fftw_complex fx_fftw[Nr];
+	if (debugging("volume_force"))
+	{
+	  for (int id = 0; id < Nr; id++) {
+	      fx_fftw[id][0] = fxhat.at(id).real(); 
+	      fx_fftw[id][1] = fxhat.at(id).imag(); 
+              printf("fxhat %d %f %f %f %f %f %f fftw %f %f \n", id, fxhat.at(id).real(),fxhat.at(id).imag(),fyhat.at(id).real(),fyhat.at(id).imag(),fzhat.at(id).real(),fzhat.at(id).imag(), fx_fftw[id][0],fx_fftw[id][1]);
+	  }
+	}
 
 	// perform a backward DFT
 	fft.backward(fxhat.data(), fx.data());//, heffte::scale::full 
 	fft.backward(fyhat.data(), fy.data());//, heffte::scale::full 
 	fft.backward(fzhat.data(), fz.data());//, heffte::scale::full 
 	
-	for (int id = 0; id < Nr; id++)
-            printf("fx %d %f %f %f %f %f %f \n", id, fx.at(id).real(),fx.at(id).imag(),fy.at(id).real(),fy.at(id).imag(),fz.at(id).real(),fz.at(id).imag());
+	if (debugging("volume_force"))
+	{
+          fftnd(fx_fftw,dim,N,-1);
+	  for (int id = 0; id < Nr; id++)
+            printf("fx %d %f %f %f %f %f %f fftw %f %f \n", id, fx.at(id).real(),fx.at(id).imag(),fy.at(id).real(),fy.at(id).imag(),fz.at(id).real(),fz.at(id).imag(), fx_fftw[id][0],fx_fftw[id][1]);
+	}
 
 	if (debugging("volume_force"))
 	{
@@ -4327,6 +4420,8 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
         for (int k = lmin[2]; k <= lmax[2]; k++)
 	{
 	    int index0 = d_index3d(i,j,k,top_gmax);
+	    if (debugging("volume_force"))
+              printf("ext_accel %d %d %d %d %d %f %f %f \n", index,index0,i,j,k, fx.at(index).real(),fy.at(index).real(),fz.at(index).real() );
 	    ext_accel[0][index0] = fx.at(index).real();
 	    ext_accel[1][index0] = fy.at(index).real();
 	    ext_accel[2][index0] = fz.at(index).real();
@@ -4344,9 +4439,10 @@ void VCARTESIAN::computeVolumeForceFourierHeffte()
 	stop_clock("volume_force");
         gettimeofday(&tv2, NULL);
         time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
-        printf("VCARTESIAN::computeVolumeForceFourier() : part 4 : %f eps_in %d\n", time, eps_in);
+        printf("VCARTESIAN::computeVolumeForceFourierHeffte() : part 4 : %f eps_in %d\n", time, eps_in);
 
 	fflush(stdout);
+	if (debugging("volume_force"))
 	exit(0);
 }
 
@@ -4521,6 +4617,7 @@ void VCARTESIAN::computeVolumeForceFourier()
                      fx[index1][0] = fx[index1][1] = 0.0;
                      fy[index1][0] = fy[index1][1] = 0.0;
                      fz[index1][0] = fz[index1][1] = 0.0;
+		     if (debugging("volume_force"))
 		     printf("input %d %f %f %f\n", index1,U[index1][0],V[index1][0],W[index1][0] );
                 }
                 
@@ -4529,10 +4626,13 @@ void VCARTESIAN::computeVolumeForceFourier()
                 fftnd(V,dim,N,1);
                 fftnd(W,dim,N,1);
 
-		for (index1 = 0; index1 < Nr; index1++)
+		if (debugging("volume_force"))
+		{
+		  for (index1 = 0; index1 < Nr; index1++)
 		     printf("fftw %d %f %f %f %f %f %f\n", index1,U[index1][0],
 	               U[index1][1],V[index1][0],V[index1][1],W[index1][0],W[index1][1] );
-               
+		}
+
 		/*construct forcing term in Fourier space*/
 	 	count = 0;
 		for (i1 = -N0; i1 <= N0; i1++)
@@ -4587,17 +4687,22 @@ void VCARTESIAN::computeVolumeForceFourier()
                     }
                 }
 
-		for (int id = 0; id < Nr; id++)
+		if (debugging("volume_force"))
+		{
+		  for (int id = 0; id < Nr; id++)
 		     printf("fxhat %d %f %f %f %f %f %f\n", id,fx[id][0],
 	               fx[id][1],fy[id][0],fy[id][1],fz[id][0],fz[id][1] );
+		}
 		/*Transform force back to physical space*/
 		fftnd(fx,dim,N,-1);
         	fftnd(fy,dim,N,-1);
         	fftnd(fz,dim,N,-1);
-		for (int id = 0; id < Nr; id++)
+		if (debugging("volume_force"))
+		{
+		  for (int id = 0; id < Nr; id++)
 		     printf("fx %d %f %f %f %f %f %f\n", id,fx[id][0],
 	               fx[id][1],fy[id][0],fy[id][1],fz[id][0],fz[id][1] );
-        
+		} 
 		if (debugging("volume_force"))
 		{
 		    for (k = 0; k < N[2]; k++)
@@ -4645,6 +4750,7 @@ void VCARTESIAN::computeVolumeForceFourier()
         time = (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec);
         printf("VCARTESIAN::computeVolumeForceFourier() : part 4 : %f eps_in %d\n", time, eps_in);
 
+	if (debugging("volume_force"))
 	exit(0);
 	return;
 }

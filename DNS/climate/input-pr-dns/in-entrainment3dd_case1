@@ -1,7 +1,7 @@
 Domain limit in 0-th dimension: 0 0.512 
 Domain limit in 1-th dimension: 0 0.512
 Domain limit in 2-th dimension: 0 0.512
-Computational grid: 8 16 32
+Computational grid: 256 256 256
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -80,7 +80,7 @@ Type y to make vector velocity field movie: n
 ************Debugging options*****************
 
 Enter yes for debugging: yes 
-Enter the debugging string: volume_force 
+Enter the debugging string: tvolume_force 
 Enter the debugging string: tMPIIO
 Enter the debugging string: PETSc
 Enter the debugging string: tparticles 

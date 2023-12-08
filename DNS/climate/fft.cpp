@@ -131,7 +131,7 @@ int one_dim_test()
 
 	for (i = 0; i < N; i++)
 	{
-	    mycomplex[i][0] = 0.7*sin(2*M_PI*50*i/(N-1))+sin(2*M_PI*120*i/(N-1));
+	    mycomplex[i][0] = i;//0.7*sin(2*M_PI*50*i/(N-1))+sin(2*M_PI*120*i/(N-1));
 	    mycomplex[i][1] = 0.0;
 	}
 
@@ -139,7 +139,88 @@ int one_dim_test()
 	fftnd(mycomplex,1,dim,1);
 	printMatrix("fft1d_fft",mycomplex,N);
 	fftnd(mycomplex,1,dim,-1);
+	//printMatrix("fft1d_ifft",mycomplex,N);
+	fftnd(mycomplex,1,dim,-1);
 	printMatrix("fft1d_ifft",mycomplex,N);
+	return 1;
+}
+
+int one_dim_ifft_test()
+{
+	const static int N = 100;
+	fftw_complex mycomplex[N];
+	int dim[1];
+	dim[0] = N;
+	
+	FILE *file;
+	int i;
+
+	for (i = 0; i < N; i++)
+	{
+	    mycomplex[i][0] = i;
+	    mycomplex[i][1] = 0.0;
+	}
+
+	printMatrix("fft1d_input",mycomplex,N);
+	fftnd(mycomplex,1,dim,-1);
+	printMatrix("fft1d_ifft",mycomplex,N);
+
+	fftw_complex fftcomplex[N];
+
+        fftcomplex[0 ][0] = 49.500000; fftcomplex[0 ][1] = 0.000000; 
+        fftcomplex[1 ][0] = -0.500000; fftcomplex[1 ][1] = 15.910258;
+        fftcomplex[2 ][0] = -0.500000; fftcomplex[2 ][1] = 7.947272;
+        fftcomplex[3 ][0] = -0.500000; fftcomplex[3 ][1] = 5.289447;
+        fftcomplex[4 ][0] = -0.500000; fftcomplex[4 ][1] = 3.957908;
+        fftcomplex[5 ][0] = -0.500000; fftcomplex[5 ][1] = 3.156876;
+        fftcomplex[6 ][0] = -0.500000; fftcomplex[6 ][1] = 2.621092;
+        fftcomplex[7 ][0] = -0.500000; fftcomplex[7 ][1] = 2.236871;
+        fftcomplex[8 ][0] = -0.500000; fftcomplex[8 ][1] = 1.947371;
+        fftcomplex[9 ][0] = -0.500000; fftcomplex[9 ][1] = 1.721011;
+        fftcomplex[10][0] = -0.500000; fftcomplex[10][1] = 1.538842;
+        fftcomplex[11][0] = -0.500000; fftcomplex[11][1] = 1.388803;
+        fftcomplex[12][0] = -0.500000; fftcomplex[12][1] = 1.262856;
+        fftcomplex[13][0] = -0.500000; fftcomplex[13][1] = 1.155432;
+        fftcomplex[14][0] = -0.500000; fftcomplex[14][1] = 1.062554;
+        fftcomplex[15][0] = -0.500000; fftcomplex[15][1] = 0.981305;
+        fftcomplex[16][0] = -0.500000; fftcomplex[16][1] = 0.909497;
+        fftcomplex[17][0] = -0.500000; fftcomplex[17][1] = 0.845454;
+        fftcomplex[18][0] = -0.500000; fftcomplex[18][1] = 0.787874;
+        fftcomplex[19][0] = -0.500000; fftcomplex[19][1] = 0.735728;
+        fftcomplex[20][0] = -0.500000; fftcomplex[20][1] = 0.688191;
+        fftcomplex[21][0] = -0.500000; fftcomplex[21][1] = 0.644596;
+        fftcomplex[22][0] = -0.500000; fftcomplex[22][1] = 0.604396;
+        fftcomplex[23][0] = -0.500000; fftcomplex[23][1] = 0.567139;
+        fftcomplex[24][0] = -0.500000; fftcomplex[24][1] = 0.532446;
+        fftcomplex[25][0] = -0.500000; fftcomplex[25][1] = 0.500000;
+        fftcomplex[26][0] = -0.500000; fftcomplex[26][1] = 0.469531;
+        fftcomplex[27][0] = -0.500000; fftcomplex[27][1] = 0.440809;
+        fftcomplex[28][0] = -0.500000; fftcomplex[28][1] = 0.413636;
+        fftcomplex[29][0] = -0.500000; fftcomplex[29][1] = 0.387840;
+        fftcomplex[30][0] = -0.500000; fftcomplex[30][1] = 0.363271;
+        fftcomplex[31][0] = -0.500000; fftcomplex[31][1] = 0.339800;
+        fftcomplex[32][0] = -0.500000; fftcomplex[32][1] = 0.317310;
+        fftcomplex[33][0] = -0.500000; fftcomplex[33][1] = 0.295699;
+        fftcomplex[34][0] = -0.500000; fftcomplex[34][1] = 0.274877;
+        fftcomplex[35][0] = -0.500000; fftcomplex[35][1] = 0.254763;
+        fftcomplex[36][0] = -0.500000; fftcomplex[36][1] = 0.235282;
+        fftcomplex[37][0] = -0.500000; fftcomplex[37][1] = 0.216369;
+        fftcomplex[38][0] = -0.500000; fftcomplex[38][1] = 0.197964;
+        fftcomplex[39][0] = -0.500000; fftcomplex[39][1] = 0.180011;
+        fftcomplex[40][0] = -0.500000; fftcomplex[40][1] = 0.162460;
+        fftcomplex[41][0] = -0.500000; fftcomplex[41][1] = 0.145263;
+        fftcomplex[42][0] = -0.500000; fftcomplex[42][1] = 0.128378;
+        fftcomplex[43][0] = -0.500000; fftcomplex[43][1] = 0.111763;
+        fftcomplex[44][0] = -0.500000; fftcomplex[44][1] = 0.095380;
+        fftcomplex[45][0] = -0.500000; fftcomplex[45][1] = 0.079192;
+        fftcomplex[46][0] = -0.500000; fftcomplex[46][1] = 0.063165;
+        fftcomplex[47][0] = -0.500000; fftcomplex[47][1] = 0.047264;
+        fftcomplex[48][0] = -0.500000; fftcomplex[48][1] = 0.031457;
+        fftcomplex[49][0] = -0.500000; fftcomplex[49][1] = 0.015713;
+        fftcomplex[50][0] = -0.500000; fftcomplex[50][1] = 0.0;
+	printMatrix("fft1d_nice_ifft",fftcomplex,N);
+	fftnd(fftcomplex,1,dim,-1);
+	printMatrix("fft1d_nice_fft",fftcomplex,N);
 	return 1;
 }
 
@@ -201,7 +282,7 @@ int three_dim_test()
 int three_dim_ifft_test()
 {
 	//const static int Nx = 8, Ny = 1, Nz = 1;//1
-	const static int Nx = 4, Ny = 4, Nz = 4;
+	const static int Nx = 8, Ny = 4, Nz = 4;
 	int i,j,k,index;
 	FILE *file;
 	double wn, L = 1.0;
@@ -209,15 +290,24 @@ int three_dim_ifft_test()
 	dim[0] = Nx; dim[1] = Ny; dim[2] = Nz;
 
 	fftw_complex myarray[Nx*Ny*Nz];
-
-	for (i = 0; i < Nx; i++)
-	for (j = 0; j < Ny; j++)
-	for (k = 0; k < Nz; k++)
+	//for (i = 0; i < Nx; i++)
+	//for (j = 0; j < Ny; j++)
+	//for (k = 0; k < Nz; k++)
+        for (k = 3; k < Nx*Ny*Nz; k++) 	
 	{
 	    index = Nx*(Ny * k + j) + i;
-	    myarray[index][0] = 64-index;//cos(2*M_PI*i/Nx)*cos(2*M_PI*j/Ny)*sin(2*M_PI*k/Nz); 
-	    myarray[index][1] = 0.0;
+	    myarray[k][0] = 0*index;//cos(2*M_PI*i/Nx)*cos(2*M_PI*j/Ny)*sin(2*M_PI*k/Nz); 
+	    myarray[k][1] = 0.0;
 	}
+	myarray[0][0] = 64;
+        myarray[0][1] = 0;
+        myarray[1][0] = 32;
+        myarray[1][1] = 0;
+        //myarray[2][0] = 16;
+        //myarray[2][1] = 0;
+        //myarray[3][0] = 8;
+        //myarray[3][1] = 0;
+
 	printMatrix("fft3d_input",myarray,Nx*Ny*Nz);
 	fftnd(myarray,3,dim,-1);
 	printMatrix("fft3d_ifft",myarray,Nx*Ny*Nz);
