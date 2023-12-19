@@ -1,7 +1,7 @@
 Domain limit in 0-th dimension: 0 1.024 
 Domain limit in 1-th dimension: 0 1.024
 Domain limit in 2-th dimension: 0 1.024
-Computational grid: 512 512 512
+Computational grid: 256 256 256
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -52,7 +52,7 @@ Enter pc_hypre_boomeramg_strong_threshold: 0.5
 Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
-Enter phase state of water drop: I
+Enter phase state of water drop: W
 Enter number of water drops: 100000000 
 Enter density of water drops: 1000
 Two methods for initialization:
