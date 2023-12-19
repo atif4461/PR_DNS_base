@@ -346,6 +346,7 @@ public:
 	void computeVolumeForce();
 	void computeVolumeForceFourier();
 	void computeVolumeForceFourierHeffte();
+	void computeVolumeForceFourierHefftePlain();
 	void computeVolumeForceLinear();
 	double computeDspRate();
 	double computeDspRateLinear();
