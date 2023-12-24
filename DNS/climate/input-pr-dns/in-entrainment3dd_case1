@@ -9,13 +9,18 @@ Upper boundary in 1-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 2-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 2-th dimension: PERIODIC_BOUNDARY
 
-Max time: 1
-Max step: 1000000000
+Max time: 4.99
+Max step: 40
 Print interval: 0.1
 Movie frame interval: 0.5 
 CFL factor: 0.75
 Redistribution interval: 10000000
 Type yes to turn off auto-redistribution: y
+
+******************PETSc flags from Vanessa***********
+Enter PETSc Hypre preconditioner flag (0/1): 0
+Enter pc_hypre_boomeramg_strong_threshold: 0.5
+Enter PETSc cuda flag (0/1): 0
 
 Enter problem type: ENTRAINMENT 
 Enter case type: 1
@@ -47,7 +52,7 @@ Enter pc_hypre_boomeramg_strong_threshold: 0.5
 Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
-Enter phase state of water drop: I
+Enter phase state of water drop: W
 Enter number of water drops: 10000000 
 Enter density of water drops: 1000
 Two methods for initialization:

@@ -1069,26 +1069,50 @@ void VCARTESIAN::computeAdvectionCN(COMPONENT sub_comp,double* Temp,const double
 // 		computeSourceTerm();
 void VCARTESIAN::solve(double dt)
 {
+        struct timeval tv1,tv2,tv3,tv4,tv5,tv6,tv7;
 	if (debugging("trace")) printf("Entering solve()\n");
 	m_dt = dt;
 	start_clock("solve");
 
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv1, NULL);
+#endif
 	setDomain();
         if (debugging("trace")) printf("Passing setDomain()\n");
-
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv2, NULL);
+#endif
 	setComponent();
 	if (debugging("trace")) printf("Passing setComponent()\n");
-	
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv3, NULL);
+#endif
 	computeSource();
 	if (debugging("trace")) printf("Passing computeSource()\n");
-	
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv4, NULL);
+#endif
 	computeAdvection();
 	if (debugging("trace")) printf("Passing computeAdvection()\n");
-	
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv5, NULL);
+#endif
 	computeSupersat();
 	if (debugging("trace")) printf("Passing computeSupersat()\n");
-
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv6, NULL);
+#endif
 	setAdvectionDt();
+#ifdef __PRDNS_TIMER__
+        gettimeofday(&tv7, NULL);
+        printf("\n atif13 setDomain                                 :  %10.2f", (tv2.tv_usec - tv1.tv_usec)/1000000.0 + (tv2.tv_sec - tv1.tv_sec));
+        printf("\n atif14 setComponent                              :  %10.2f", (tv3.tv_usec - tv2.tv_usec)/1000000.0 + (tv3.tv_sec - tv2.tv_sec));
+        printf("\n atif15 computeSource                             :  %10.2f", (tv4.tv_usec - tv3.tv_usec)/1000000.0 + (tv4.tv_sec - tv3.tv_sec));
+        printf("\n atif16 computeAdvection                          :  %10.2f", (tv5.tv_usec - tv4.tv_usec)/1000000.0 + (tv5.tv_sec - tv4.tv_sec));
+        printf("\n atif17 computeSupersat                           :  %10.2f", (tv6.tv_usec - tv5.tv_usec)/1000000.0 + (tv6.tv_sec - tv5.tv_sec));
+        printf("\n atif18 setAdvection                              :  %10.2f \n", (tv7.tv_usec - tv6.tv_usec)/1000000.0 + (tv7.tv_sec - tv6.tv_sec));
+#endif
+
 	if (debugging("trace")) printf("Passing setAdvectionDt()\n");
 	stop_clock("solve");
 
@@ -1985,6 +2009,7 @@ void VCARTESIAN::recordParticles(char* filename, PARTICLE* particle_array, int n
 	int my_node = pp_mynode();
 	int total_particles = num_particles;
 	long *offset = new long[num_nodes]();
+        double timer[3];
 
 	pp_gsync();
 	pp_global_isum(&total_particles,1);
@@ -2043,12 +2068,12 @@ void VCARTESIAN::recordParticles(char* filename, PARTICLE* particle_array, int n
 		buffer[j+1] = particle_array[i].center[j];
 		buffer[j+4] = particle_array[i].vel[j];
 		FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->vel[j],getStateVel[j],buffer+9+j,NULL);
+					field->vel[j],getStateVel[j],buffer+9+j,NULL,timer);
 	    }
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->supersat,NULL,buffer+7,NULL);
+					field->supersat,NULL,buffer+7,NULL,timer);
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP2,particle_array[i].center,
-					field->temperature,NULL,buffer+8,NULL);
+					field->temperature,NULL,buffer+8,NULL,timer);
 	    MPI_File_write(fh, buffer, num_cols, MPI_DOUBLE, &status);
 	}
 	delete[] offset;
@@ -2764,6 +2789,7 @@ void VCARTESIAN::recordCondensationRate(char* outname){
 	char filename[256];
 	FILE* ofile;
 	static boolean first = YES;
+        double timer[3];
 
 	for (i = 0; i < dim; i++)
 	    domain_volume *= (U[i]-L[i]);
@@ -2776,7 +2802,7 @@ void VCARTESIAN::recordCondensationRate(char* outname){
 		index = d_index(ic,top_gmax,dim);
 		s = field->supersat[index];
 		FT_IntrpStateVarAtCoords(front,LIQUID_COMP,coords,
-                                field->supersat,getStateSuper,&s,&s);
+                                field->supersat,getStateSuper,&s,&s,timer);
 		Cd_mean += R * s;
 	}
 	pp_gsync();
@@ -3317,6 +3343,7 @@ void VCARTESIAN::recordLagrangSupersat(const char *out_name)
 	int i,bin_num,index,ic[MAXD];
 	static double *supersat_array;
 	static int max_array_size = 0;
+        double timer[3];
 	
  	if (debugging("trace"))	
 	    printf("Entering record Lagrang supersaturation\n");
@@ -3349,7 +3376,7 @@ void VCARTESIAN::recordLagrangSupersat(const char *out_name)
 	    index = d_index(ic,top_gmax,dim);
 	    s = field->supersat[index];
 	    FT_IntrpStateVarAtCoords(front,LIQUID_COMP,center,
-                                field->supersat,getStateSuper,&s,&s);
+                                field->supersat,getStateSuper,&s,&s,timer);
 	    supersat_array[count++] = s;
 	}
 	bin_num = 200;

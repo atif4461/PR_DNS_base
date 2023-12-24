@@ -970,11 +970,12 @@ void HYPERB_SOLVER::setNeumannStates(
 		v[j] = 2.0*vn*nor[j] - v[j];
 	    for (j = 0; j < dim; ++j)
 		coords_ref[j] = crx_coords[j] + v[j];
-			
+		
+            double timer[3]={0.};	    
 	    /* Interpolate the state at the reflected point */
 	    for (j = 0; j < dim; ++j)
 	    	FT_IntrpStateVarAtCoords(front,comp,coords_ref,m_vst->vel[j],
-			getStateVel[j],&v_tmp[j],&m_vst->vel[j][index]);
+			getStateVel[j],&v_tmp[j],&m_vst->vel[j][index],timer);
 
 		/* Galileo Transformation */
 	    vn = 0.0;

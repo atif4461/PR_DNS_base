@@ -1148,7 +1148,7 @@ EXPORT	const char	*node_status_as_string(
 
 EXPORT void print_front_output(
 	Front *front,
-	char *out_name)
+	char *out_name1)
 {
 	FILE *out_file;
 	char intfc_name[200],comp_name[200];
@@ -1157,7 +1157,7 @@ EXPORT void print_front_output(
 	int numnodes = pp_numnodes();
 	boolean save_binary_output = is_binary_output();
 
-	sprintf(intfc_name,"%s/intfc-ts%s",out_name,right_flush(step,7));
+	sprintf(intfc_name,"%s/intfc-ts%s",out_name1,right_flush(step,7));
 	if (numnodes > 1)
 	    sprintf(intfc_name,"%s-nd%s",intfc_name,right_flush(pp_mynode(),4));
 
@@ -1169,7 +1169,7 @@ EXPORT void print_front_output(
 	fclose(out_file);
 	if (front->rect_grid->dim == 2 && debugging("component"))
 	{
-	    sprintf(comp_name,"%s/comp.ts%s",out_name,right_flush(step,7));
+	    sprintf(comp_name,"%s/comp.ts%s",out_name1,right_flush(step,7));
 	    if (numnodes > 1)
 	        sprintf(comp_name,"%s-nd%s",comp_name,right_flush(pp_mynode(),
 					4));
@@ -1183,7 +1183,7 @@ EXPORT void print_front_output(
 
 LOCAL	void show_front_vtk(
 	Front *front,
-        char *out_name,
+        char *out_name1,
         boolean print_in_binary)
 {
 	char dirname[256];
@@ -1201,8 +1201,8 @@ LOCAL	void show_front_vtk(
 
 	/* Create vtk directories */
 
-        sprintf(vdirname,"%s/vtk",out_name);
-        sprintf(dirname,"%s/vtk",out_name);
+        sprintf(vdirname,"%s/vtk",out_name1);
+        sprintf(dirname,"%s/vtk",out_name1);
 	if (pp_mynode() == 0)
 	{
 	    if (!create_directory(dirname,YES))
@@ -1315,7 +1315,7 @@ LOCAL	void show_front_vtk(
 
 LOCAL	void show_front_hdf(
 	Front *front,
-        char *out_name)
+        char *out_name1)
 {
 	char dirname[256];
         int step = front->step; 
@@ -1325,7 +1325,7 @@ LOCAL	void show_front_hdf(
 	if (dim == 1) return;
 #if defined(USE_HDF)
 	/* Create HDF directory */
-	sprintf(dirname,"%s/hdf",out_name);
+	sprintf(dirname,"%s/hdf",out_name1);
 	if (first && pp_mynode() == 0)
 	{
 	    if (!create_directory(dirname,NO))
@@ -1374,7 +1374,7 @@ LOCAL	void show_front_hdf(
 
 LOCAL	void show_front_gv(
 	Front *front,
-        char *out_name)
+        char *out_name1)
 {
 	char dirname[256];
         int step = front->step; 
@@ -1385,7 +1385,7 @@ LOCAL	void show_front_gv(
 	if (dim == 1) return;
 
 	/* Create GV directory */
-	sprintf(dirname,"%s/gview",out_name);
+	sprintf(dirname,"%s/gview",out_name1);
 	if (first && pp_mynode() == 0)
 	{
 	    first = NO;
@@ -1402,7 +1402,7 @@ LOCAL	void show_front_gv(
 	gview_plot_interface(dirname,front->interf);
 	if (front->print_gview_color == YES)
 	{
-	    sprintf(dirname,"%s/gview",out_name);
+	    sprintf(dirname,"%s/gview",out_name1);
 	    sprintf(dirname,"%s/gv-color.ts%s",dirname,right_flush(step,7));
             if (numnodes > 1)
             	sprintf(dirname,"%s-nd%s",dirname,right_flush(pp_mynode(),4));
@@ -1425,7 +1425,7 @@ LOCAL	void show_front_gv(
 
 EXPORT	void gview_var2d_on_top_grid(
 	Front *front,
-        char *out_name)
+        char *out_name1)
 {
 	char dirname[256];
         int step = front->step; 
@@ -1433,7 +1433,7 @@ EXPORT	void gview_var2d_on_top_grid(
 
 	if (dim == 3 || dim == 1) return;
 	/* Create GV directory */
-	sprintf(dirname,"%s/gview",out_name);
+	sprintf(dirname,"%s/gview",out_name1);
 	if (pp_mynode() == 0)
 	{
 	    if (!create_directory(dirname,NO))
@@ -1457,7 +1457,7 @@ EXPORT	void gview_var2d_on_top_grid(
 
 LOCAL	void show_front_xg(
 	Front *front,
-        char *out_name)
+        char *out_name1)
 {
 	char dirname[256];
         int dim = front->rect_grid->dim;
@@ -1472,7 +1472,7 @@ LOCAL	void show_front_xg(
 
 	if (dim > 1) return; /* not for 2,3-D */
 
-	sprintf(dirname,"%s/xg",out_name);
+	sprintf(dirname,"%s/xg",out_name1);
 	if (first)
 	{
 	    if (!create_directory(dirname,NO))
@@ -1590,7 +1590,7 @@ LOCAL   void xgraph_plot_var(
 
 LOCAL	void show_front_gd(
 	Front *front,
-        char *out_name)
+        char *out_name1)
 {
 	char dirname[256];
         int dim = front->rect_grid->dim;
@@ -1599,7 +1599,7 @@ LOCAL	void show_front_gd(
 #if defined(__GD__)
 	if (dim > 2 || pp_numnodes() > 1) return; /* not for 1,3-D */
 						   /* not for parallel */
-	sprintf(dirname,"%s/gd",out_name);
+	sprintf(dirname,"%s/gd",out_name1);
 	if (first)
 	{
 	    if (!create_directory(dirname,NO))
@@ -1617,14 +1617,14 @@ LOCAL	void show_front_gd(
 
 LOCAL	void show_front_sdl(
 	Front *front,
-        char *out_name)
+        char *out_name1)
 {
 	char dirname[256];
 	int step = front->step;
 
 	if (!front->print_sdl_file)
 	    return;
-	sprintf(dirname,"%s/sdl/sdl.ts%s",out_name,right_flush(step,7));
+	sprintf(dirname,"%s/sdl/sdl.ts%s",out_name1,right_flush(step,7));
 	if (pp_numnodes() > 1)
             sprintf(dirname,"%s-nd%s",dirname,right_flush(pp_mynode(),4));
 	if (!create_directory(dirname,NO))
@@ -1637,16 +1637,16 @@ LOCAL	void show_front_sdl(
 
 EXPORT  void show_front_output(
         Front *front,
-        char *out_name,
+        char *out_name1,
 	boolean print_in_binary)
 {   
-	//show_front_gd(front,out_name);
-	//show_front_xg(front,out_name);
-	show_front_hdf(front,out_name);
-	//show_front_gv(front,out_name);
+	//show_front_gd(front,out_name1);
+	//show_front_xg(front,out_name1);
+	show_front_hdf(front,out_name1);
+	//show_front_gv(front,out_name1);
 	
-	show_front_vtk(front,out_name,print_in_binary);	
-	//show_front_sdl(front,out_name);
+	show_front_vtk(front,out_name1,print_in_binary);	
+	//show_front_sdl(front,out_name1);
 }       /* end show_front_output */
 
 #if defined(USE_HDF)
@@ -3152,6 +3152,7 @@ LOCAL	void	hdf_plot_var2d(
 	int		pheight;
 	int		i, j, k;
 	double           coords[MAXD];
+	double           timer[3];
 	double           *U;
 	double           *L;
 	double           *PU;
@@ -3266,7 +3267,7 @@ LOCAL	void	hdf_plot_var2d(
 		continue;
 	    }
 	    FT_IntrpStateVarAtCoords(front,c,coords,var,get_state_var,
-					var_val+k,NULL);
+					var_val+k,NULL,timer);
 	    if (var_val[k] < min_val)
 		min_val = var_val[k];
 	    if (var_val[k] > max_val)
@@ -3397,6 +3398,7 @@ LOCAL	void	hdf_plot_var3d(
 	int		pheight;
 	int		i, j, k;
 	double           coords[MAXD];
+	double           timer[3];
 	double           L[2],U[2],PL[2],PU[2];
 	double           hx,hy;
  	RECT_GRID       *gr = front->rect_grid;
@@ -3485,7 +3487,7 @@ LOCAL	void	hdf_plot_var3d(
 	    k = j + (height - i - 1)*width;
 	    if (comps[k] == obs_comp) continue;
 	    FT_IntrpStateVarAtCoords(front,comps[k],coords,var,
-				get_state_var,var_val+k,NULL);
+				get_state_var,var_val+k,NULL,timer);
 	    if (var_val[k] < min_val) min_val = var_val[k];
 	    if (var_val[k] > max_val) max_val = var_val[k];
 	}
