@@ -1,0 +1,5 @@
+./DNS/Makefile
+./DNS/climate/Makefile
+./DNS/iFluid/Makefile
+./DNS/solver/Makefile
+./DNS/src/Makefile
