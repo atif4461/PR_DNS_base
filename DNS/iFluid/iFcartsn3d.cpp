@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *******************************************************************/
 #include "iFluid.h"
 #include "solver.h"
+#include <iostream>
 
 //--------------------------------------------------------------------------
 // 		   Incompress_Solver_Smooth_3D_Cartesian	
@@ -2027,6 +2028,90 @@ static int parab_find_state_at_crossing(
 	    clean_up(ERROR);
         }
 }	/* end parab_find_state_at_crossing */
+
+void Incompress_Solver_Smooth_3D_Cartesian::setParallelVelocityParallelized(void)
+{
+        FILE *infile;
+        int i,j,id,k,l,index,G_index;
+        char fname[100];
+        COMPONENT comp;
+        double coords[MAXD];
+        int size = (int)cell_center.size();
+        int myid = pp_mynode();
+        int numprocs = pp_numnodes();
+
+        int G_icoords[MAXD],pp_icoords[MAXD],icoords[MAXD];
+        int local_gmax[MAXD], global_gmax[MAXD];
+        int G_size, L_size;
+        PP_GRID *pp_grid = front->pp_grid;
+        double *local_L = pp_grid->Zoom_grid.L;
+        double *local_U = pp_grid->Zoom_grid.U;
+        double *U_buff, *V_buff, *W_buff;
+	int U_tag = 5647;
+	find_Cartesian_coordinates(pp_mynode(),pp_grid,pp_icoords);
+
+	if(debugging("trace"))
+	    printf("Entering setParallelVelocityParallelized()\n");
+
+	int num_grid_points[3];
+        for (i = 0; i < dim; i++)
+        {
+            global_gmax[i] = pp_grid->Global_grid.gmax[i]-1;
+            local_gmax[i] = pp_grid->Zoom_grid.gmax[i]-1;
+	    num_grid_points[i] = local_gmax[i] + 1;
+        }
+
+        FT_MakeGridIntfc(front);
+        setDomain();
+        G_size = 1;
+        L_size = 1;
+        for (i = 0; i < dim; i++)
+        {
+            G_size = G_size * (global_gmax[i]+1);
+            L_size = L_size * (top_gmax[i]+1);
+        }
+	//TODO atif redundant memory U,V,W_buff
+        uni_array(&U_buff,L_size,sizeof(double));
+        uni_array(&V_buff,L_size,sizeof(double));
+        uni_array(&W_buff,L_size,sizeof(double));
+	if (setInitialVelocityHeffte != NULL)
+            (*setInitialVelocityHeffte)(comp,pp_grid->Global_grid.gmax,
+	    		   U_buff,V_buff,W_buff,pp_icoords,num_grid_points,
+	    		   &(pp_grid->Global_grid),iFparams);
+        for (i = 0; i < L_size; i++)
+        {
+            field->vel[0][i] = U_buff[i];
+            field->vel[1][i] = V_buff[i];
+            field->vel[2][i] = W_buff[i];
+        }
+
+
+        m_rho[0] = iFparams->rho1;
+        m_rho[1] = iFparams->rho2;
+        m_mu[0] = iFparams->mu1;
+        m_mu[1] = iFparams->mu2;
+        m_comp[0] = iFparams->m_comp1;
+        m_comp[1] = iFparams->m_comp2;
+        m_smoothing_radius = iFparams->smoothing_radius;
+        m_sigma = iFparams->surf_tension;
+        mu_min = rho_min = HUGE;
+        for (i = 0; i < 2; ++i)
+        {
+            if (ifluid_comp(m_comp[i]))
+            {
+                mu_min = std::min(mu_min,m_mu[i]);
+                rho_min = std::min(rho_min,m_rho[i]);
+            }
+        }
+        FT_FreeThese(3,U_buff,V_buff,W_buff);
+
+        computeGradientQ();
+        copyMeshStates();
+        setAdvectionDt();
+	if(debugging("trace"))
+	    printf("Entering setParallelVelocityParallelized()\n");
+}
+
 
 void Incompress_Solver_Smooth_3D_Cartesian::setParallelVelocity(void)
 {

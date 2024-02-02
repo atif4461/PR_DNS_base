@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <iostream>
 #include <sched.h>
 #include <omp.h>
+#include "heffte.h"
         /*  Function Declarations */
 static void zero_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
 static void rand_state(COMPONENT,double*,IF_FIELD*,int,int,IF_PARAMS*);
@@ -39,6 +40,8 @@ static void Fourier_state(COMPONENT,int*,double*,double*,double*,
 			RECT_GRID*,IF_PARAMS*);
 static void Rogallo_state(COMPONENT,int*,double*,double*,double*,
 			RECT_GRID*,IF_PARAMS*);
+static void Rogallo_state_heffte(COMPONENT,int*,double*,double*,double*,
+			int*,int*,RECT_GRID*,IF_PARAMS*);
 static double intrp_between(double,double,double,double,double);
 static double (*getStateVel[MAXD])(POINTER) = {getStateXvel,getStateYvel,
                                         getStateZvel};
@@ -415,6 +418,8 @@ void init_fluid_state_func(
 		break;
 	    case FOURIER_STATE:
 		l_cartesian->setInitialVelocity = Rogallo_state;
+	    case FOURIER_STATE_HEFFTE:
+		l_cartesian->setInitialVelocityHeffte = Rogallo_state_heffte;
 		break;
             default:
                 l_cartesian->getInitialState = zero_state;
@@ -431,7 +436,7 @@ static void Rogallo_state(
 	IF_PARAMS *iFparams)
 {
 	if (debugging("trace"))
-	    printf("Entering Fourier_state()\n");
+	    printf("Entering Rogallo_state()\n");
 	int gmax[MAXD],icrds[MAXD]; 
 	int i, j, k, l, ll, ld, Nr, index, dim;
 	double wn, w0, L[MAXD], w[MAXD];
@@ -630,9 +635,189 @@ static void Rogallo_state(
 	}
 
 	if (debugging("trace"))
-	    printf("Leaving Fourier_state()\n");
+	    printf("Leaving Rogallo_state()\n");
 }
 /*end Rogallo_state*/
+
+static void Rogallo_state_heffte(
+	COMPONENT comp,
+	int *N,
+	double *vel_x,
+	double *vel_y,
+	double *vel_z,
+	int *pp_icoords,
+	int *num_grid_points,
+	RECT_GRID *gr,
+	IF_PARAMS *iFparams)
+{
+	if (debugging("trace"))
+	    printf("Entering Rogallo_state_heffte()\n");
+	int gmax[MAXD],icrds[MAXD]; 
+	int l, ll, ld, Nr, index, dim;
+	double wn, w0, L[MAXD], w[MAXD];
+	double phi, theta, E;
+	double u0 = iFparams->Urms;
+	double alpha[2], beta[2];
+	if (u0 == 0.0)
+	{
+	    printf("initial Urms is not given!\n");
+	    printf("Enter initial velocity(m/s):\n");
+	    clean_up(ERROR);
+	}
+	dim = gr->dim;
+	Nr = 1; 
+	for (int i = 0; i < dim; i++)
+	{
+	    L[i] = gr->GU[i]-gr->GL[i];
+	    gmax[i] = N[i];
+	    Nr *= num_grid_points[i];
+	}
+	w0 = 6.0;//2.449489743;
+
+	int lmin[3] = {num_grid_points[0]*pp_icoords[0], 
+		       num_grid_points[1]*pp_icoords[1], 
+		       num_grid_points[2]*pp_icoords[2]};
+	int lmax[3] = {num_grid_points[0]*pp_icoords[0] + num_grid_points[0],
+		       num_grid_points[1]*pp_icoords[1] + num_grid_points[1], 
+		       num_grid_points[2]*pp_icoords[2] + num_grid_points[2]};
+	heffte::box3d<> const my_box = { {lmin[0],   lmin[1],   lmin[2]}, 
+		                         {lmax[0]-1, lmax[1]-1, lmax[2]-1} };
+	
+	// define the heffte class and the input and output geometry
+        //using backend_tag = heffte::backend::default_backend<heffte::tag::cpu>::type;
+	//heffte::fft3d_r2c<backend_tag> fft(my_box, my_box, 2, MPI_COMM_WORLD);
+	heffte::fft3d<heffte::backend::fftw> fft(my_box, my_box, MPI_COMM_WORLD);
+
+        // vectors with the correct sizes to store the input data
+	std::vector<std::complex<double>> U(fft.size_inbox());
+	std::vector<std::complex<double>> V(fft.size_inbox());
+	std::vector<std::complex<double>> W(fft.size_inbox());
+	std::vector<std::complex<double>> Div(fft.size_inbox());
+
+	// vectors with the correct sizes to store the output data
+	std::vector<std::complex<double>> Uhat(fft.size_outbox());
+	std::vector<std::complex<double>> Vhat(fft.size_outbox());
+	std::vector<std::complex<double>> What(fft.size_outbox());
+	
+        // reset the input to zero
+	std::fill(U.begin(),  U.end(),  std::complex<double>(0.0, 0.0));
+	std::fill(V.begin(),  V.end(),  std::complex<double>(0.0, 0.0));
+	std::fill(W.begin(),  W.end(),  std::complex<double>(0.0, 0.0));
+	std::fill(Div.begin(),  Div.end(),  std::complex<double>(0.0, 0.0));
+	std::fill(Uhat.begin(),  Uhat.end(),  std::complex<double>(0.0, 0.0));
+	std::fill(Vhat.begin(),  Vhat.end(),  std::complex<double>(0.0, 0.0));
+	std::fill(What.begin(),  What.end(),  std::complex<double>(0.0, 0.0));
+
+	switch (dim)
+	{
+	    case 2:
+		printf("Dim can only be 3 with heffte, unknown dim = %d!\n",dim);
+	 	break;
+	    case 3:
+                for (int kl = 0; kl < num_grid_points[2]; kl++) // mpi local coords
+                for (int jl = 0; jl < num_grid_points[1]; jl++)
+		for (int il = 0; il < num_grid_points[0]; il++)
+                {
+		    int i = num_grid_points[0]*pp_icoords[0] + il;	
+		    int j = num_grid_points[1]*pp_icoords[1] + jl;	
+		    int k = num_grid_points[2]*pp_icoords[2] + kl;	
+		    if (i == 0 && j == 0 && k == 0)
+			continue;
+                    //index = k + N[2]*(j + N[1]*i); /*row major format*/ 
+                    index = kl + num_grid_points[2]*(jl + num_grid_points[1]*il); /*row major format*/
+		    icrds[0] = i; 
+		    icrds[1] = j;
+		    icrds[2] = k;
+		    /*map indices to wavenumber*/
+		    for (l = 0; l < dim; l++)
+		    {
+		        if (icrds[l] > N[l]/2)
+		            icrds[l] = (icrds[l]-N[l]);
+		    }
+		    wn = 0.0;
+		    for (l = 0; l < dim; l++)
+		    {
+			w[l] = (icrds[l]);
+			wn += w[l]*w[l];
+		    }
+		    wn = sqrt(wn);
+#if defined __NO_RND__		    
+		    phi  = 0.5 * (2*M_PI);
+#else
+		    phi  = (double)rand() / (RAND_MAX + 1.0) * (2*M_PI);
+#endif
+		    E = 16.0/sqrt(0.5*M_PI)*u0*u0*pow(wn,4)/pow(w0,5)
+			* exp(-2.0*wn*wn/(w0*w0)); 
+#if defined __NO_RND__		    
+		    theta  = 0.5 *(2*M_PI);
+#else
+		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#endif
+		    alpha[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta)*cos(phi);
+		    alpha[1] = sqrt(E/(4.0*M_PI*wn*wn))*sin(theta)*cos(phi);
+		    /*use different theta for alpha and beta*/
+#if defined __NO_RND__		    
+		    theta  = 0.5 *(2*M_PI);
+#else
+		    theta  = (double)rand() / (RAND_MAX + 1.0) *(2*M_PI);
+#endif
+		    beta[0] = sqrt(E/(4.0*M_PI*wn*wn))*cos(theta)*sin(phi);
+		    beta[1] = sqrt(E/(4.0*M_PI*wn*wn))*sin(theta)*sin(phi);
+		    if (w[0] == 0 && w[1] == 0)
+			continue;
+		    Uhat.at(index).real( (alpha[0]*wn*w[1]+beta[0]*w[0]*w[2]) / (wn*sqrt(w[0]*w[0]+w[1]*w[1])));
+		    Uhat.at(index).imag( (alpha[1]*wn*w[1]+beta[1]*w[0]*w[2]) / (wn*sqrt(w[0]*w[0]+w[1]*w[1])));
+	 	    Vhat.at(index).real( (beta[0]*w[1]*w[2]-alpha[0]*wn*w[0]) / (wn*sqrt(w[0]*w[0]+w[1]*w[1])));
+                    Vhat.at(index).imag( (beta[1]*w[1]*w[2]-alpha[0]*wn*w[0]) / (wn*sqrt(w[0]*w[0]+w[1]*w[1])));
+		    What.at(index).real( -(beta[0]*sqrt(w[0]*w[0]+w[1]*w[1])) / wn);
+		    What.at(index).imag( -(beta[1]*sqrt(w[0]*w[0]+w[1]*w[1])) / wn);
+		    Div.at(index).real( U.at(index).real()*w[0] + V.at(index).real()*w[1] + W.at(index).real()*w[2]);
+		    Div.at(index).imag( U.at(index).imag());
+                }
+		/*iFFT*/
+	        // perform a backward DFT
+	        fft.backward(Uhat.data(), U.data());// , heffte::scale::full
+	        fft.backward(Vhat.data(), V.data());// , heffte::scale::full
+	        fft.backward(What.data(), W.data());// , heffte::scale::full
+	
+		/*get solution from iFFT*/
+		for (int i = 0; i < Nr; i++)
+		{
+	    	    vel_x[i] = U.at(i).real(); 
+	    	    vel_y[i] = V.at(i).real(); 
+	      	    vel_z[i] = W.at(i).real(); 
+		}
+                break;
+	    default:
+		printf("Dim can only be 2 and 3, unknown dim = %d!\n",dim);
+		clean_up(ERROR);
+	}
+
+	if (debugging("init_vel") and pp_mynode() == 0)
+	{
+	    FILE* file = fopen("init_vel","w");
+	    for (int i = 0; i < Nr; i++)
+	    {
+		if (dim == 3)
+	    	  fprintf(file,"i %d = %9.8f %9.8f %9.8f\n",i,vel_x[i],vel_y[i],vel_z[i]);
+		else if (dim == 2)
+	    	  fprintf(file,"i %d = %9.8f %9.8f\n",i,vel_x[i],vel_y[i]);
+	    }
+	    fclose(file);
+	}
+	if (debugging("init_vel") and pp_mynode() == 0)
+	{
+	    FILE* file = fopen("FFT_div","w");
+	    for (int i = 0; i < Nr; i++)
+	    	  fprintf(file,"%9.8f %9.8f\n",Div.at(index).real(),Div.at(index).imag());
+	    fclose(file);
+	}
+
+	if (debugging("trace"))
+	    printf("Leaving Rogallo_state_heffte()\n");
+}
+/*end Rogallo_state_heffte*/
+
 
 /*Fourier_state*/
 /*only used in setParallelVelocity, no for-loops needed*/
