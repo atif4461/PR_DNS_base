@@ -185,6 +185,8 @@ int main(int argc, char **argv)
 
 	    if(eqn_params.init_state == FOURIER_STATE)
 		    l_cartesian->setParallelVelocity();
+	    else if(eqn_params.init_state == FOURIER_STATE_HEFFTE)
+		    l_cartesian->setParallelVelocityParallelized();
 	    else
 	        l_cartesian->setInitialCondition();
             if (debugging("trace"))

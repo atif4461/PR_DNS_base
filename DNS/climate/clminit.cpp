@@ -131,6 +131,9 @@ extern void read_CL_prob_type(Front* front)
 		case 3:
 		    eqn_params->init_state = FOURIER_STATE;
             	    eqn_params->init_vapor_state = TB_STATE;
+		case 4:
+		    eqn_params->init_state = FOURIER_STATE_HEFFTE;
+            	    eqn_params->init_vapor_state = FOURIER_STATE;
 		    break;
 		default:
 		    printf("Case can only be 1,2,3, unknown case %d!\n",case_num);
