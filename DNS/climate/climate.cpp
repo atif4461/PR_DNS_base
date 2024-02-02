@@ -148,15 +148,20 @@ int main(int argc, char **argv)
 
 	/* Initialize velocity field function */
 
+        printf("atif Passed FT_ReadTimeControl\n");
 	velo_func_pack.func_params = (POINTER)&iFparams;
 	velo_func_pack.func = NULL;
 	velo_func_pack.point_propagate = NULL;
 
 	FT_InitVeloFunc(&front,&velo_func_pack);
+        printf("atif Passed FT_InitVeloFunc\n");
 
         v_cartesian->initMesh();
+        printf("atif Passed v initMesh\n");
 	l_cartesian->initMesh();
+        printf("atif Passed l initMesh\n");
 	l_cartesian->findStateAtCrossing = ifluid_find_state_at_crossing;
+        printf("atif Passed findStateAtCrossing\n");
 	if (RestartRun)
 	{
 	    v_cartesian->readFrontInteriorState(restart_state_name);
@@ -170,9 +175,13 @@ int main(int argc, char **argv)
 	else
 	{
 
+            printf("atif Passed \n");
             init_fluid_state_func(&front,l_cartesian);
+            printf("atif Passed init_fluid_state_func\n");
             init_vapor_state_func(&front,v_cartesian);
+            printf("atif Passed init_vapor_state_func\n");
             init_temp_state_func(&front,v_cartesian);
+            printf("atif Passed init_temp_state_func\n");
 
 	    if(eqn_params.init_state == FOURIER_STATE)
 		    l_cartesian->setParallelVelocity();
@@ -192,6 +201,7 @@ int main(int argc, char **argv)
 	}
 
 	FT_InitVeloFunc(&front,&velo_func_pack);
+        printf("atif Passed FT_InitVeloFunc\n");
 
 	if (debugging("trace")) printf("Passed FT_InitVeloFunc()\n");
 

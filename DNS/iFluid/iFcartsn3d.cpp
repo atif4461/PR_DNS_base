@@ -1397,6 +1397,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::setInitialCondition()
 	double *pres = field->pres;
 	double *phi = field->phi;
 
+	if(debugging("trace"))
+	    printf("Entering setInitialCondition()\n");
 	FT_MakeGridIntfc(front);
 	if (iFparams->num_scheme.ellip_method == DUAL_ELLIP)
             FT_MakeCompGridIntfc(front);
@@ -1420,6 +1422,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::setInitialCondition()
 	    }
 	}
 
+	if(debugging("trace"))
+	    printf("Entering setInitialCondition()\n");
 	// Initialize state at cell_center
         for (i = 0; i < size; i++)
         {
@@ -1437,6 +1441,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::setInitialCondition()
         computeGradientQ();
         copyMeshStates();
 	setAdvectionDt();
+	if(debugging("trace"))
+	    printf("Entering setInitialCondition()\n");
 }       /* end setInitialCondition */
 
 void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionCim(void)
@@ -2065,15 +2071,22 @@ void Incompress_Solver_Smooth_3D_Cartesian::setParallelVelocity(void)
             G_size = G_size * (global_gmax[i]+1);
             L_size = L_size * (top_gmax[i]+1);
         }
+
+	if(debugging("trace"))
+	    printf("Entering setParallelVelocity()\n");
         uni_array(&U_buff,L_size,sizeof(double));
         uni_array(&V_buff,L_size,sizeof(double));
         uni_array(&W_buff,L_size,sizeof(double));
+	if(debugging("trace"))
+	    printf("Entering setParallelVelocity()\n");
         if (myid == 0)
         {
             uni_array(&GU_buff,G_size,sizeof(double));
             uni_array(&GV_buff,G_size,sizeof(double));
             uni_array(&GW_buff,G_size,sizeof(double));
 
+	if(debugging("trace"))
+	    printf("Entering setParallelVelocity()\n");
 	    if (setInitialVelocity != NULL)
                 (*setInitialVelocity)(comp,pp_grid->Global_grid.gmax,
 				   GU_buff,GV_buff,GW_buff,
