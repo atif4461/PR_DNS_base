@@ -535,8 +535,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	computeDiffusionCN(void)
 {
         COMPONENT comp;
-        int index,index_nb[6],size;
-        int I,I_nb[6];
+        prdns_int index,index_nb[6],size;
+        prdns_int I,I_nb[6];
 	int i,j,k,l,nb,icoords[MAXD];
 	double coords[MAXD], crx_coords[MAXD];
 	double coeff[6],mu[6],mu0,rho,rhs,U_nb[6];
@@ -545,7 +545,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	GRID_DIRECTION dir[6] = {WEST,EAST,SOUTH,NORTH,LOWER,UPPER};
 	POINTER intfc_state;
 	HYPER_SURF *hs;
-	PetscInt num_iter;
+	prdns_int num_iter;
 	double rel_residual;
 	double aII;
 	double source[MAXD];
@@ -576,6 +576,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	    solver.Reset_b();
 	    solver.Reset_x();
 
+printf("Solved computeDiffusionCN3 %d,%d,%d %d,%d,%d \n", imin,jmin,kmin, imax,jmax,kmax);
+std::cout << std::flush;
             for (k = kmin; k <= kmax; k++)
             for (j = jmin; j <= jmax; j++)
             for (i = imin; i <= imax; i++)
@@ -603,6 +605,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::
             	I_nb[4] = ijk_to_I[i][j][k-1]; //lower
             	I_nb[5] = ijk_to_I[i][j][k+1]; //upper
 
+//printf("Solved computeDiffusionCN3 i,j,k=%d,%d,%d I_nb=%d,%d,%d,%d,%d,%d I=%d index_nb=%d,%d,%d,%d,%d,%d \n", i,j,k, I_nb[0],I_nb[1],I_nb[2],I_nb[3],I_nb[4],I_nb[5], I, index_nb[0],index_nb[1],index_nb[2],index_nb[3],index_nb[4],index_nb[5]);
+std::cout << std::flush;
 
             	mu0   = field->mu[index];
             	rho   = field->rho[index];
@@ -676,6 +680,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 		solver.Set_b(I, rhs);
             }
 
+printf("Solved computeDiffusionCN4 %d,%d,%d %d,%d,%d \n", imin,jmin,kmin, imax,jmax,kmax);
+std::cout << std::flush;
             solver.SetMaxIter(40000);
             solver.SetTol(1e-14);
 
@@ -758,8 +764,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	computeDiffusionExplicit(void)
 {
         COMPONENT comp;
-        int index,index_nb[6],size;
-        int I,I_nb[6];
+        prdns_int index,index_nb[6],size;
+        prdns_int I,I_nb[6];
 	int i,j,k,l,nb,icoords[MAXD];
 	double coords[MAXD], crx_coords[MAXD];
 	double coeff[6],mu[6],mu0,rho,rhs,U_nb[6];
@@ -768,7 +774,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	GRID_DIRECTION dir[6] = {WEST,EAST,SOUTH,NORTH,LOWER,UPPER};
 	POINTER intfc_state;
 	HYPER_SURF *hs;
-	PetscInt num_iter;
+	prdns_int num_iter;
 	double rel_residual;
 	double aII;
 	double source[MAXD];
@@ -939,8 +945,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	computeDiffusionImplicit(void)
 {
         COMPONENT comp;
-        int index,index_nb[6],size;
-        int I,I_nb[6];
+        prdns_int index,index_nb[6],size;
+        prdns_int I,I_nb[6];
 	int i,j,k,l,nb,icoords[MAXD];
 	double coords[MAXD], crx_coords[MAXD];
 	double coeff[6],mu[6],mu0,rho,rhs,U_nb[6];
@@ -949,7 +955,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::
 	GRID_DIRECTION dir[6] = {WEST,EAST,SOUTH,NORTH,LOWER,UPPER};
 	POINTER intfc_state;
 	HYPER_SURF *hs;
-	PetscInt num_iter;
+	prdns_int num_iter;
 	double rel_residual;
 	double aII;
 	double source[MAXD];

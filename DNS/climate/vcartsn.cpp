@@ -283,7 +283,8 @@ void VCARTESIAN::setInitialCondition(void)
 void VCARTESIAN::setIndexMap(COMPONENT sub_comp)
 {
 	static boolean first = YES;
-	int i,j,k,ic,index;
+	int i,j,k;
+	prdns_int ic,index;
 	int llbuf[MAXD],uubuf[MAXD];
 	int count;
 
@@ -307,8 +308,8 @@ void VCARTESIAN::setIndexMap(COMPONENT sub_comp)
 	    case 3:
 		count = (imax - imin + 1)*(jmax - jmin + 1)*(kmax - kmin + 1);
 	    	FT_TriArrayMemoryAlloc((POINTER*)&ijk_to_I,top_gmax[0]+1,
-					top_gmax[1]+1,top_gmax[2]+1,INT);
-	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,count,3,INT);
+					top_gmax[1]+1,top_gmax[2]+1,PETSCINT);
+	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,count,3,PETSCINT);
 	    	break;
 	    }
 	}
@@ -417,15 +418,16 @@ void VCARTESIAN::computeAdvection()
 
 void VCARTESIAN::computeAdvectionWENO(COMPONENT sub_comp,double* Temp,const double D)
 {
-	int i,j,k,l,m,ic,icn,I,I_nb,icoords[MAXD];
+	int i,j,k,l,m,icoords[MAXD];
+	prdns_int ic,icn,I,I_nb;
 	int gmin[MAXD],ipn[MAXD];
 	double crx_coords[MAXD];
 	double T0,T_nb,lambda,coeff,coeff_nb,rhs;
 	COMPONENT comp;
 	PETSc solver;
 	double *x;
-    int num_iter = 0;
-    double rel_residual = 0;
+        prdns_int num_iter = 0;
+        double rel_residual = 0;
         boolean fr_crx_grid_seg;
         const GRID_DIRECTION dir[3][2] =
                 {{WEST,EAST},{SOUTH,NORTH},{LOWER,UPPER}};
@@ -774,14 +776,15 @@ void VCARTESIAN::testParallel(const char* ptag, double* Temp)
 
 void VCARTESIAN::computeAdvectionCN(COMPONENT sub_comp,double* Temp,const double D)
 {
-	int i,j,k,l,m,ic,icn,I,I_nb,icoords[MAXD];
+	int i,j,k,l,m,icoords[MAXD];
+	prdns_int ic,icn,I,I_nb;
 	int gmin[MAXD],ipn[MAXD];
 	double crx_coords[MAXD];
 	double T0,T_nb,lambda,coeff,coeff_nb,rhs;
 	COMPONENT comp;
 	PETSc solver;
 	double *x;
-        PetscInt num_iter = 0;
+        prdns_int num_iter = 0;
         double rel_residual = 0;
         boolean fr_crx_grid_seg;
         const GRID_DIRECTION dir[3][2] =

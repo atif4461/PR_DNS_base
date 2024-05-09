@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "petscvec.h"     // VLM 
 #include "petscdevice.h"  // VLM 
 #include "mpi.h"
+#include <iostream>
 
 PETSc::PETSc()
 {
@@ -57,7 +58,7 @@ PETSc::PETSc()
 	
 	KSPCreate(PETSC_COMM_WORLD,&ksp);
 
-	printf("petsc_cuda %d -- in PETSc()\n", petsc_cuda);
+	printf("petsc_cuda 123 %d -- in PETSc()\n", petsc_cuda);
 	
         // VLM
         PetscLogFlops(user_event_flops);
@@ -86,35 +87,39 @@ PETSc::PETSc(int ilower, int iupper, int d_nz, int o_nz)
 	Set_petsc_input();  // VLM
 
 	Create(ilower, iupper, d_nz, o_nz);	
+	printf("petsc_cuda 1 %d -- in PETSc(...)\n", petsc_cuda);
+	std::cout << std::flush;
 	KSPCreate(PETSC_COMM_WORLD,&ksp);
 
-	printf("petsc_cuda %d -- in PETSc(...)\n", petsc_cuda);
+	printf("petsc_cuda 2 %d -- in PETSc(...)\n", petsc_cuda);
+	std::cout << std::flush;
 	
         // VLM
         PetscLogFlops(user_event_flops);
         PetscLogEventEnd(USER_EVENT,0,0,0,0);
 }
 
-void PETSc::Create(int ilower, int iupper, int d_nz, int o_nz)
+void PETSc::Create(prdns_int ilower, prdns_int iupper, int d_nz, int o_nz)
 {	
 	Create(PETSC_COMM_WORLD, ilower, iupper, d_nz, o_nz);	
 }
 
 void PETSc::Create(
 	MPI_Comm Comm, 
-	int ilower, 
-	int iupper, 
+	prdns_int ilower, 
+	prdns_int iupper, 
 	int d_nz, 
 	int o_nz)
 {	
-	int n	= iupper - ilower +1;
-	
+	const int n = (int)(iupper - ilower +1);
+	int world_size;
+        MPI_Comm_size(Comm, &world_size);
+        const prdns_int N = (prdns_int)((prdns_int)(n)*(prdns_int)(world_size));
+
 	comm 	= Comm;
 	iLower	= ilower;	
 	iUpper 	= iupper;	
 	
-
-
         // VLM 
         PetscLogEvent  USER_EVENT;
         PetscClassId   classid;
@@ -125,11 +130,16 @@ void PETSc::Create(
 
 	printf("petsc_cuda %d -- in Create()\n", petsc_cuda); // VLM 
         
-
-	MatCreateAIJ(Comm,n,n,PETSC_DECIDE,PETSC_DECIDE,
+	MatCreateAIJ(Comm,n,n,N,N,
 	    d_nz,PETSC_NULL,o_nz,PETSC_NULL,&A);	
+	printf("petsc_cuda %d -- in Create()1\n", petsc_cuda); // VLM 
+	std::cout << std::flush;
 	ierr = PetscObjectSetName((PetscObject) A, "A");
+	printf("petsc_cuda %d -- in Create()2\n", petsc_cuda); // VLM 
+	std::cout << std::flush;
 	ierr = MatSetFromOptions(A);		
+	printf("petsc_cuda %d -- in Create()3\n", petsc_cuda); // VLM 
+	std::cout << std::flush;
 	    
 	// VLM: lets see, because of this error: ...  
 	// [1]PETSC ERROR: --------------------- Error Message --------------------------------------------------------------
@@ -138,21 +148,26 @@ void PETSc::Create(
 	// before MatZeroEntries()
 	ierr = MatMPIAIJSetPreallocation(A, d_nz, PETSC_NULL, o_nz, PETSC_NULL);
         printf("VLM -- ierr from MatMPIAIJSetPreallocation %d\n",ierr);
+	std::cout << std::flush;
 	    
 	// b
-	ierr = VecCreate(PETSC_COMM_WORLD, &b);	
+	ierr = VecCreate(Comm, &b);	
 	ierr = PetscObjectSetName((PetscObject) b, "b");
-	ierr = VecSetSizes(b, n, PETSC_DECIDE);	
+	ierr = VecSetSizes(b, n, N);	
 	ierr = VecSetFromOptions(b);
+        printf("VLM -- ierr from MatMPIAIJSetPreallocation1 %d\n",ierr);
+	std::cout << std::flush;
 	
-	ierr = VecCreate(PETSC_COMM_WORLD,&x);
+	ierr = VecCreate(Comm,&x);
 	ierr = PetscObjectSetName((PetscObject) x, "X");
-	ierr = VecSetSizes(x, n, PETSC_DECIDE);	
+	ierr = VecSetSizes(x, n, N);	
 	ierr = VecSetFromOptions(x);
 
         // VLM 
         PetscLogFlops(user_event_flops);
         PetscLogEventEnd(USER_EVENT,0,0,0,0);
+        printf("VLM -- ierr from MatMPIAIJSetPreallocation2 %d\n",ierr);
+	std::cout << std::flush;
 }
 
 PETSc::~PETSc()
@@ -266,42 +281,42 @@ void PETSc::Reset_x()
 }
 
 // A
-void PETSc::Set_A(PetscInt i, PetscInt j, double val)	// A[i][j]=val;
+void PETSc::Set_A(prdns_int i, prdns_int j, double val)	// A[i][j]=val;
 {
 	ierr = MatSetValues(A,1,&i,1,&j,&val,INSERT_VALUES);
 }
 
-void PETSc::Add_A(PetscInt i, PetscInt j, double val)	// A[i][j]+=val;
+void PETSc::Add_A(prdns_int i, prdns_int j, double val)	// A[i][j]+=val;
 {	
 	ierr = MatSetValues(A,1,&i,1,&j,&val,ADD_VALUES);
 }
 
-void PETSc::Get_row_of_A(PetscInt i, PetscInt *ncol, PetscInt **cols, double **row)
+void PETSc::Get_row_of_A(prdns_int i, prdns_int *ncol, prdns_int **cols, double **row)
 {	
-	ierr = MatGetRow(A,i,ncol,(const PetscInt**)cols,
+	ierr = MatGetRow(A,i,ncol,(const prdns_int**)cols,
 			(const PetscScalar**)row);
-	ierr = MatRestoreRow(A,i,ncol,(const PetscInt**)cols,
+	ierr = MatRestoreRow(A,i,ncol,(const prdns_int**)cols,
 			(const PetscScalar**)row);
 }
 
 // x
-void PETSc::Set_x(PetscInt i, double val)	// x[i]=val;
+void PETSc::Set_x(prdns_int i, double val)	// x[i]=val;
 {
 	ierr = VecSetValues(x,1,&i,&val,INSERT_VALUES);	
 }
 
-void PETSc::Add_x(PetscInt i, double val)	// x[i]+=val;
+void PETSc::Add_x(prdns_int i, double val)	// x[i]+=val;
 {
 	ierr = VecSetValues(x,1,&i,&val,ADD_VALUES);
 }
 
-void PETSc::Set_b(PetscInt i, double val)	// x[i]=val;
+void PETSc::Set_b(prdns_int i, double val)	// x[i]=val;
 {
 	ierr = VecSetValues(b,1,&i,&val,INSERT_VALUES);
 }
 
 void PETSc::Add_b(
-	PetscInt i, 
+	prdns_int i, 
 	double val)	// x[i]+=val;
 {
 	ierr = VecSetValues(b,1,&i,&val,ADD_VALUES);
@@ -333,7 +348,7 @@ void PETSc::Get_x(double *p,
 
 void PETSc::SetMaxIter(int val)
 {
-	PetscInt maxits;
+	prdns_int maxits;
 	double rtol, atol, dtol;
 	
 	KSPGetTolerances(ksp, &rtol, &atol, &dtol, &maxits);
@@ -342,7 +357,7 @@ void PETSc::SetMaxIter(int val)
 
 void PETSc::SetTol(double val)
 {
-	PetscInt maxits;
+	prdns_int maxits;
 	double rtol, atol, dtol;
 	
 	KSPGetTolerances(ksp, &rtol, &atol, &dtol, &maxits);
@@ -354,7 +369,7 @@ void PETSc::SetKDim(int val)
 	
 }
 
-void PETSc::GetNumIterations(PetscInt *num_iterations)
+void PETSc::GetNumIterations(prdns_int *num_iterations)
 {
 	KSPGetIterationNumber(ksp,num_iterations);        
 }	/* end GetNumIterations */
@@ -366,6 +381,8 @@ void PETSc::GetFinalRelativeResidualNorm(double *rel_resid_norm)
 
 void PETSc::Solve_GMRES(void)
 {
+	printf("Entering Solve_GMRES()\n");
+	std::cout << std::flush;
 	// VLM 
 	PetscLogEvent  USER_EVENT;
 	PetscClassId   classid;
@@ -375,21 +392,25 @@ void PETSc::Solve_GMRES(void)
 	PetscLogEventBegin(USER_EVENT,0,0,0,0);
 	
         
+	printf("Entering Solve_GMRES1()\n"); std::cout << std::flush;
         start_clock("Assemble matrix -- Solve_GMRES");
 	ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
   	ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
         stop_clock("Assemble matrix -- Solve_GMRES");
   	
+	printf("Entering Solve_GMRES2()\n"); std::cout << std::flush;
         start_clock("Assemble vector x -- Solve_GMRES");
   	ierr = VecAssemblyBegin(x);
   	ierr = VecAssemblyEnd(x);
         stop_clock("Assemble vector x -- Solve_GMRES");
   	
+	printf("Entering Solve_GMRES3()\n"); std::cout << std::flush;
         start_clock("Assemble vector b -- Solve_GMRES");
   	ierr = VecAssemblyBegin(b);
   	ierr = VecAssemblyEnd(b);
 	stop_clock("Assembly vector b -- Solve_GMRES");
 
+	printf("Entering Solve_GMRES()4\n"); std::cout << std::flush;
 	start_clock("KSPSetOperators -- Solve_GMRES");
         KSPSetOperators(ksp,A,A);
 	stop_clock("KSPSetOperators -- Solve_GMRES");
@@ -402,35 +423,40 @@ void PETSc::Solve_GMRES(void)
 	{
             petsc_solver_first_time = 0;
 
+	printf("Entering Solve_GMRES5()\n"); std::cout << std::flush;
 	    start_clock("KSPSetType -- Solve_GMRES");
 	    KSPSetType(ksp,KSPGMRES);
 	    stop_clock("KSPSetType -- Solve_GMRES");
 
+	printf("Entering Solve_GMRES6()\n"); std::cout << std::flush;
 	    //start_clock("KSPSetFromOptions -- Solve_GMRES");
             //KSPSetFromOptions(ksp);
 	    //stop_clock("KSPSetFromOptions -- Solve_GMRES");
 
+	printf("Entering Solve_GMRES7()\n"); std::cout << std::flush;
 	    start_clock("KSPSetUp -- Solve_GMRES");
             KSPSetUp(ksp);
 	    stop_clock("KSPSetUp -- Solve_GMRES");
 	}
 
+	printf("Entering Solve_GMRES8()\n"); std::cout << std::flush;
 	start_clock("KSPSolve -- Solve_GMRES");
         KSPSolve(ksp,b,x);
 	stop_clock("KSPSolve -- Solve_GMRES");
 
+	printf("Entering Solve_GMRES9()\n"); std::cout << std::flush;
         //VLM 
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d -- Solve_GMRES()\n", reason);
-	PetscInt its, itstot;
+	prdns_int its, itstot;
         KSPGetIterationNumber(ksp, &its);
         KSPGetTotalIterations(ksp, &itstot);
         printf("VLM: KSP iterationNumber, TotalIterations: %d, %d  -- Solve_GMRES()\n", its, itstot);
 	PetscReal normx_1;
 	VecNorm(x, NORM_2, &normx_1);
 	printf("VLM: initial norm x: %e;  final norm x: %e;  difference: % e -- Solve_GMRES() \n", normx_0, normx_1, normx_0 - normx_1);
-
+	std::cout << std::flush;
 	// VLM
 	PetscLogFlops(user_event_flops);
 	PetscLogEventEnd(USER_EVENT,0,0,0,0);
@@ -484,10 +510,12 @@ void PETSc::Solve(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d; Leave PETSC::Solve()\n", reason);
-	PetscInt its, itstot;
+	std::cout << std::flush;
+	prdns_int its, itstot;
         KSPGetIterationNumber(ksp, &its);
         KSPGetTotalIterations(ksp, &itstot);
         printf("VLM: KSP iterationNumber, TotalIterations: %d, %d; Leave PETSC::Solve()\n", its, itstot);
+	std::cout << std::flush;
 }	/* end Solve */
 
 void PETSc::Solve_BCGSL(void)
@@ -546,7 +574,7 @@ void PETSc::Solve_BCGSL(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d -- Solve_BCGSL()\n", reason);
-        PetscInt its, itstot;
+        prdns_int its, itstot;
 	KSPGetIterationNumber(ksp, &its);
 	KSPGetTotalIterations(ksp, &itstot);
 	printf("VLM: KSP iterationNumber, TotalIterations: %d, %d  -- Solve_BCGSL()\n", its, itstot);
@@ -623,7 +651,7 @@ void PETSc::Solve_withPureNeumann_GMRES(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d -- Solve_withPureNeumann_GMRES()\n", reason);
-	PetscInt its, itstot;
+	prdns_int its, itstot;
         KSPGetIterationNumber(ksp, &its);
         KSPGetTotalIterations(ksp, &itstot);
         printf("VLM: KSP iterationNumber, TotalIterations: %d, %d -- Solve_withPureNeumann_GMRES() \n", its, itstot);
@@ -656,7 +684,7 @@ void PETSc::Solve_withPureNeumann(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d; Leaving Solve_withPureNeumann\n", reason);
-	PetscInt its, itstot;
+	prdns_int its, itstot;
         KSPGetIterationNumber(ksp, &its);
         KSPGetTotalIterations(ksp, &itstot);
         printf("VLM: KSP iterationNumber, TotalIterations: %d, %d; Leaving Solve_withPureNeumann\n", its, itstot);
@@ -806,7 +834,7 @@ void PETSc::Solve_withPureNeumann_BCGSL(void)
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
         printf("VLM: KSPConvergedReason: %d -- Solve_withPureNeumann_BCGSL\n", reason);
-	PetscInt its, itstot;
+	prdns_int its, itstot;
 	KSPGetIterationNumber(ksp, &its);
 	KSPGetTotalIterations(ksp, &itstot);
 	printf("VLM: KSP iterationNumber, TotalIterations: %d, %d  -- Solve_withPureNeumann_BCGSL()\n", its, itstot);

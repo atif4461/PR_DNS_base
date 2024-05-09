@@ -273,14 +273,15 @@ protected:
 	int *lbuf, *ubuf;
 	double *top_L, *top_U;
 	int **ij_to_I, **I_to_ij;
-	int ***ijk_to_I, **I_to_ijk;
+	prdns_int ***ijk_to_I, **I_to_ijk;
 	int *domain_status;
 	int smin[MAXD],smax[MAXD];
 	// Sweeping limites
 	int imin, jmin, kmin;
 	int imax, jmax, kmax;
 	// for parallel partition
-	int NLblocks, ilower, iupper;
+	int NLblocks;
+	prdns_int ilower, iupper;
 	int *n_dist;
 	// for dual/comp overlapping
 	int offset[MAXD];
@@ -294,7 +295,7 @@ protected:
 	int *clbuf, *cubuf;
 	double *ctop_L, *ctop_U;
 	int **cij_to_I, **cI_to_ij;
-	int ***cijk_to_I, **cI_to_ijk;
+	prdns_int ***cijk_to_I, **cI_to_ijk;
 	int *cdomain_status;
 	int csmin[MAXD],csmax[MAXD];
 	// Sweeping limites

@@ -28,6 +28,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 *
 */
 
+#ifdef __PRDNS_LONG_INT__
+typedef long int prdns_int;
+#else
+typedef int prdns_int;
+#endif
+
 
 
 #define DEBUG_STRING    "fscatter"
@@ -1326,16 +1332,16 @@ LOCAL   void reflect_array_buffer(
         }
 }       /* end reflect_array_buffer */
 
-LOCAL void pack_index_in_dir(Front*,POINTER,int*,int*,int*,int*,int,int);
-LOCAL void unpack_index_in_dir(Front*,POINTER,int*,int*,int*,int*,int,int);
+LOCAL void pack_index_in_dir(Front*,POINTER,int*,int*,int*,prdns_int*,int,int);
+LOCAL void unpack_index_in_dir(Front*,POINTER,int*,int*,int*,prdns_int*,int,int);
 LOCAL void reflect_index_in_dir(Front*,POINTER,int*,int*,int*,int,int);
 
-LOCAL void pack_index_in_dir2d(Front*,int**,int*,int*,int*,int*,int,int);
-LOCAL void unpack_index_in_dir2d(Front*,int**,int*,int*,int*,int*,int,int);
+LOCAL void pack_index_in_dir2d(Front*,int**,int*,int*,int*,prdns_int*,int,int);
+LOCAL void unpack_index_in_dir2d(Front*,int**,int*,int*,int*,prdns_int*,int,int);
 LOCAL void reflect_index_in_dir2d(Front*,int**,int*,int*,int*,int,int);
 
-LOCAL void pack_index_in_dir3d(Front*,int***,int*,int*,int*,int*,int,int);
-LOCAL void unpack_index_in_dir3d(Front*,int***,int*,int*,int*,int*,int,int);
+LOCAL void pack_index_in_dir3d(Front*,int***,int*,int*,int*,prdns_int*,int,int);
+LOCAL void unpack_index_in_dir3d(Front*,int***,int*,int*,int*,prdns_int*,int,int);
 LOCAL void reflect_index_in_dir3d(Front*,int***,int*,int*,int*,int,int);
 
 EXPORT 	void scatter_cell_index(
@@ -1354,7 +1360,7 @@ EXPORT 	void scatter_cell_index(
 	int       i, j, k;
         int       dim = gr->dim;
 	int 	  gmax[MAXD];
-	int       *bfs,*bfr;
+	prdns_int       *bfs,*bfr;
 	int	  size,max_size,max_buf;
 	int	  index_tag = 8;
 
@@ -1379,8 +1385,8 @@ EXPORT 	void scatter_cell_index(
 	size = max_buf;
 	for (i = 0; i < dim-1; ++i) size *= max_size;
 
-	uni_array(&bfs,size,sizeof(int));
-        uni_array(&bfr,size,sizeof(int));
+	uni_array(&bfs,size,sizeof(prdns_int));
+        uni_array(&bfr,size,sizeof(prdns_int));
 
 	find_Cartesian_coordinates(pp_mynode(),pp_grid,me);
 	for (i = 0; i < dim; ++i)
@@ -1438,7 +1444,7 @@ LOCAL 	void pack_index_in_dir(
 	int *gmax,
 	int *lbuf,
 	int *ubuf,
-	int *bfs,
+	prdns_int *bfs,
 	int dir,
 	int nb)
 {
@@ -1460,7 +1466,7 @@ LOCAL 	void unpack_index_in_dir(
 	int *gmax,
 	int *lbuf,
 	int *ubuf,
-	int *bfr,
+	prdns_int *bfr,
 	int dir,
 	int nb)
 {
@@ -1503,7 +1509,7 @@ LOCAL 	void pack_index_in_dir3d(
 	int *gmax,
 	int *lbuf,
 	int *ubuf,
-	int *bfs,
+	prdns_int *bfs,
 	int dir,
 	int nb)
 {
@@ -1585,7 +1591,7 @@ LOCAL 	void unpack_index_in_dir3d(
 	int *gmax,
 	int *lbuf,
 	int *ubuf,
-	int *bfs,
+	prdns_int *bfs,
 	int dir,
 	int nb)
 {
@@ -1749,7 +1755,7 @@ LOCAL 	void pack_index_in_dir2d(
 	int *gmax,
 	int *lbuf,
 	int *ubuf,
-	int *bfs,
+	prdns_int *bfs,
 	int dir,
 	int nb)
 {
@@ -1809,7 +1815,7 @@ LOCAL 	void unpack_index_in_dir2d(
 	int *gmax,
 	int *lbuf,
 	int *ubuf,
-	int *bfr,
+	prdns_int *bfr,
 	int dir,
 	int nb)
 {

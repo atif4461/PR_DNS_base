@@ -191,8 +191,8 @@ void Incompress_Solver_Smooth_Basis::setIndexMap(void)
 	    	break;
 	    case 3:
 	    	FT_TriArrayMemoryAlloc((POINTER*)&ijk_to_I,top_gmax[0]+1,
-				top_gmax[1]+1,top_gmax[2]+1,INT);
-		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,INT);
+				top_gmax[1]+1,top_gmax[2]+1,PETSCINT);
+		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,PETSCINT);
 	    	break;
 	    }
 	    old_size = size;
@@ -207,7 +207,7 @@ void Incompress_Solver_Smooth_Basis::setIndexMap(void)
 	    	break;
 	    case 3:
 		FT_FreeThese(1,I_to_ijk);
-		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,INT);
+		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,PETSCINT);
 	    	break;
 	    }
 	    old_size = size;

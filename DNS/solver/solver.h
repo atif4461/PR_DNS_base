@@ -5,6 +5,15 @@
 #ifndef _FT_IFLUID_SOLVER_H_
 #define _FT_IFLUID_SOLVER_H_
 
+#define   PETSCINT sizeof(prdns_int)
+
+#ifdef __PRDNS_LONG_INT__
+typedef long int prdns_int;
+#else
+typedef int prdns_int;
+#endif
+
+
 #include <FronTier.h>
 #include <vector>
 #include <petscksp.h>
@@ -24,22 +33,22 @@ class SOLVER
 {
 public:
 	SOLVER(){};
-	SOLVER(int ilower, int iupper, int d_nz, int o_nz){};
+	SOLVER(prdns_int ilower, prdns_int iupper, int d_nz, int o_nz){};
 	virtual ~SOLVER(){};
-	virtual void Create(int ilower, int iupper, int d_nz, int o_nz){};
+	virtual void Create(prdns_int ilower, prdns_int iupper, int d_nz, int o_nz){};
 	
-	virtual void Set_A(PetscInt i, PetscInt j, double val){};
+	virtual void Set_A(prdns_int i, prdns_int j, double val){};
 						// A[i][j]=val;
-	virtual void Add_A(PetscInt i, PetscInt j, double val){};
+	virtual void Add_A(prdns_int i, prdns_int j, double val){};
 						// A[i][j]=A[i][j]+val;
-	virtual void Set_x(PetscInt i, double val){};	// x[i]=val;
+	virtual void Set_x(prdns_int i, double val){};	// x[i]=val;
 	virtual void Set_x(double *p){};		// x[i]=p[i];
-	virtual void Add_x(PetscInt i, double val){};	// x[i]=x[i]+val;
+	virtual void Add_x(prdns_int i, double val){};	// x[i]=x[i]+val;
 	virtual void Get_x(double *p){};	// get the x from ij_x to p.		
 	virtual void Get_x(double *p, int n, int *global_index){};
-	virtual void Set_b(PetscInt i, double val){};	// b[i]=val;
+	virtual void Set_b(prdns_int i, double val){};	// b[i]=val;
 	virtual void Set_b(double *b){};	
-	virtual void Add_b(PetscInt i, double val){};	// b[i]=b[i]+val;
+	virtual void Add_b(prdns_int i, double val){};	// b[i]=b[i]+val;
 
 	virtual void SetMaxIter(int val){};	
 	virtual void GetFinalRelativeResidualNorm(double *rel_resid_norm){};
@@ -60,8 +69,8 @@ class PETSc: public SOLVER
 {
 public:	
 	MPI_Comm  comm;			// set to be MPI_COMM_WORLD.
-	int iLower;
-	int iUpper;			// global row range
+	prdns_int iLower;
+	prdns_int iUpper;			// global row range
 	
 	Vec x;      			/* approx solution, RHS*/
 	Vec b;
@@ -87,21 +96,21 @@ public:
 	PETSc(int ilower, int iupper, int d_nz, int o_nz);		
 		// global row range of A, x, b on this processor
 	~PETSc();
-	void Create(int ilower, int iupper, int d_nz, int o_nz);	
+	void Create(prdns_int ilower, prdns_int iupper, int d_nz, int o_nz);	
 		// same as Hypre(int, int)
-	void Create(MPI_Comm Comm, int ilower, int iupper, int d_nz, int o_nz);
+	void Create(MPI_Comm Comm, prdns_int ilower, prdns_int iupper, int d_nz, int o_nz);
 		// same as Hypre(int, int)
 
 	void Reset_A();				// Set A[i][j]=0.0;
 	void Reset_b();
 	void Reset_x();
-	void Set_A(PetscInt i, PetscInt j, double val);	// A[i][j]=val;
-	void Add_A(PetscInt i, PetscInt j, double val);	// A[i][j]=A[i][j]+val;
-	void Get_row_of_A(PetscInt i, PetscInt *ncol, PetscInt **cols, double **row);
-	void Set_x(PetscInt i, double val);		// x[i]=val;
-	void Add_x(PetscInt i, double val);		// x[i]=x[i]+val;
-	void Set_b(PetscInt i, double val);		// b[i]=val;
-	void Add_b(PetscInt i, double val);		// b[i]=b[i]+val;
+	void Set_A(prdns_int i, prdns_int j, double val);	// A[i][j]=val;
+	void Add_A(prdns_int i, prdns_int j, double val);	// A[i][j]=A[i][j]+val;
+	void Get_row_of_A(prdns_int i, prdns_int *ncol, prdns_int **cols, double **row);
+	void Set_x(prdns_int i, double val);		// x[i]=val;
+	void Add_x(prdns_int i, double val);		// x[i]=x[i]+val;
+	void Set_b(prdns_int i, double val);		// b[i]=val;
+	void Add_b(prdns_int i, double val);		// b[i]=b[i]+val;
 	void Get_x(double *p);		// get the x from ij_x to p.	
 	void Get_b(double *p);		// get the b from ij_x to p.
 	void Get_x(double *p, int n, int *global_index);
@@ -110,7 +119,7 @@ public:
 	void SetTol(double val);	// Set the convergence tolerance 
 	void SetKDim(int k_dim);	
 			// Set the maximum size of the Krylov space 
-	void GetNumIterations(PetscInt *num_iterations);	
+	void GetNumIterations(prdns_int *num_iterations);	
 			// Return the number of iterations taken 
 	void GetFinalRelativeResidualNorm(double *rel_resid_norm);
 	void Solve(void);
@@ -152,10 +161,10 @@ public:
         boolean first;
 	int *i_to_I;
 	int **ij_to_I;
-	int ***ijk_to_I;
-	int ilower;
-	int iupper;
-	int order;		/* order of Runge-Kutta */
+	prdns_int ***ijk_to_I;
+	prdns_int ilower;
+	prdns_int iupper;
+	prdns_int order;		/* order of Runge-Kutta */
 
 	COMPONENT soln_comp;
 	COMPONENT obst_comp;
@@ -201,9 +210,9 @@ public:
         // On topological grid
 	int *i_to_I;
 	int **ij_to_I;
-	int ***ijk_to_I;
-	int ilower;
-	int iupper;
+	prdns_int ***ijk_to_I;
+	prdns_int ilower;
+	prdns_int iupper;
 
 	double obst_comp;
 	double *soln;		/* field variable of new step */
@@ -246,9 +255,9 @@ public:
         // On topological grid
 	int *i_to_I;
 	int **ij_to_I;
-	int ***ijk_to_I;
-	int ilower;
-	int iupper;
+	prdns_int ***ijk_to_I;
+	prdns_int ilower;
+	prdns_int iupper;
 
 	double *soln;		/* field variable of new step */
 	double *source;		/* source field */
@@ -301,7 +310,7 @@ public:
 	double dt;
 
 	int order;		/* order of Runge-Kutta */
-	int size;
+	prdns_int size;
 
 	COMPONENT soln_comp1;
 	COMPONENT soln_comp2;
@@ -430,10 +439,10 @@ public:
 
         int *i_to_I,*I_to_i;            // Index mapping for 1D
         int **ij_to_I,**I_to_ij;        // Index mapping for 2D
-        int ***ijk_to_I,**I_to_ijk;     // Index mapping for 3D
-	int ilower;
-	int iupper;
-	int size;
+        prdns_int ***ijk_to_I,**I_to_ijk;     // Index mapping for 3D
+	prdns_int ilower;
+	prdns_int iupper;
+	prdns_int size;
 	boolean solve_front_state;
 
 	POINTER jparams;	/* Params for jump functions */
@@ -495,10 +504,10 @@ public:
 
         int *i_to_I,*I_to_i;            // Index mapping for 1D
         int **ij_to_I,**I_to_ij;        // Index mapping for 2D
-        int ***ijk_to_I,**I_to_ijk;     // Index mapping for 3D
-	int ilower;
-	int iupper;
-	int size;
+        prdns_int ***ijk_to_I,**I_to_ijk;     // Index mapping for 3D
+	prdns_int ilower;
+	prdns_int iupper;
+	prdns_int size;
 	boolean solve_front_state;
 
 	POINTER jparams;	/* Params for jump functions */

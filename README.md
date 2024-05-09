@@ -60,15 +60,14 @@ srun /global/homes/a/atif/packages/openmpi-4.1.1/bin/mpirun --mca btl_openib_all
 ## PERLMUTTER 
 ###############
 Currently Loaded Modules:
-  1) craype-x86-milan     4) xpmem/2.5.2-2.4_3.48__gd0f7936.shasta   7) cray-libsci/23.02.1.1  10) perftools-base/23.03.0  13) Nsight-Compute/2022.1.1  16) craype-accel-nvidia80
-  2) libfabric/1.15.2.0   5) PrgEnv-gnu/8.3.3                        8) craype/2.7.20          11) cpe/23.03               14) Nsight-Systems/2022.2.1  17) gpu/1.0
-  3) craype-network-ofi   6) cray-dsmml/0.2.2                        9) gcc/11.2.0             12) xalt/2.10.2             15) cudatoolkit/11.7         18) cray-mpich/8.1.25
+  1) craype-x86-milan     4) xpmem/2.6.2-2.5_2.38__gd067c3f.shasta   7) PrgEnv-gnu/8.3.3      (cpe)   10) cray-mpich/8.1.25 (mpi)  13) perftools-base/23.03.0 (dev)
+  2) libfabric/1.15.2.0   5) craype-accel-nvidia80                   8) cray-dsmml/0.2.2              11) craype/2.7.20     (c)    14) cudatoolkit/11.7       (g)
+  3) craype-network-ofi   6) gpu/1.0                                 9) cray-libsci/23.02.1.1 (math)  12) gcc/11.2.0        (c)    15) cpe/23.03              (cpe)
+module load cpe/23.03
 conda activate pr-dns
-module load gcc/12.2
-module load cray-mpich/8.1.25
-module swap cudatoolkit/12.2 cudatoolkit/11.7
-export PATH=/global/homes/a/atif/packages/petsc-3.16.0-mpich/lib/petsc/bin/:$PATH
-cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc .
+export PATH=/global/homes/a/atif/packages/petsc-3.20.4-cudaaware-64bit/lib/petsc/bin/:$PATH
+cmake -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc -DCMAKE_CXX_FLAGS="-target-accel=nvidia80" .
 salloc --nodes 1 --qos interactive --time 1:00:00 --constraint gpu --gpus 4 --account=m2845
 sbatch submit.sh
+srun -n 1 ./climate/climate -d 3 -p 1 1 1 -i ./climate/input-pr-dns/in-entrainment3dd_case1_petsc_cuda -o out-petsc-cuda -pc_type bjacobi -mat_type aijcusparse -vec_type cuda -log_view |& tee srun.log &
 mpirun --mca opal_common_ucx_opal_mem_hooks 1 --mca btl_openib_allow_ib 1 -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/ -log_view |& tee srun.log &

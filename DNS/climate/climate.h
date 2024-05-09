@@ -22,6 +22,11 @@ extern double* g_particle_input;
 extern double* g_particle_input_D;
 #endif
 
+#ifdef __PRDNS_LONG_INT__
+typedef PetscInt prdns_int;
+#else
+typedef int prdns_int;
+#endif
 
 enum _CL_PROB_TYPE {
 	PARTICLE_TRACKING = 1,
@@ -204,7 +209,7 @@ public:
 	int *lbuf,*ubuf,*gmax;
 	int *i_to_I,*I_to_i;		// Index mapping for 1D
 	int **ij_to_I,**I_to_ij;	// Index mapping for 2D
-	int ***ijk_to_I,**I_to_ijk;	// Index mapping for 3D
+	prdns_int ***ijk_to_I,**I_to_ijk;	// Index mapping for 3D
 
 	// Sweeping limites
 	int imin,jmin,kmin;
@@ -228,7 +233,8 @@ public:
 	~VCARTESIAN();
 
 	// for parallel partition
-	int             NLblocks,ilower,iupper;
+	int             NLblocks;
+	prdns_int       ilower,iupper;
         int             *n_dist;
 
 
