@@ -931,48 +931,48 @@ SURFACE		   *s;
 LOCAL   void     install_curve_points_state(
        			INTERFACE   *intfc)
 {
-	Table 	    *T = table_of_interface(intfc);
-        CRXING      *crx;
-        CURVE       **c;
-        BOND        *b;
-        BOND_TRI    **btri;
-        POINT       *p;
-        int         k;
-        size_t      sizest = size_of_state(intfc);
-                  
-        /*add_to_debug("install_c_st"); */
-	
-	for(c = intfc->curves; c && *c; c++)
-        {
-            p = (*c)->first->start;
-            b = (*c)->first;
-	    /*insert_curve_face_crossings ft_assigns Index_of_point as face index */
-	    
-	    k = T->curve_crx_lists[Index_of_point(p)][0];
-            crx = &T->curve_crx_store[k];
-
-	    if(debugging("install_c_st"))
-	        print_wall_curve_crx0("inst_c_st", p, Index_of_point(p), crx);
-
-	    for(btri = Btris(b); btri && *btri; btri++)
-	        install_btri_states_from_crx(intfc,*btri,crx,sizest,POSITIVE_ORIENTATION);
-            
-            for(b = (*c)->first; b; b = b->next)
-            {
-                p = b->end;
-
-	        k = T->curve_crx_lists[Index_of_point(p)][0];
-                crx = &T->curve_crx_store[k];
-	
-		if(debugging("install_c_st"))
-	            print_wall_curve_crx0("inst_c_st", p, Index_of_point(p), crx);
-        
-		for(btri = Btris(b); btri && *btri; btri++)
-		{
-	            install_btri_states_from_crx(intfc,*btri,crx,sizest,NEGATIVE_ORIENTATION);
-		}
-	    }
-        }
+//	Table 	    *T = table_of_interface(intfc);
+//        CRXING      *crx;
+//        CURVE       **c;
+//        BOND        *b;
+//        BOND_TRI    **btri;
+//        POINT       *p;
+//        int         k;
+//        size_t      sizest = size_of_state(intfc);
+//                  
+//        /*add_to_debug("install_c_st"); */
+//	
+//	for(c = intfc->curves; c && *c; c++)
+//        {
+//            p = (*c)->first->start;
+//            b = (*c)->first;
+//	    /*insert_curve_face_crossings ft_assigns Index_of_point as face index */
+//	    
+//	    k = T->curve_crx_lists[Index_of_point(p)][0];
+//            crx = &T->curve_crx_store[k];
+//
+//	    if(debugging("install_c_st"))
+//	        print_wall_curve_crx0("inst_c_st", p, Index_of_point(p), crx);
+//
+//	    for(btri = Btris(b); btri && *btri; btri++)
+//	        install_btri_states_from_crx(intfc,*btri,crx,sizest,POSITIVE_ORIENTATION);
+//            
+//            for(b = (*c)->first; b; b = b->next)
+//            {
+//                p = b->end;
+//
+//	        k = T->curve_crx_lists[Index_of_point(p)][0];
+//                crx = &T->curve_crx_store[k];
+//	
+//		if(debugging("install_c_st"))
+//	            print_wall_curve_crx0("inst_c_st", p, Index_of_point(p), crx);
+//        
+//		for(btri = Btris(b); btri && *btri; btri++)
+//		{
+//	            install_btri_states_from_crx(intfc,*btri,crx,sizest,NEGATIVE_ORIENTATION);
+//		}
+//	    }
+//        }
 }       /* end install_curve_points_state */
 
 EXPORT	SURFACE  * find_surf_with_comp(

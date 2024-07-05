@@ -708,96 +708,96 @@ EXPORT  void    tecplot_surface(
 		FILE		*file,
 		SURFACE		*s)
 {
-	TRI	*tri;
-	POINT	*p;
-	int	i,npts,ntri,num_tris;
-
-	if (bname != NULL)/*direct call */
-	{
-	    if ((file = fopen(bname,"w")) == NULL)
-	    {
-		screen("WARNING in tecplot_surface(), "
-		       "can't open %s\n",bname);
-		return;
-	    }
-	    (void) fprintf(file,"TITLE = \"tecplot surface\"\n"
-			   	"VARIABLES = \"x\", \"y\", \"z\"\n");
-	}
-	/*called from tecplot_interface */
-	if (file == NULL)
-	{
-	    screen("ERROR, in tecplot_surface, file is NULL\n");
-	    clean_up(ERROR);
-	}
-	if (!(first_tri(s)))
-	{
-	    screen("WARNING, first bond of the curve is NULL\n");
-	    return;
-	}
-
-	/*count number of points(npts) and number of tris(ntri) */
-	for (tri=first_tri(s),ntri=0; !at_end_of_tri_list(tri,s); tri=tri->next,ntri++)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		Index_of_point(Point_of_tri(tri)[i]) = -1;
-	    }
-	}
-	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    Index_of_point(p) = ++npts;
-		}
-	    }
-	}
-	/*end counting */
-	
-	if (Boundary(s))
-	    (void) fprintf(file, "ZONE T=\"BOUNDARY SURFACE\" N=%d E=%d\nF=FEPOINT, ET=TRIANGLE\n",
-			     npts,ntri);
-	else
-	    (void) fprintf(file, "ZONE T=\"INTERIOR SURFACE\" N=%d E=%d\nF=FEPOINT, ET=TRIANGLE\n",
-			     npts,ntri);
-
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		Index_of_point(Point_of_tri(tri)[i]) = -1;
-	    }
-	}
-	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    Index_of_point(p) = ++npts;
-		    fprintf(file,"%-9g %-9g %-9g\n",Coords(p)[0],
-				 Coords(p)[1],Coords(p)[2]);
-		}
-	    }
-	}
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		fprintf(file,"%d ",Index_of_point(Point_of_tri(tri)[i]));
-	    }
-	    fprintf(file,"\n");
-	}
-
-	if (ntri != s->num_tri)
-	{
-	    printf("WARNING, num of tri in surface is wrong\n"); 
-	}
-	if (bname != NULL)
-	    fclose(file);
+//	TRI	*tri;
+//	POINT	*p;
+//	int	i,npts,ntri,num_tris;
+//
+//	if (bname != NULL)/*direct call */
+//	{
+//	    if ((file = fopen(bname,"w")) == NULL)
+//	    {
+//		screen("WARNING in tecplot_surface(), "
+//		       "can't open %s\n",bname);
+//		return;
+//	    }
+//	    (void) fprintf(file,"TITLE = \"tecplot surface\"\n"
+//			   	"VARIABLES = \"x\", \"y\", \"z\"\n");
+//	}
+//	/*called from tecplot_interface */
+//	if (file == NULL)
+//	{
+//	    screen("ERROR, in tecplot_surface, file is NULL\n");
+//	    clean_up(ERROR);
+//	}
+//	if (!(first_tri(s)))
+//	{
+//	    screen("WARNING, first bond of the curve is NULL\n");
+//	    return;
+//	}
+//
+//	/*count number of points(npts) and number of tris(ntri) */
+//	for (tri=first_tri(s),ntri=0; !at_end_of_tri_list(tri,s); tri=tri->next,ntri++)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	    }
+//	}
+//	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    Index_of_point(p) = ++npts;
+//		}
+//	    }
+//	}
+//	/*end counting */
+//	
+//	if (Boundary(s))
+//	    (void) fprintf(file, "ZONE T=\"BOUNDARY SURFACE\" N=%d E=%d\nF=FEPOINT, ET=TRIANGLE\n",
+//			     npts,ntri);
+//	else
+//	    (void) fprintf(file, "ZONE T=\"INTERIOR SURFACE\" N=%d E=%d\nF=FEPOINT, ET=TRIANGLE\n",
+//			     npts,ntri);
+//
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	    }
+//	}
+//	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    Index_of_point(p) = ++npts;
+//		    fprintf(file,"%-9g %-9g %-9g\n",Coords(p)[0],
+//				 Coords(p)[1],Coords(p)[2]);
+//		}
+//	    }
+//	}
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		fprintf(file,"%d ",Index_of_point(Point_of_tri(tri)[i]));
+//	    }
+//	    fprintf(file,"\n");
+//	}
+//
+//	if (ntri != s->num_tri)
+//	{
+//	    printf("WARNING, num of tri in surface is wrong\n"); 
+//	}
+//	if (bname != NULL)
+//	    fclose(file);
 }	/* end tecplot_surface */
 
 LOCAL  void    tecplot_surface_special(
@@ -805,169 +805,169 @@ LOCAL  void    tecplot_surface_special(
 		FILE		*file,
 		SURFACE		*s)
 {
-	TRI	*tri;
-	POINT	*p;
-	int	i,npts,ntri,num_tris;
-
-	if (bname != NULL)/*direct call */
-	{
-	    if ((file = fopen(bname,"w")) == NULL)
-	    {
-		screen("WARNING in tecplot_surface(), "
-		       "can't open %s\n",bname);
-		return;
-	    }
-	    (void) fprintf(file,"TITLE = \"tecplot surface\"\n"
-			   	"VARIABLES = \"x\", \"y\", \"z\"\n");
-	}
-	/*called from tecplot_interface */
-	if (file == NULL)
-	{
-	    screen("ERROR, in tecplot_surface, file is NULL\n");
-	    clean_up(ERROR);
-	}
-	if (!(first_tri(s)))
-	{
-	    screen("WARNING, first bond of the curve is NULL\n");
-	    return;
-	}
-
-	/*count number of points(npts) and number of tris(ntri) */
-	num_tris = 0; /*number of special tris */
-	for (tri=first_tri(s),ntri=0; !at_end_of_tri_list(tri,s); tri=tri->next,ntri++)
-	{
-	    int	side,flag = NO;
-	    /*
-            for (side = 0; side < 3; ++side)
-            {
-                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
-		    flag = YES;
-	    }
-	    */
-	    for (i = 0; i < 3; i++)
-	    {
-		if (Point_flags(Point_of_tri(tri)[i])._user9)
-		    flag = YES;
-	    }
-	    if (flag)
-	    {
-	        for (i = 0; i < 3; i++)
-	        {
-		    Index_of_point(Point_of_tri(tri)[i]) = -1;
-	        }
-		num_tris++;
-	    }
-	}
-	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    Index_of_point(p) = ++npts;
-		}
-	    }
-	}
-	/*end counting */
-	
-	if (npts ==0 && num_tris ==0)
-	{
-	    if (bname != NULL)
-	 	fclose(file);
-	    return;
-	}
-	if (Coords(p)[2] < 0.1 || Coords(p)[2] > 0.3)
-	{
-	    if (bname != NULL)
-	 	fclose(file);
-	    return;
-	}
-
-	(void) fprintf(file, "ZONE T=\"SURFACE\" N=%d E=%d\nF=FEPOINT, ET=TRIANGLE\n",
-			     npts,num_tris);
-
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    int	side,flag = NO;
-	    /*
-            for (side = 0; side < 3; ++side)
-            {
-                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
-		    flag = YES;
-	    }
-	    */
-	    for (i = 0; i < 3; i++)
-	    {
-		if (Point_flags(Point_of_tri(tri)[i])._user9)
-		    flag = YES;
-	    }
-	    if (flag)
-	    {
-	        for (i = 0; i < 3; i++)
-	        {
-	 	    Index_of_point(Point_of_tri(tri)[i]) = -1;
-	        }
-	    }
-	}
-	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    int	side,flag = NO;
-	    /*
-            for (side = 0; side < 3; ++side)
-            {
-                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
-		    flag = YES;
-	    }
-	    */
-	    for (i = 0; i < 3; i++)
-	    {
-		if (Point_flags(Point_of_tri(tri)[i])._user9)
-		    flag = YES;
-	    }
-	    if(flag)
-	    for (i = 0; i < 3; i++)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    Index_of_point(p) = ++npts;
-		    fprintf(file,"%-9g %-9g %-9g\n",Coords(p)[0],
-				 Coords(p)[1],Coords(p)[2]);
-		}
-	    }
-	}
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    int	side,flag = NO;
-	    /*
-            for (side = 0; side < 3; ++side)
-            {
-                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
-		    flag = YES;
-	    }
-	    */
-	    for (i = 0; i < 3; i++)
-	    {
-		if (Point_flags(Point_of_tri(tri)[i])._user9)
-		    flag = YES;
-	    }
-	    if(flag)
-	    {
-	        for (i = 0; i < 3; i++)
-	        {
-		    fprintf(file,"%d ",Index_of_point(Point_of_tri(tri)[i]));
-	        }
-	        fprintf(file,"\n");
-	    }
-	}
-
-	if (ntri != s->num_tri)
-	{
-	    printf("WARNING, num of tri in surface is wrong\n"); 
-	}
-	if (bname != NULL)
-	    fclose(file);
+//	TRI	*tri;
+//	POINT	*p;
+//	int	i,npts,ntri,num_tris;
+//
+//	if (bname != NULL)/*direct call */
+//	{
+//	    if ((file = fopen(bname,"w")) == NULL)
+//	    {
+//		screen("WARNING in tecplot_surface(), "
+//		       "can't open %s\n",bname);
+//		return;
+//	    }
+//	    (void) fprintf(file,"TITLE = \"tecplot surface\"\n"
+//			   	"VARIABLES = \"x\", \"y\", \"z\"\n");
+//	}
+//	/*called from tecplot_interface */
+//	if (file == NULL)
+//	{
+//	    screen("ERROR, in tecplot_surface, file is NULL\n");
+//	    clean_up(ERROR);
+//	}
+//	if (!(first_tri(s)))
+//	{
+//	    screen("WARNING, first bond of the curve is NULL\n");
+//	    return;
+//	}
+//
+//	/*count number of points(npts) and number of tris(ntri) */
+//	num_tris = 0; /*number of special tris */
+//	for (tri=first_tri(s),ntri=0; !at_end_of_tri_list(tri,s); tri=tri->next,ntri++)
+//	{
+//	    int	side,flag = NO;
+//	    /*
+//            for (side = 0; side < 3; ++side)
+//            {
+//                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
+//		    flag = YES;
+//	    }
+//	    */
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		if (Point_flags(Point_of_tri(tri)[i])._user9)
+//		    flag = YES;
+//	    }
+//	    if (flag)
+//	    {
+//	        for (i = 0; i < 3; i++)
+//	        {
+//		    Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	        }
+//		num_tris++;
+//	    }
+//	}
+//	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    Index_of_point(p) = ++npts;
+//		}
+//	    }
+//	}
+//	/*end counting */
+//	
+//	if (npts ==0 && num_tris ==0)
+//	{
+//	    if (bname != NULL)
+//	 	fclose(file);
+//	    return;
+//	}
+//	if (Coords(p)[2] < 0.1 || Coords(p)[2] > 0.3)
+//	{
+//	    if (bname != NULL)
+//	 	fclose(file);
+//	    return;
+//	}
+//
+//	(void) fprintf(file, "ZONE T=\"SURFACE\" N=%d E=%d\nF=FEPOINT, ET=TRIANGLE\n",
+//			     npts,num_tris);
+//
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    int	side,flag = NO;
+//	    /*
+//            for (side = 0; side < 3; ++side)
+//            {
+//                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
+//		    flag = YES;
+//	    }
+//	    */
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		if (Point_flags(Point_of_tri(tri)[i])._user9)
+//		    flag = YES;
+//	    }
+//	    if (flag)
+//	    {
+//	        for (i = 0; i < 3; i++)
+//	        {
+//	 	    Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	        }
+//	    }
+//	}
+//	for (tri=first_tri(s),npts=0; !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    int	side,flag = NO;
+//	    /*
+//            for (side = 0; side < 3; ++side)
+//            {
+//                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
+//		    flag = YES;
+//	    }
+//	    */
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		if (Point_flags(Point_of_tri(tri)[i])._user9)
+//		    flag = YES;
+//	    }
+//	    if(flag)
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    Index_of_point(p) = ++npts;
+//		    fprintf(file,"%-9g %-9g %-9g\n",Coords(p)[0],
+//				 Coords(p)[1],Coords(p)[2]);
+//		}
+//	    }
+//	}
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    int	side,flag = NO;
+//	    /*
+//            for (side = 0; side < 3; ++side)
+//            {
+//                if (!is_side_bdry(tri,side) && Tri_on_side(tri,side) == NULL)
+//		    flag = YES;
+//	    }
+//	    */
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		if (Point_flags(Point_of_tri(tri)[i])._user9)
+//		    flag = YES;
+//	    }
+//	    if(flag)
+//	    {
+//	        for (i = 0; i < 3; i++)
+//	        {
+//		    fprintf(file,"%d ",Index_of_point(Point_of_tri(tri)[i]));
+//	        }
+//	        fprintf(file,"\n");
+//	    }
+//	}
+//
+//	if (ntri != s->num_tri)
+//	{
+//	    printf("WARNING, num of tri in surface is wrong\n"); 
+//	}
+//	if (bname != NULL)
+//	    fclose(file);
 }	/* end tecplot_surface_special */
 
 /*from bowrg, export surfaces in one zone */
@@ -983,155 +983,155 @@ LOCAL	void	tecplot_plot_surfaces(
 	SURFACE_COLOR color1,
 	SURFACE_COLOR color2)
 {
-	FILE	          *file;
-	POINT             *p;
-	SURFACE	          **s;
-	TRI	          *tri;
-	boolean              plot_surf,plot_tri;
-	double 	          D, intensity = .5;
-	double             L[MAXD],U[MAXD],tol[MAXD];
-	double	          *crds;
-	int	          num_surfs, num_tris, i, j, k, l;
-	int               npts, ntris, count = 0;
-	static const char *indent = "    ";
-	static double      *pts = NULL;
-	static int        *verts = NULL;
-	static int        alloc_len_verts = 0, alloc_len_pts = 0;
-	static char       *fname = NULL;
-	static size_t     fname_len = 0;
-
-	fname = get_list_file_name(fname,dname,name,&fname_len);
-	
-	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    num_tris += (*s)->num_tri;
-	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    {
-	        for (k = 0; k < 3; ++k)
-		    Index_of_point(Point_of_tri(tri)[k]) = -1;
-	    }
-	}
-	
-	if (alloc_len_pts < 3*intfc->num_points)
-	{
-	    if (pts != NULL)
-		free(pts);
-	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,sizeof(double));
-	}
-	if (alloc_len_verts < 4*num_tris)
-	{
-	    if (verts != NULL)
-		free(verts);
-	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,sizeof(int));
-	}
-	for (i = 0; i < 3; i++)
-	{
-	    L[i] = gr->L[i] - 0.5*gr->h[i];
-	    U[i] = gr->U[i] + 0.5*gr->h[i];
-	    tol[i] = 0.00001*gr->h[i];
-	}
-
-        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    if (bdry == YES  &&  !Boundary(*s))
-		continue; 
-	    if (bdry == NO  &&  Boundary(*s))
-		continue;
-	    if (clip == YES)
-	    {
-		plot_surf = NO;
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-		    plot_tri = NO;
-		    for (k = 0; k < 3; ++k)
-		    {
-			crds = Coords(Point_of_tri(tri)[k]);
-	                for (l = 0; l < 3; ++l)
-			    if ((crds[l] < L[l] - tol[l]) || 
-			        (crds[l] > U[l] + tol[l]))
-				break;
-			if (l == 3) /* a point is inside the domain */
-			{
-			    plot_tri = plot_surf = YES;
-			    break;
-		        }
-		    }
-		    if (plot_tri)
-		    {
-			for (k = 0; k < 3; ++k)
-			{
-		            p = Point_of_tri(tri)[k];
-			    if (Index_of_point(p) == -1)
-			    {
-			        crds = Coords(p);
-	                        for (l = 0; l < 3; ++l)
-				    pts[3*npts+l] = crds[l];
-				Index_of_point(p) = npts++;
-			    }
-			    verts[4*ntris+k] = Index_of_point(p);
-			}
-			verts[4*ntris+3] = num_surfs;
-			++ntris;
-		    }
-		}
-		if (plot_surf == YES)
-		    ++num_surfs;
-	    }
-	    else
-	    {
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-	            for (k = 0; k < 3; ++k)
-		    {
-		        p = Point_of_tri(tri)[k];
-			if (Index_of_point(p) == -1)
-			{
-			    crds = Coords(p);
-	                    for (l = 0; l < 3; ++l)
-				pts[3*npts+l] = crds[l];
-			    Index_of_point(p) = npts++;
-			}
-			verts[4*ntris+k] = Index_of_point(p);
-		    }
-		    verts[4*ntris+3] = num_surfs;
-		    ++ntris;
-		}
-		++num_surfs;
-	    }
-	}
-	if (num_surfs == 0)
-	    return;
-
-	if ((file = fopen(fname,"w")) == NULL)
-	{
-	    (void) printf("WARNING in tecplot_plot_surfaces(), "
-	                  "can't open %s\n",fname);
-	    return;
-	}
-
-	fprintf(file, "TITLE = \"tecview\"\n");
-	fprintf(file, "VARIABLES = \"x\", \"y\", \"z\"\n");
-	fprintf(file, "ZONE N=%d,  E=%d,\n", npts, ntris); 
-	fprintf(file, "DATAPACKING = POINT \n");
-	fprintf(file, "ZONETYPE=FETRIANGLE \n\n");
-
-	for (i = 0; i < npts; ++i)
-	{
-	    (void) fprintf(file,"%-9g %-9g %-9g\n",
-			   pts[3*i],pts[3*i+1],pts[3*i+2]);
-	}
-	
-	for (j = 0; j < ntris; ++j)
-	{
-	    (void) fprintf(file," %-4d %-4d %-4d \n", 
-			   verts[4*j]+1,verts[4*j+1]+1,verts[4*j+2]+1);
-	}
-
-	(void) fclose(file);
+//	FILE	          *file;
+//	POINT             *p;
+//	SURFACE	          **s;
+//	TRI	          *tri;
+//	boolean              plot_surf,plot_tri;
+//	double 	          D, intensity = .5;
+//	double             L[MAXD],U[MAXD],tol[MAXD];
+//	double	          *crds;
+//	int	          num_surfs, num_tris, i, j, k, l;
+//	int               npts, ntris, count = 0;
+//	static const char *indent = "    ";
+//	static double      *pts = NULL;
+//	static int        *verts = NULL;
+//	static int        alloc_len_verts = 0, alloc_len_pts = 0;
+//	static char       *fname = NULL;
+//	static size_t     fname_len = 0;
+//
+//	fname = get_list_file_name(fname,dname,name,&fname_len);
+//	
+//	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    num_tris += (*s)->num_tri;
+//	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    {
+//	        for (k = 0; k < 3; ++k)
+//		    Index_of_point(Point_of_tri(tri)[k]) = -1;
+//	    }
+//	}
+//	
+//	if (alloc_len_pts < 3*intfc->num_points)
+//	{
+//	    if (pts != NULL)
+//		free(pts);
+//	    alloc_len_pts = 3*intfc->num_points;
+//	    uni_array(&pts,alloc_len_pts,sizeof(double));
+//	}
+//	if (alloc_len_verts < 4*num_tris)
+//	{
+//	    if (verts != NULL)
+//		free(verts);
+//	    alloc_len_verts = 4*num_tris;
+//	    uni_array(&verts,alloc_len_verts,sizeof(int));
+//	}
+//	for (i = 0; i < 3; i++)
+//	{
+//	    L[i] = gr->L[i] - 0.5*gr->h[i];
+//	    U[i] = gr->U[i] + 0.5*gr->h[i];
+//	    tol[i] = 0.00001*gr->h[i];
+//	}
+//
+//        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    if (bdry == YES  &&  !Boundary(*s))
+//		continue; 
+//	    if (bdry == NO  &&  Boundary(*s))
+//		continue;
+//	    if (clip == YES)
+//	    {
+//		plot_surf = NO;
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//		    plot_tri = NO;
+//		    for (k = 0; k < 3; ++k)
+//		    {
+//			crds = Coords(Point_of_tri(tri)[k]);
+//	                for (l = 0; l < 3; ++l)
+//			    if ((crds[l] < L[l] - tol[l]) || 
+//			        (crds[l] > U[l] + tol[l]))
+//				break;
+//			if (l == 3) /* a point is inside the domain */
+//			{
+//			    plot_tri = plot_surf = YES;
+//			    break;
+//		        }
+//		    }
+//		    if (plot_tri)
+//		    {
+//			for (k = 0; k < 3; ++k)
+//			{
+//		            p = Point_of_tri(tri)[k];
+//			    if (Index_of_point(p) == -1)
+//			    {
+//			        crds = Coords(p);
+//	                        for (l = 0; l < 3; ++l)
+//				    pts[3*npts+l] = crds[l];
+//				Index_of_point(p) = npts++;
+//			    }
+//			    verts[4*ntris+k] = Index_of_point(p);
+//			}
+//			verts[4*ntris+3] = num_surfs;
+//			++ntris;
+//		    }
+//		}
+//		if (plot_surf == YES)
+//		    ++num_surfs;
+//	    }
+//	    else
+//	    {
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//	            for (k = 0; k < 3; ++k)
+//		    {
+//		        p = Point_of_tri(tri)[k];
+//			if (Index_of_point(p) == -1)
+//			{
+//			    crds = Coords(p);
+//	                    for (l = 0; l < 3; ++l)
+//				pts[3*npts+l] = crds[l];
+//			    Index_of_point(p) = npts++;
+//			}
+//			verts[4*ntris+k] = Index_of_point(p);
+//		    }
+//		    verts[4*ntris+3] = num_surfs;
+//		    ++ntris;
+//		}
+//		++num_surfs;
+//	    }
+//	}
+//	if (num_surfs == 0)
+//	    return;
+//
+//	if ((file = fopen(fname,"w")) == NULL)
+//	{
+//	    (void) printf("WARNING in tecplot_plot_surfaces(), "
+//	                  "can't open %s\n",fname);
+//	    return;
+//	}
+//
+//	fprintf(file, "TITLE = \"tecview\"\n");
+//	fprintf(file, "VARIABLES = \"x\", \"y\", \"z\"\n");
+//	fprintf(file, "ZONE N=%d,  E=%d,\n", npts, ntris); 
+//	fprintf(file, "DATAPACKING = POINT \n");
+//	fprintf(file, "ZONETYPE=FETRIANGLE \n\n");
+//
+//	for (i = 0; i < npts; ++i)
+//	{
+//	    (void) fprintf(file,"%-9g %-9g %-9g\n",
+//			   pts[3*i],pts[3*i+1],pts[3*i+2]);
+//	}
+//	
+//	for (j = 0; j < ntris; ++j)
+//	{
+//	    (void) fprintf(file," %-4d %-4d %-4d \n", 
+//			   verts[4*j]+1,verts[4*j+1]+1,verts[4*j+2]+1);
+//	}
+//
+//	(void) fclose(file);
 }		/*end tecplot_plot_surfaces*/
 
 EXPORT	void tecplot_show_box_tri(
@@ -1141,53 +1141,53 @@ EXPORT	void tecplot_show_box_tri(
 	int		num_tris,
 	FILE 		*file)
 {
-	int 	i,j;
-	double	lc[3], rc[3];
-	double 	*L = box->grid->L;
-	double 	*U = box->grid->U;
-	double 	*h = box->grid->h;
-
-	for(i=0; i<3; i++)
-	{
-	    lc[i] = L[i] + box->bmin[i]*h[i];
-	    rc[i] = L[i] + box->bmax[i]*h[i];
-	}
-	fprintf(file,"TITLE = \"tecplot tris\"\n"
-		     "VARIABLES = \"x\", \"y\", \"z\"\n");
-
-	tecplot_box(NULL, file, lc, rc);
-	tecplot_show_tris(tname, tris, num_tris, file);
-}	/* end tecplot_show_box_tri */
-
-EXPORT void geomview_interface_plot(
-	const char *dname,
-	INTERFACE  *intfc,
-	RECT_GRID  *gr)
-{
-	double *BBL = topological_grid(intfc).GL;
-	double *BBU = topological_grid(intfc).GU;
-
-	if (intfc->dim != 3)
-	    return;
-	if (create_directory(dname,YES) == FUNCTION_FAILED)
-	{
-	    (void) printf("WARNING in geomview_interface_plot(), directory "
-			  "%s doesn't exist and can't be created\n",dname);
-	    return;
-	}
-
-	gview_plot_cube(dname,"grid",gr->L,gr->U,BBL,BBU);
-	gview_plot_cube(dname,"vgrid",gr->VL,gr->VU,BBL,BBU);
-	gview_plot_cube(dname,"ggrid",gr->GL,gr->GU,BBL,BBU);
-	gview_plot_axes(dname,"axes",BBL,BBU,BBL,BBU);
-
-	gview_plot_surfaces(intfc,gr,BBL,BBU,YES,dname,"surfs",
-			    NO,pRED,pRED);
-
-	gview_plot_surfaces(intfc,gr,BBL,BBU,YES,dname,"bdry",
-			    YES,pBLUE,pGREEN);
-
-	gview_plot_curves(intfc,BBL,BBU,dname,"curves",pYELLOW,1);
+//	int 	i,j;
+//	double	lc[3], rc[3];
+//	double 	*L = box->grid->L;
+//	double 	*U = box->grid->U;
+//	double 	*h = box->grid->h;
+//
+//	for(i=0; i<3; i++)
+//	{
+//	    lc[i] = L[i] + box->bmin[i]*h[i];
+//	    rc[i] = L[i] + box->bmax[i]*h[i];
+//	}
+//	fprintf(file,"TITLE = \"tecplot tris\"\n"
+//		     "VARIABLES = \"x\", \"y\", \"z\"\n");
+//
+//	tecplot_box(NULL, file, lc, rc);
+//	tecplot_show_tris(tname, tris, num_tris, file);
+//}	/* end tecplot_show_box_tri */
+//
+//EXPORT void geomview_interface_plot(
+//	const char *dname,
+//	INTERFACE  *intfc,
+//	RECT_GRID  *gr)
+//{
+//	double *BBL = topological_grid(intfc).GL;
+//	double *BBU = topological_grid(intfc).GU;
+//
+//	if (intfc->dim != 3)
+//	    return;
+//	if (create_directory(dname,YES) == FUNCTION_FAILED)
+//	{
+//	    (void) printf("WARNING in geomview_interface_plot(), directory "
+//			  "%s doesn't exist and can't be created\n",dname);
+//	    return;
+//	}
+//
+//	gview_plot_cube(dname,"grid",gr->L,gr->U,BBL,BBU);
+//	gview_plot_cube(dname,"vgrid",gr->VL,gr->VU,BBL,BBU);
+//	gview_plot_cube(dname,"ggrid",gr->GL,gr->GU,BBL,BBU);
+//	gview_plot_axes(dname,"axes",BBL,BBU,BBL,BBU);
+//
+//	gview_plot_surfaces(intfc,gr,BBL,BBU,YES,dname,"surfs",
+//			    NO,pRED,pRED);
+//
+//	gview_plot_surfaces(intfc,gr,BBL,BBU,YES,dname,"bdry",
+//			    YES,pBLUE,pGREEN);
+//
+//	gview_plot_curves(intfc,BBL,BBU,dname,"curves",pYELLOW,1);
 }		/*end geomview_interface_plot*/
 
 EXPORT void gview_plot_color_scaled_interface(
@@ -1366,157 +1366,157 @@ LOCAL	void	gview_plot_surfaces(
 	SURFACE_COLOR color1,
 	SURFACE_COLOR color2)
 {
-	FILE	          *file;
-	POINT             *p;
-	SURFACE	          **s;
-	TRI	          *tri;
-	boolean              plot_surf,plot_tri;
-	double 	          D, intensity = .5;
-	double             L[MAXD],U[MAXD],tol[MAXD];
-	double	          *crds;
-	int	          num_surfs, num_tris, i, j, k, l;
-	int               npts, ntris, count = 0;
-	static const char *indent = "    ";
-	static double      *pts = NULL;
-	static int        *verts = NULL;
-	static int        alloc_len_verts = 0, alloc_len_pts = 0;
-	static char       *fname = NULL;
-	static size_t     fname_len = 0;
-
-	fname = get_list_file_name(fname,dname,name,&fname_len);
-
-	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    num_tris += (*s)->num_tri;
-	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    {
-	        for (k = 0; k < 3; ++k)
-		    Index_of_point(Point_of_tri(tri)[k]) = -1;
-	    }
-	}
-	
-	if (alloc_len_pts < 3*intfc->num_points)
-	{
-	    if (pts != NULL)
-		free(pts);
-	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,sizeof(double));
-	}
-	if (alloc_len_verts < 4*num_tris)
-	{
-	    if (verts != NULL)
-		free(verts);
-	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,sizeof(int));
-	}
-	for (i = 0; i < 3; i++)
-	{
-	    L[i] = gr->L[i] - 0.5*gr->h[i];
-	    U[i] = gr->U[i] + 0.5*gr->h[i];
-	    tol[i] = 0.00001*gr->h[i];
-	}
-
-        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    if (bdry == YES  &&  !Boundary(*s))
-		continue; 
-	    if (bdry == NO  &&  Boundary(*s))
-		continue;
-	    if (clip == YES)
-	    {
-		plot_surf = NO;
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-		    plot_tri = NO;
-		    for (k = 0; k < 3; ++k)
-		    {
-			crds = Coords(Point_of_tri(tri)[k]);
-	                for (l = 0; l < 3; ++l)
-			    if ((crds[l] < L[l] - tol[l]) || 
-			        (crds[l] > U[l] + tol[l]))
-				break;
-			if (l == 3) /* a point is inside the domain */
-			{
-			    plot_tri = plot_surf = YES;
-			    break;
-		        }
-		    }
-		    if (plot_tri)
-		    {
-			for (k = 0; k < 3; ++k)
-			{
-		            p = Point_of_tri(tri)[k];
-			    if (Index_of_point(p) == -1)
-			    {
-			        crds = Coords(p);
-	                        for (l = 0; l < 3; ++l)
-				    pts[3*npts+l] = crds[l];
-				Index_of_point(p) = npts++;
-			    }
-			    verts[4*ntris+k] = Index_of_point(p);
-			}
-			verts[4*ntris+3] = num_surfs;
-			++ntris;
-		    }
-		}
-		if (plot_surf == YES)
-		    ++num_surfs;
-	    }
-	    else
-	    {
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-	            for (k = 0; k < 3; ++k)
-		    {
-		        p = Point_of_tri(tri)[k];
-			if (Index_of_point(p) == -1)
-			{
-			    crds = Coords(p);
-	                    for (l = 0; l < 3; ++l)
-				pts[3*npts+l] = crds[l];
-			    Index_of_point(p) = npts++;
-			}
-			verts[4*ntris+k] = Index_of_point(p);
-		    }
-		    verts[4*ntris+3] = num_surfs;
-		    ++ntris;
-		}
-		++num_surfs;
-	    }
-	}
-	if (num_surfs == 0)
-	    return;
-
-	if ((file = fopen(fname,"w")) == NULL)
-	{
-	    (void) printf("WARNING in gview_plot_surfaces(), "
-	                  "can't open %s\n",fname);
-	    return;
-	}
-	(void) fprintf(file,"{ LIST\n");
-
-	gview_bounding_box(file,BBL,BBU,1,indent);
-
-	(void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
-		       indent,indent,indent,indent,npts,ntris,0);
-	for (i = 0; i < npts; ++i)
-	{
-	    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
-			   pts[3*i],pts[3*i+1],pts[3*i+2]);
-	}
-	D = (num_surfs == 1) ? 1.0 : 1/(num_surfs - 1.0);
-	for (j = 0; j < ntris; ++j)
-	{
-	    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
-			   3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-	    write_interpolated_color(file,color1,color2,verts[4*j+3]/D,
-				     intensity);
-	}
-	(void) fprintf(file,"%s}\n",indent);
-	(void) fprintf(file,"}\n");
-	(void) fclose(file);
+//	FILE	          *file;
+//	POINT             *p;
+//	SURFACE	          **s;
+//	TRI	          *tri;
+//	boolean              plot_surf,plot_tri;
+//	double 	          D, intensity = .5;
+//	double             L[MAXD],U[MAXD],tol[MAXD];
+//	double	          *crds;
+//	int	          num_surfs, num_tris, i, j, k, l;
+//	int               npts, ntris, count = 0;
+//	static const char *indent = "    ";
+//	static double      *pts = NULL;
+//	static int        *verts = NULL;
+//	static int        alloc_len_verts = 0, alloc_len_pts = 0;
+//	static char       *fname = NULL;
+//	static size_t     fname_len = 0;
+//
+//	fname = get_list_file_name(fname,dname,name,&fname_len);
+//
+//	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    num_tris += (*s)->num_tri;
+//	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    {
+//	        for (k = 0; k < 3; ++k)
+//		    Index_of_point(Point_of_tri(tri)[k]) = -1;
+//	    }
+//	}
+//	
+//	if (alloc_len_pts < 3*intfc->num_points)
+//	{
+//	    if (pts != NULL)
+//		free(pts);
+//	    alloc_len_pts = 3*intfc->num_points;
+//	    uni_array(&pts,alloc_len_pts,sizeof(double));
+//	}
+//	if (alloc_len_verts < 4*num_tris)
+//	{
+//	    if (verts != NULL)
+//		free(verts);
+//	    alloc_len_verts = 4*num_tris;
+//	    uni_array(&verts,alloc_len_verts,sizeof(int));
+//	}
+//	for (i = 0; i < 3; i++)
+//	{
+//	    L[i] = gr->L[i] - 0.5*gr->h[i];
+//	    U[i] = gr->U[i] + 0.5*gr->h[i];
+//	    tol[i] = 0.00001*gr->h[i];
+//	}
+//
+//        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    if (bdry == YES  &&  !Boundary(*s))
+//		continue; 
+//	    if (bdry == NO  &&  Boundary(*s))
+//		continue;
+//	    if (clip == YES)
+//	    {
+//		plot_surf = NO;
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//		    plot_tri = NO;
+//		    for (k = 0; k < 3; ++k)
+//		    {
+//			crds = Coords(Point_of_tri(tri)[k]);
+//	                for (l = 0; l < 3; ++l)
+//			    if ((crds[l] < L[l] - tol[l]) || 
+//			        (crds[l] > U[l] + tol[l]))
+//				break;
+//			if (l == 3) /* a point is inside the domain */
+//			{
+//			    plot_tri = plot_surf = YES;
+//			    break;
+//		        }
+//		    }
+//		    if (plot_tri)
+//		    {
+//			for (k = 0; k < 3; ++k)
+//			{
+//		            p = Point_of_tri(tri)[k];
+//			    if (Index_of_point(p) == -1)
+//			    {
+//			        crds = Coords(p);
+//	                        for (l = 0; l < 3; ++l)
+//				    pts[3*npts+l] = crds[l];
+//				Index_of_point(p) = npts++;
+//			    }
+//			    verts[4*ntris+k] = Index_of_point(p);
+//			}
+//			verts[4*ntris+3] = num_surfs;
+//			++ntris;
+//		    }
+//		}
+//		if (plot_surf == YES)
+//		    ++num_surfs;
+//	    }
+//	    else
+//	    {
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//	            for (k = 0; k < 3; ++k)
+//		    {
+//		        p = Point_of_tri(tri)[k];
+//			if (Index_of_point(p) == -1)
+//			{
+//			    crds = Coords(p);
+//	                    for (l = 0; l < 3; ++l)
+//				pts[3*npts+l] = crds[l];
+//			    Index_of_point(p) = npts++;
+//			}
+//			verts[4*ntris+k] = Index_of_point(p);
+//		    }
+//		    verts[4*ntris+3] = num_surfs;
+//		    ++ntris;
+//		}
+//		++num_surfs;
+//	    }
+//	}
+//	if (num_surfs == 0)
+//	    return;
+//
+//	if ((file = fopen(fname,"w")) == NULL)
+//	{
+//	    (void) printf("WARNING in gview_plot_surfaces(), "
+//	                  "can't open %s\n",fname);
+//	    return;
+//	}
+//	(void) fprintf(file,"{ LIST\n");
+//
+//	gview_bounding_box(file,BBL,BBU,1,indent);
+//
+//	(void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
+//		       indent,indent,indent,indent,npts,ntris,0);
+//	for (i = 0; i < npts; ++i)
+//	{
+//	    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
+//			   pts[3*i],pts[3*i+1],pts[3*i+2]);
+//	}
+//	D = (num_surfs == 1) ? 1.0 : 1/(num_surfs - 1.0);
+//	for (j = 0; j < ntris; ++j)
+//	{
+//	    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
+//			   3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//	    write_interpolated_color(file,color1,color2,verts[4*j+3]/D,
+//				     intensity);
+//	}
+//	(void) fprintf(file,"%s}\n",indent);
+//	(void) fprintf(file,"}\n");
+//	(void) fclose(file);
 }		/*end gview_plot_surfaces*/
 
 LOCAL	void	gview_plot_color_scaled_surfaces(
@@ -1531,180 +1531,180 @@ LOCAL	void	gview_plot_color_scaled_surfaces(
 	SURFACE_COLOR color1,
 	SURFACE_COLOR color2)
 {
-	FILE	          *file;
-	POINT             *p;
-	SURFACE	          **s;
-	TRI	          *tri;
-	boolean              plot_surf,plot_tri;
-	double 	          D, range;
-	double             L[MAXD],U[MAXD],tol[MAXD];
-	double	          *crds;
-	int	          num_surfs, num_tris, i, j, k, l;
-	int               npts, ntris, count = 0;
-	static const char *indent = "    ";
-	static double      *pts = NULL;
-	static int        *verts = NULL;
-	static double	  *color_intensity;
-	static int        alloc_len_verts = 0, alloc_len_pts = 0;
-	static int	  alloc_len_color = 0;
-	static char       *fname = NULL;
-	static size_t     fname_len = 0;
-	double		  max_color,min_color;
-
-	max_color = -HUGE;
-	min_color = HUGE;
-	fname = get_list_file_name(fname,dname,name,&fname_len);
-
-	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    num_tris += (*s)->num_tri;
-	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    {
-	        for (k = 0; k < 3; ++k)
-		    Index_of_point(Point_of_tri(tri)[k]) = -1;
-	    }
-	}
-	
-	if (alloc_len_pts < 3*intfc->num_points)
-	{
-	    if (pts != NULL)
-		free(pts);
-	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,sizeof(double));
-	}
-	if (alloc_len_verts < 4*num_tris)
-	{
-	    if (verts != NULL)
-		free(verts);
-	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,sizeof(int));
-	}
-	if (alloc_len_color < num_tris)
-	{
-	    if (color_intensity != NULL)
-		free(color_intensity);
-	    alloc_len_color = num_tris;
-	    uni_array(&color_intensity,alloc_len_color,sizeof(double));
-	}
-	for (i = 0; i < 3; i++)
-	{
-	    L[i] = gr->L[i] - 0.5*gr->h[i];
-	    U[i] = gr->U[i] + 0.5*gr->h[i];
-	    tol[i] = 0.00001*gr->h[i];
-	}
-
-        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    if (bdry == YES  &&  !Boundary(*s))
-		continue; 
-	    if (bdry == NO  &&  Boundary(*s))
-		continue;
-	    if (clip == YES)
-	    {
-		plot_surf = NO;
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-		    plot_tri = NO;
-		    for (k = 0; k < 3; ++k)
-		    {
-			crds = Coords(Point_of_tri(tri)[k]);
-	                for (l = 0; l < 3; ++l)
-			    if ((crds[l] < L[l] - tol[l]) || 
-			        (crds[l] > U[l] + tol[l]))
-				break;
-			if (l == 3) /* a point is inside the domain */
-			{
-			    plot_tri = plot_surf = YES;
-			    break;
-		        }
-		    }
-		    if (plot_tri)
-		    {
-			if (max_color < tri->color)
-			    max_color = tri->color;
-			if (min_color > tri->color)
-			    min_color = tri->color;
-			color_intensity[ntris] = tri->color;
-			for (k = 0; k < 3; ++k)
-			{
-		            p = Point_of_tri(tri)[k];
-			    if (Index_of_point(p) == -1)
-			    {
-			        crds = Coords(p);
-	                        for (l = 0; l < 3; ++l)
-				    pts[3*npts+l] = crds[l];
-				Index_of_point(p) = npts++;
-			    }
-			    verts[4*ntris+k] = Index_of_point(p);
-			}
-			verts[4*ntris+3] = num_surfs;
-			++ntris;
-		    }
-		}
-		if (plot_surf == YES)
-		    ++num_surfs;
-	    }
-	    else
-	    {
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-		    if (max_color < tri->color)
-			max_color = tri->color;
-		    if (min_color > tri->color)
-			min_color = tri->color;
-		    color_intensity[ntris] = tri->color;
-	            for (k = 0; k < 3; ++k)
-		    {
-		        p = Point_of_tri(tri)[k];
-			if (Index_of_point(p) == -1)
-			{
-			    crds = Coords(p);
-	                    for (l = 0; l < 3; ++l)
-				pts[3*npts+l] = crds[l];
-			    Index_of_point(p) = npts++;
-			}
-			verts[4*ntris+k] = Index_of_point(p);
-		    }
-		    verts[4*ntris+3] = num_surfs;
-		    ++ntris;
-		}
-		++num_surfs;
-	    }
-	}
-	if (num_surfs == 0)
-	    return;
-
-	if ((file = fopen(fname,"w")) == NULL)
-	{
-	    (void) printf("WARNING in gview_plot_surfaces(), "
-	                  "can't open %s\n",fname);
-	    return;
-	}
-	(void) fprintf(file,"{ LIST\n");
-
-	gview_bounding_box(file,BBL,BBU,1,indent);
-
-	(void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
-		       indent,indent,indent,indent,npts,ntris,0);
-	for (i = 0; i < npts; ++i)
-	{
-	    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
-			   pts[3*i],pts[3*i+1],pts[3*i+2]);
-	}
-	D = (num_surfs == 1) ? 1.0 : 1/(num_surfs - 1.0);
-	range = max_color - min_color;
-	for (j = 0; j < ntris; ++j)
-	{
-	    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
-			   3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-	    write_interpolated_color(file,color1,color2,verts[4*j+3]/D,
-			   (color_intensity[j]-min_color)/range);
-	}
-	(void) fprintf(file,"%s}\n",indent);
-	(void) fprintf(file,"}\n");
-	(void) fclose(file);
+//	FILE	          *file;
+//	POINT             *p;
+//	SURFACE	          **s;
+//	TRI	          *tri;
+//	boolean              plot_surf,plot_tri;
+//	double 	          D, range;
+//	double             L[MAXD],U[MAXD],tol[MAXD];
+//	double	          *crds;
+//	int	          num_surfs, num_tris, i, j, k, l;
+//	int               npts, ntris, count = 0;
+//	static const char *indent = "    ";
+//	static double      *pts = NULL;
+//	static int        *verts = NULL;
+//	static double	  *color_intensity;
+//	static int        alloc_len_verts = 0, alloc_len_pts = 0;
+//	static int	  alloc_len_color = 0;
+//	static char       *fname = NULL;
+//	static size_t     fname_len = 0;
+//	double		  max_color,min_color;
+//
+//	max_color = -HUGE;
+//	min_color = HUGE;
+//	fname = get_list_file_name(fname,dname,name,&fname_len);
+//
+//	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    num_tris += (*s)->num_tri;
+//	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    {
+//	        for (k = 0; k < 3; ++k)
+//		    Index_of_point(Point_of_tri(tri)[k]) = -1;
+//	    }
+//	}
+//	
+//	if (alloc_len_pts < 3*intfc->num_points)
+//	{
+//	    if (pts != NULL)
+//		free(pts);
+//	    alloc_len_pts = 3*intfc->num_points;
+//	    uni_array(&pts,alloc_len_pts,sizeof(double));
+//	}
+//	if (alloc_len_verts < 4*num_tris)
+//	{
+//	    if (verts != NULL)
+//		free(verts);
+//	    alloc_len_verts = 4*num_tris;
+//	    uni_array(&verts,alloc_len_verts,sizeof(int));
+//	}
+//	if (alloc_len_color < num_tris)
+//	{
+//	    if (color_intensity != NULL)
+//		free(color_intensity);
+//	    alloc_len_color = num_tris;
+//	    uni_array(&color_intensity,alloc_len_color,sizeof(double));
+//	}
+//	for (i = 0; i < 3; i++)
+//	{
+//	    L[i] = gr->L[i] - 0.5*gr->h[i];
+//	    U[i] = gr->U[i] + 0.5*gr->h[i];
+//	    tol[i] = 0.00001*gr->h[i];
+//	}
+//
+//        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    if (bdry == YES  &&  !Boundary(*s))
+//		continue; 
+//	    if (bdry == NO  &&  Boundary(*s))
+//		continue;
+//	    if (clip == YES)
+//	    {
+//		plot_surf = NO;
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//		    plot_tri = NO;
+//		    for (k = 0; k < 3; ++k)
+//		    {
+//			crds = Coords(Point_of_tri(tri)[k]);
+//	                for (l = 0; l < 3; ++l)
+//			    if ((crds[l] < L[l] - tol[l]) || 
+//			        (crds[l] > U[l] + tol[l]))
+//				break;
+//			if (l == 3) /* a point is inside the domain */
+//			{
+//			    plot_tri = plot_surf = YES;
+//			    break;
+//		        }
+//		    }
+//		    if (plot_tri)
+//		    {
+//			if (max_color < tri->color)
+//			    max_color = tri->color;
+//			if (min_color > tri->color)
+//			    min_color = tri->color;
+//			color_intensity[ntris] = tri->color;
+//			for (k = 0; k < 3; ++k)
+//			{
+//		            p = Point_of_tri(tri)[k];
+//			    if (Index_of_point(p) == -1)
+//			    {
+//			        crds = Coords(p);
+//	                        for (l = 0; l < 3; ++l)
+//				    pts[3*npts+l] = crds[l];
+//				Index_of_point(p) = npts++;
+//			    }
+//			    verts[4*ntris+k] = Index_of_point(p);
+//			}
+//			verts[4*ntris+3] = num_surfs;
+//			++ntris;
+//		    }
+//		}
+//		if (plot_surf == YES)
+//		    ++num_surfs;
+//	    }
+//	    else
+//	    {
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//		    if (max_color < tri->color)
+//			max_color = tri->color;
+//		    if (min_color > tri->color)
+//			min_color = tri->color;
+//		    color_intensity[ntris] = tri->color;
+//	            for (k = 0; k < 3; ++k)
+//		    {
+//		        p = Point_of_tri(tri)[k];
+//			if (Index_of_point(p) == -1)
+//			{
+//			    crds = Coords(p);
+//	                    for (l = 0; l < 3; ++l)
+//				pts[3*npts+l] = crds[l];
+//			    Index_of_point(p) = npts++;
+//			}
+//			verts[4*ntris+k] = Index_of_point(p);
+//		    }
+//		    verts[4*ntris+3] = num_surfs;
+//		    ++ntris;
+//		}
+//		++num_surfs;
+//	    }
+//	}
+//	if (num_surfs == 0)
+//	    return;
+//
+//	if ((file = fopen(fname,"w")) == NULL)
+//	{
+//	    (void) printf("WARNING in gview_plot_surfaces(), "
+//	                  "can't open %s\n",fname);
+//	    return;
+//	}
+//	(void) fprintf(file,"{ LIST\n");
+//
+//	gview_bounding_box(file,BBL,BBU,1,indent);
+//
+//	(void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
+//		       indent,indent,indent,indent,npts,ntris,0);
+//	for (i = 0; i < npts; ++i)
+//	{
+//	    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
+//			   pts[3*i],pts[3*i+1],pts[3*i+2]);
+//	}
+//	D = (num_surfs == 1) ? 1.0 : 1/(num_surfs - 1.0);
+//	range = max_color - min_color;
+//	for (j = 0; j < ntris; ++j)
+//	{
+//	    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
+//			   3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//	    write_interpolated_color(file,color1,color2,verts[4*j+3]/D,
+//			   (color_intensity[j]-min_color)/range);
+//	}
+//	(void) fprintf(file,"%s}\n",indent);
+//	(void) fprintf(file,"}\n");
+//	(void) fclose(file);
 }		/*end gview_plot_surfaces*/
 
 EXPORT	void	set_tri_list_bounding_box(
@@ -2994,254 +2994,254 @@ LOCAL   void gview_plot_color_surfaces(
         const char    *name,
         boolean          bdry)
 {
-        FILE              *file;
-        POINT             *p;
-        SURFACE           **s;
-        TRI               *tri;
-        boolean              plot_surf;
-        double             D, intensity = .5;
-        double             L[MAXD],U[MAXD],tol[MAXD];
-        double             *crds;
-        int               num_surfs, num_tris, i, j, k, l,is;
-        int               npt[3], ntri[3];
-        static const char *indent = "    ";
-        static double      *pos_pts = NULL;
-        static double      *neg_pts = NULL;
-        static int        *verts = NULL;
-        static int        alloc_len_verts = 0, alloc_len_pts = 0;
-        static char       *fname = NULL;
-        static size_t     fname_len = 0;
-        SURFACE_COLOR     pos_color[3];
-        SURFACE_COLOR     neg_color[3];
-        double             nor[3],nor_len;
-        double             p1[3],p2[3];
-        double             delta = 0.001;
-        neg_color[0] = pRED;
-        neg_color[1] = pBLUE;
-        neg_color[2] = pWHITE;
-        pos_color[0] = pWHITE;
-        pos_color[1] = pRED;
-        pos_color[2] = pBLUE;
-
-	fname = get_list_file_name(fname,dname,name,&fname_len);
-
-	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
-        {
-             num_tris += (*s)->num_tri;
-        }
-
-        if (alloc_len_pts < 3*intfc->num_points)
-        {
-            if (pos_pts != NULL)
-                free(pos_pts);
-            if (neg_pts != NULL)
-                free(neg_pts);
-            alloc_len_pts = 3*intfc->num_points;
-            uni_array(&pos_pts,alloc_len_pts,sizeof(double));
-            uni_array(&neg_pts,alloc_len_pts,sizeof(double));
-        }
-        if (alloc_len_verts < 4*num_tris)
-        {
-            if (verts != NULL)
-                free(verts);
-                alloc_len_verts = 4*num_tris;
-                uni_array(&verts,alloc_len_verts,sizeof(int));
-        }
-        for (i = 0; i < 3; i++)
-        {
-            L[i] = gr->L[i] - 0.5*gr->h[i];
-            U[i] = gr->U[i] + 0.5*gr->h[i];
-            tol[i] = 0.00001*gr->h[i];
-        }
-        if ((file = fopen(fname,"w")) == NULL)
-        {
-            (void) printf("WARNING in gview_plot_surfaces(), "
-                          "can't open %s\n",fname);
-             return;
-        }
-        (void) fprintf(file,"{ LIST\n");
-        gview_bounding_box(file,BBL,BBU,1,indent);
-
-	for (is = 0, num_surfs = 0, s = intfc->surfaces; s && *s; ++s)
-        {
-            for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-            {
-                for (k = 0; k < 3; ++k)
-                     Index_of_point(Point_of_tri(tri)[k]) = -1;
-            }
-            npt[is] = 0;
-            ntri[is] = 0;
-            if (bdry == YES  &&  !Boundary(*s))
-                continue;
-            if (bdry == NO  &&  Boundary(*s))
-                continue;
-            if (clip == YES)
-            {
-                plot_surf = NO;
-                for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s);
-                     tri = tri->next)
-                {
-                     for (k = 0; k < 3; ++k)
-                     {
-                         crds = Coords(Point_of_tri(tri)[k]);
-                         for (l = 0; l < 3; ++l)
-                             if ((crds[l] < L[l] - tol[l]) ||
-                                 (U[l] + tol[l] < crds[l]))
-                                 break;
-                         if (l < 3)
-                             break;
-                     }
-                     if (k == 3)
-                     {
-                         plot_surf = YES;
-                         for (k = 0; k < 3; ++k)
-                         {
-                             /* shadow */
-                             for (l = 0; l < 3; l++)
-                             {
-                                 p1[l] = Coords(Point_of_tri(tri)[1])[l] -
-                                     Coords(Point_of_tri(tri)[0])[l];
-                                 p2[l] = Coords(Point_of_tri(tri)[2])[l] -
-                                     Coords(Point_of_tri(tri)[0])[l];
-                             }
-                             Cross3d(p1,p2,nor);
-                             nor_len = sqrt(nor[0]*nor[0] + nor[1]*nor[1] + nor[2]*nor[2]);
-                             for (l = 0; l < 3; l++)
-                                 nor[l] /= nor_len;
-                             /***********/
-                             p = Point_of_tri(tri)[k];
-                            if (Index_of_point(p) == -1)
-                            {
-                                crds = Coords(p);
-                                for (l = 0; l < 3; ++l)
-                                {
-                                    pos_pts[3*npt[is]+l] = crds[l]+delta*nor[l];                                           neg_pts[3*npt[is]+l] = crds[l]-delta*nor[l];  
-				}
-                                Index_of_point(p) = npt[is]++;
-                            }
-                            verts[4*ntri[is]+k] = Index_of_point(p);
-                        }
-                        verts[4*ntri[is]+3] = num_surfs;
-                        ++ntri[is];
-                    }   
-                }
-                if (plot_surf == YES)
-                ++num_surfs;
-
-                /* plot surface */
-                D = 1.0/(num_surfs - 1.0);
-                /* positive surface */
-                (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
-                               indent,indent,indent,indent,npt[is],ntri[is],0);
-                for (i = 0; i < npt[is]; ++i)
-                {
-                    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
-                           pos_pts[3*i],pos_pts[3*i+1],pos_pts[3*i+2]);
-                }
-                for (j = 0; j < ntri[is]; ++j)
-                {
-                    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
-                           3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-                    write_interpolated_color(file,pos_color[is],pos_color[is],
-                           verts[4*j+3]/D,intensity);
-                }
-                (void) fprintf(file,"%s}\n",indent);
-	        /* negative surface */
-	        (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
-	                       indent,indent,indent,indent,npt[is],ntri[is],0);
-                for (i = 0; i < npt[is]; ++i)
-                {
-                    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
-                           neg_pts[3*i],neg_pts[3*i+1],neg_pts[3*i+2]);
-                }
-                for (j = 0; j < ntri[is]; ++j)
-                {
-                    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
-                           3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-                    write_interpolated_color(file,neg_color[is],neg_color[is],
-                           verts[4*j+3]/D,intensity);
-                }
-                (void) fprintf(file,"%s}\n",indent);
-            }
-            else
-            {
-                 for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s);
-                      tri = tri->next)
-                 {
-                     for (k = 0; k < 3; ++k)
-                     {
-                         /* shadow */
-                         for (l = 0; l < 3; l++)
-                         {
-                             p1[l] = Coords(Point_of_tri(tri)[1])[l] -
-                                     Coords(Point_of_tri(tri)[0])[l];
-                             p2[l] = Coords(Point_of_tri(tri)[2])[l] -
-                                     Coords(Point_of_tri(tri)[0])[l];
-                         }
-                         Cross3d(p1,p2,nor);
-                         nor_len = sqrt(nor[0]*nor[0] + nor[1]*nor[1] + nor[2]*nor[2]);
-                         for (l = 0; l < 3; l++)
-                         nor[l] /= nor_len;
-                         /***********/
-                         p = Point_of_tri(tri)[k];
-                         if (Index_of_point(p) == -1)
-                         {
-                             crds = Coords(p);
-                             for (l = 0; l < 3; ++l)
-                             {
-                                 pos_pts[3*npt[is]+l] = crds[l]+delta*nor[l];
-                                 neg_pts[3*npt[is]+l] = crds[l]-delta*nor[l];
-                             }
-                             Index_of_point(p) = npt[is]++;
-                         }
-                         verts[4*ntri[is]+k] = Index_of_point(p);
-                     }
-                     verts[4*ntri[is]+3] = num_surfs;
-                     ++ntri[is];
-                 }
-                 ++num_surfs;
-                 /* plot surface */
-                 D = 1.0/(num_surfs - 1.0);
-                 /* positive surface */
-                 (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
-                                indent,indent,indent,indent,npt[is],ntri[is],0);
-                 for (i = 0; i < npt[is]; ++i)
-                 {
-                     (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
-                            pos_pts[3*i],pos_pts[3*i+1],pos_pts[3*i+2]);
-                 }
-                 for (j = 0; j < ntri[is]; ++j)
-                 {
-                     (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
-                            3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-                     write_interpolated_color(file,pos_color[is],pos_color[is],
-                            verts[4*j+3]/D,intensity);
-                 }
-                 (void) fprintf(file,"%s}\n",indent);
-                 /* negative surface */
-                 (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
-                                indent,indent,indent,indent,npt[is],ntri[is],0);
-                 for (i = 0; i < npt[is]; ++i)
-                 {
-                     (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
-                            neg_pts[3*i],neg_pts[3*i+1],neg_pts[3*i+2]);
-                 }
-                 for (j = 0; j < ntri[is]; ++j)
-                 {
-                     (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
-                            3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-                     write_interpolated_color(file,neg_color[is],neg_color[is],
-                            verts[4*j+3]/D,intensity);
-                 }
-                 (void) fprintf(file,"%s}\n",indent);
-            }
-            ++is;
-        }
-        (void) fprintf(file,"%s}\n",indent);
-        (void) fprintf(file,"}\n");
-        (void) fclose(file);
-        if (num_surfs == 0)
-            return;
+//        FILE              *file;
+//        POINT             *p;
+//        SURFACE           **s;
+//        TRI               *tri;
+//        boolean              plot_surf;
+//        double             D, intensity = .5;
+//        double             L[MAXD],U[MAXD],tol[MAXD];
+//        double             *crds;
+//        int               num_surfs, num_tris, i, j, k, l,is;
+//        int               npt[3], ntri[3];
+//        static const char *indent = "    ";
+//        static double      *pos_pts = NULL;
+//        static double      *neg_pts = NULL;
+//        static int        *verts = NULL;
+//        static int        alloc_len_verts = 0, alloc_len_pts = 0;
+//        static char       *fname = NULL;
+//        static size_t     fname_len = 0;
+//        SURFACE_COLOR     pos_color[3];
+//        SURFACE_COLOR     neg_color[3];
+//        double             nor[3],nor_len;
+//        double             p1[3],p2[3];
+//        double             delta = 0.001;
+//        neg_color[0] = pRED;
+//        neg_color[1] = pBLUE;
+//        neg_color[2] = pWHITE;
+//        pos_color[0] = pWHITE;
+//        pos_color[1] = pRED;
+//        pos_color[2] = pBLUE;
+//
+//	fname = get_list_file_name(fname,dname,name,&fname_len);
+//
+//	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
+//        {
+//             num_tris += (*s)->num_tri;
+//        }
+//
+//        if (alloc_len_pts < 3*intfc->num_points)
+//        {
+//            if (pos_pts != NULL)
+//                free(pos_pts);
+//            if (neg_pts != NULL)
+//                free(neg_pts);
+//            alloc_len_pts = 3*intfc->num_points;
+//            uni_array(&pos_pts,alloc_len_pts,sizeof(double));
+//            uni_array(&neg_pts,alloc_len_pts,sizeof(double));
+//        }
+//        if (alloc_len_verts < 4*num_tris)
+//        {
+//            if (verts != NULL)
+//                free(verts);
+//                alloc_len_verts = 4*num_tris;
+//                uni_array(&verts,alloc_len_verts,sizeof(int));
+//        }
+//        for (i = 0; i < 3; i++)
+//        {
+//            L[i] = gr->L[i] - 0.5*gr->h[i];
+//            U[i] = gr->U[i] + 0.5*gr->h[i];
+//            tol[i] = 0.00001*gr->h[i];
+//        }
+//        if ((file = fopen(fname,"w")) == NULL)
+//        {
+//            (void) printf("WARNING in gview_plot_surfaces(), "
+//                          "can't open %s\n",fname);
+//             return;
+//        }
+//        (void) fprintf(file,"{ LIST\n");
+//        gview_bounding_box(file,BBL,BBU,1,indent);
+//
+//	for (is = 0, num_surfs = 0, s = intfc->surfaces; s && *s; ++s)
+//        {
+//            for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//            {
+//                for (k = 0; k < 3; ++k)
+//                     Index_of_point(Point_of_tri(tri)[k]) = -1;
+//            }
+//            npt[is] = 0;
+//            ntri[is] = 0;
+//            if (bdry == YES  &&  !Boundary(*s))
+//                continue;
+//            if (bdry == NO  &&  Boundary(*s))
+//                continue;
+//            if (clip == YES)
+//            {
+//                plot_surf = NO;
+//                for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s);
+//                     tri = tri->next)
+//                {
+//                     for (k = 0; k < 3; ++k)
+//                     {
+//                         crds = Coords(Point_of_tri(tri)[k]);
+//                         for (l = 0; l < 3; ++l)
+//                             if ((crds[l] < L[l] - tol[l]) ||
+//                                 (U[l] + tol[l] < crds[l]))
+//                                 break;
+//                         if (l < 3)
+//                             break;
+//                     }
+//                     if (k == 3)
+//                     {
+//                         plot_surf = YES;
+//                         for (k = 0; k < 3; ++k)
+//                         {
+//                             /* shadow */
+//                             for (l = 0; l < 3; l++)
+//                             {
+//                                 p1[l] = Coords(Point_of_tri(tri)[1])[l] -
+//                                     Coords(Point_of_tri(tri)[0])[l];
+//                                 p2[l] = Coords(Point_of_tri(tri)[2])[l] -
+//                                     Coords(Point_of_tri(tri)[0])[l];
+//                             }
+//                             Cross3d(p1,p2,nor);
+//                             nor_len = sqrt(nor[0]*nor[0] + nor[1]*nor[1] + nor[2]*nor[2]);
+//                             for (l = 0; l < 3; l++)
+//                                 nor[l] /= nor_len;
+//                             /***********/
+//                             p = Point_of_tri(tri)[k];
+//                            if (Index_of_point(p) == -1)
+//                            {
+//                                crds = Coords(p);
+//                                for (l = 0; l < 3; ++l)
+//                                {
+//                                    pos_pts[3*npt[is]+l] = crds[l]+delta*nor[l];                                           neg_pts[3*npt[is]+l] = crds[l]-delta*nor[l];  
+//				}
+//                                Index_of_point(p) = npt[is]++;
+//                            }
+//                            verts[4*ntri[is]+k] = Index_of_point(p);
+//                        }
+//                        verts[4*ntri[is]+3] = num_surfs;
+//                        ++ntri[is];
+//                    }   
+//                }
+//                if (plot_surf == YES)
+//                ++num_surfs;
+//
+//                /* plot surface */
+//                D = 1.0/(num_surfs - 1.0);
+//                /* positive surface */
+//                (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
+//                               indent,indent,indent,indent,npt[is],ntri[is],0);
+//                for (i = 0; i < npt[is]; ++i)
+//                {
+//                    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
+//                           pos_pts[3*i],pos_pts[3*i+1],pos_pts[3*i+2]);
+//                }
+//                for (j = 0; j < ntri[is]; ++j)
+//                {
+//                    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
+//                           3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//                    write_interpolated_color(file,pos_color[is],pos_color[is],
+//                           verts[4*j+3]/D,intensity);
+//                }
+//                (void) fprintf(file,"%s}\n",indent);
+//	        /* negative surface */
+//	        (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
+//	                       indent,indent,indent,indent,npt[is],ntri[is],0);
+//                for (i = 0; i < npt[is]; ++i)
+//                {
+//                    (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
+//                           neg_pts[3*i],neg_pts[3*i+1],neg_pts[3*i+2]);
+//                }
+//                for (j = 0; j < ntri[is]; ++j)
+//                {
+//                    (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
+//                           3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//                    write_interpolated_color(file,neg_color[is],neg_color[is],
+//                           verts[4*j+3]/D,intensity);
+//                }
+//                (void) fprintf(file,"%s}\n",indent);
+//            }
+//            else
+//            {
+//                 for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s);
+//                      tri = tri->next)
+//                 {
+//                     for (k = 0; k < 3; ++k)
+//                     {
+//                         /* shadow */
+//                         for (l = 0; l < 3; l++)
+//                         {
+//                             p1[l] = Coords(Point_of_tri(tri)[1])[l] -
+//                                     Coords(Point_of_tri(tri)[0])[l];
+//                             p2[l] = Coords(Point_of_tri(tri)[2])[l] -
+//                                     Coords(Point_of_tri(tri)[0])[l];
+//                         }
+//                         Cross3d(p1,p2,nor);
+//                         nor_len = sqrt(nor[0]*nor[0] + nor[1]*nor[1] + nor[2]*nor[2]);
+//                         for (l = 0; l < 3; l++)
+//                         nor[l] /= nor_len;
+//                         /***********/
+//                         p = Point_of_tri(tri)[k];
+//                         if (Index_of_point(p) == -1)
+//                         {
+//                             crds = Coords(p);
+//                             for (l = 0; l < 3; ++l)
+//                             {
+//                                 pos_pts[3*npt[is]+l] = crds[l]+delta*nor[l];
+//                                 neg_pts[3*npt[is]+l] = crds[l]-delta*nor[l];
+//                             }
+//                             Index_of_point(p) = npt[is]++;
+//                         }
+//                         verts[4*ntri[is]+k] = Index_of_point(p);
+//                     }
+//                     verts[4*ntri[is]+3] = num_surfs;
+//                     ++ntri[is];
+//                 }
+//                 ++num_surfs;
+//                 /* plot surface */
+//                 D = 1.0/(num_surfs - 1.0);
+//                 /* positive surface */
+//                 (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
+//                                indent,indent,indent,indent,npt[is],ntri[is],0);
+//                 for (i = 0; i < npt[is]; ++i)
+//                 {
+//                     (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
+//                            pos_pts[3*i],pos_pts[3*i+1],pos_pts[3*i+2]);
+//                 }
+//                 for (j = 0; j < ntri[is]; ++j)
+//                 {
+//                     (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
+//                            3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//                     write_interpolated_color(file,pos_color[is],pos_color[is],
+//                            verts[4*j+3]/D,intensity);
+//                 }
+//                 (void) fprintf(file,"%s}\n",indent);
+//                 /* negative surface */
+//                 (void) fprintf(file,"%s{\n%s%sOFF\n%s%s%6d %6d %6d\n",indent,
+//                                indent,indent,indent,indent,npt[is],ntri[is],0);
+//                 for (i = 0; i < npt[is]; ++i)
+//                 {
+//                     (void) fprintf(file,"%s%s%-9g %-9g %-9g\n",indent,indent,
+//                            neg_pts[3*i],neg_pts[3*i+1],neg_pts[3*i+2]);
+//                 }
+//                 for (j = 0; j < ntri[is]; ++j)
+//                 {
+//                     (void) fprintf(file,"%s%s%-4d %-4d %-4d %-4d ",indent,indent,
+//                            3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//                     write_interpolated_color(file,neg_color[is],neg_color[is],
+//                            verts[4*j+3]/D,intensity);
+//                 }
+//                 (void) fprintf(file,"%s}\n",indent);
+//            }
+//            ++is;
+//        }
+//        (void) fprintf(file,"%s}\n",indent);
+//        (void) fprintf(file,"}\n");
+//        (void) fclose(file);
+//        if (num_surfs == 0)
+//            return;
 }       /* end gview_plot_color_surfaces */
 
 /* END GEOMVIEW FUNCS */
@@ -3698,272 +3698,272 @@ LOCAL	void	vtk_plot_surfaces(
 	double 	      time,
 	int 	      step)
 {
-	FILE	          *file;
-	POINT             *p;
-	SURFACE	          **s;
-	TRI	          *tri;
-	boolean              plot_surf;
-	double 	          D, intensity = .5;
-	double             L[MAXD],U[MAXD],tol[MAXD];
-	double	          *crds;
-	int	          num_surfs, num_tris, i, j, k, l;
-	int               npts, ntris;
-	int		  length, length2;
-	static const char *indent = "    ";
-	static double      *pts = NULL;
-	static int        *verts = NULL;
-	static int        alloc_len_verts = 0, alloc_len_pts = 0;
-	static char       *fname = NULL;
-	char 		  str[100];
-	static size_t     fname_len = 0;
-	RECT_GRID *gr = &topological_grid(intfc);
-	float value1[1];
-	float tmp1;
-	int value2[1];
-	int tmp2;
-	
-	fname = get_vtk_file_name(fname,dname,name,&fname_len);
-
-	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    num_tris += (*s)->num_tri;
-	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    {
-	        for (k = 0; k < 3; ++k)
-		    Index_of_point(Point_of_tri(tri)[k]) = -1;
-	    }
-	}
-	
-	if (alloc_len_pts < 3*intfc->num_points)
-	{
-	    if (pts != NULL)
-		free(pts);
-	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,sizeof(double));
-	}
-	if (alloc_len_verts < 4*num_tris)
-	{
-	    if (verts != NULL)
-		free(verts);
-	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,sizeof(int));
-	}
-	for (i = 0; i < 3; i++)
-	{
-	    L[i] = gr->L[i] - 0.5*gr->h[i]; 
-	    U[i] = gr->U[i] + 0.5*gr->h[i];
-	    tol[i] = 0.00001*gr->h[i];
-	}
-
-        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
-	{
-	    if (bdry == YES  &&  !Boundary(*s))
-		continue; 
-	    if (bdry == NO  &&  Boundary(*s))
-		continue;
-	    if (clip == YES)
-	    {
-		plot_surf = NO;
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-	            for (k = 0; k < 3; ++k)
-		    {
-			crds = Coords(Point_of_tri(tri)[k]);
-	                for (l = 0; l < 3; ++l)
-			    if ((crds[l] < L[l] - tol[l]) || 
-			        (U[l] + tol[l] < crds[l]))
-				break;
-			if (l < 3)
-			    break;
-		    }
-		    if (k == 3)
-		    {
-			plot_surf = YES;
-			for (k = 0; k < 3; ++k)
-			{
-		            p = Point_of_tri(tri)[k];
-			    if (Index_of_point(p) == -1)
-			    {
-			        crds = Coords(p);
-	                        for (l = 0; l < 3; ++l)
-				    pts[3*npts+l] = crds[l];
-				Index_of_point(p) = npts++;
-			    }
-			    verts[4*ntris+k] = Index_of_point(p);
-			}
-			verts[4*ntris+3] = num_surfs;
-			++ntris;
-		    }
-		}
-		if (plot_surf == YES)
-		    ++num_surfs;
-	    }
-	    else
-	    {
-	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-		     tri = tri->next)
-	        {
-	            for (k = 0; k < 3; ++k)
-		    {
-		        p = Point_of_tri(tri)[k];
-			if (Index_of_point(p) == -1)
-			{
-			    crds = Coords(p);
-	                    for (l = 0; l < 3; ++l)
-				pts[3*npts+l] = crds[l];
-			    Index_of_point(p) = npts++;
-			}
-			verts[4*ntris+k] = Index_of_point(p);
-		    }
-		    verts[4*ntris+3] = num_surfs;
-		    ++ntris;
-		}
-		++num_surfs;
-	    }
-	}
-         
-	if ((file = fopen(fname,"w")) == NULL)
-	{
-	    (void) printf("WARNING in vtk_plot_surfaces(), "
-	                  "can't open %s\n",fname);
-	    return;
-	}
-	
-	if(print_in_binary)
-	{
-	    if((file = fopen(fname, "wb")) == NULL)
-	    {
- 		(void) printf("WARNING in vtk_plot_surfaces(), "
-	  	     	      "cant' open %s\n",fname);
-	 	return;
-	    }
-	
-	    sprintf(str,"# vtk DataFile Version 3.0\n");
-	    fwrite(str, sizeof(char), 27, file);
-	    sprintf(str,"FronTier Interface\n");
-	    fwrite(str, sizeof(char), 19, file);
-	    sprintf(str,"BINARY\n");
-	    fwrite(str, sizeof(char), 7, file);
-	    sprintf(str,"DATASET POLYDATA\n"); 
-	    fwrite(str, sizeof(char), 17, file);
-
-	    sprintf(str, "FIELD FieldData 2\n");
-            fwrite(str, sizeof(char), 18, file);
-	    sprintf(str, "TIME 1 1 float\n");
-            fwrite(str, sizeof(char), 15, file);
-	    tmp1 = time;
-            if(hardware_is_little_endian())
-	        value1[0] = endian_float_swap(tmp1);
-            else
-		value1[0] = tmp1;
-	    fwrite(value1, sizeof(float), 1, file);
-
-	    sprintf(str, "\n");
-            fwrite(str, sizeof(char), 1, file);
-	    sprintf(str, "CYCLE 1 1 int\n");
-            fwrite(str, sizeof(char), 14, file);
-	    #if defined(int)
-            #undef int
-            #define not_int
-            #endif
-	    tmp2 = step;
-            if(hardware_is_little_endian())
-	        value2[0] = endian_int_swap(tmp2);
-            else
-		value2[0] = tmp2;
-	    fwrite(value2, sizeof(int), 1, file);
-	    #if defined(not_int)
-	    #define int double
-     	    #undef not_int
-	    #endif
-	    sprintf(str, "\n");
-            fwrite(str, sizeof(char), 1, file);
-
-            sprintf(str,"POINTS %d float\n", npts);
-	    length = count_digits(npts);
-	    fwrite(str, sizeof(char), 14 + length, file);
-	}
-	else
-	{
-	    if ((file = fopen(fname,"w")) == NULL)
-            {
-                (void) printf("WARNING in vtk_plot_surfaces(), "
-                              "can't open %s\n",fname);
-                 return;
-            }
- 
-	    (void) fprintf(file,"# vtk DataFile Version 3.0 \n"
-		                "FronTier Interface \n"
-		       	        "ASCII \n"
-			        "DATASET POLYDATA \n");
-	    (void) fprintf(file, "FIELD FieldData 2\n");
-	    (void) fprintf(file, "TIME 1 1 float\n");
-	    (void) fprintf(file, "%5.5e\n", time);
-	    (void) fprintf(file, "CYCLE 1 1 int\n");
-	    (void) fprintf(file, "%d\n", step);
-	    (void) fprintf(file, "POINTS %d double\n",npts);
-	}
-	     
-	for (i = 0; i < npts; ++i)
-	{
-	    if(print_in_binary)
-	    {
-		float vals[1];
-		for(j = 0; j < 3; ++j)
-		{
-		    if(hardware_is_little_endian())
-		        vals[0] = endian_float_swap(pts[3*i+j]);
-		    else
-			vals[0] = pts[3*i+j];
-                    fwrite(vals, sizeof(float), 1, file);
-		}    
-	     }
-	     else
-	         (void) fprintf(file,"%-9g %-9g %-9g\n",
-		       	        pts[3*i],pts[3*i+1],pts[3*i+2]);
-	     
-	}
-
-	D = (num_surfs == 1) ? 1.0 : 1/(num_surfs - 1.0);
-	if(print_in_binary)
-	{
-	    sprintf(str, "\nPOLYGONS %d %d\n", ntris, ntris*4);
-	    length = count_digits(ntris);
-	    length2 = count_digits(ntris*4);
-	    fwrite(str, sizeof(char), 12 + length + length2, file);
-	    for(j = 0; j < ntris; ++j)
-	    {
-		for(k = 0; k < 3; ++k)
-		{
-                    int vals[1];
-		    if(k == 0)
-		    {
-		        if(hardware_is_little_endian())
-		            vals[0] = endian_int_swap(3);
-			else
-			    vals[0] = 3;
-			fwrite(vals, sizeof(int), 1, file);
-		    }
-		    if(hardware_is_little_endian())
-                        vals[0] = endian_int_swap(verts[4*j+k]);
-                    else
-                        vals[0] = verts[4*j+k];
-                    fwrite(vals, sizeof(int), 1, file);
-		}
-	    }
-	}
-	else
-	{
-	    fprintf(file,"POLYGONS %d %d \n",ntris,ntris*4); 
-	    for (j = 0; j < ntris; ++j)
-	    {
-	        (void) fprintf(file,"%d %d %d %d \n",
-			       3,verts[4*j],verts[4*j+1],verts[4*j+2]);
-	    }
-	} 
-	(void) fclose(file);
-	    
+//	FILE	          *file;
+//	POINT             *p;
+//	SURFACE	          **s;
+//	TRI	          *tri;
+//	boolean              plot_surf;
+//	double 	          D, intensity = .5;
+//	double             L[MAXD],U[MAXD],tol[MAXD];
+//	double	          *crds;
+//	int	          num_surfs, num_tris, i, j, k, l;
+//	int               npts, ntris;
+//	int		  length, length2;
+//	static const char *indent = "    ";
+//	static double      *pts = NULL;
+//	static int        *verts = NULL;
+//	static int        alloc_len_verts = 0, alloc_len_pts = 0;
+//	static char       *fname = NULL;
+//	char 		  str[100];
+//	static size_t     fname_len = 0;
+//	RECT_GRID *gr = &topological_grid(intfc);
+//	float value1[1];
+//	float tmp1;
+//	int value2[1];
+//	int tmp2;
+//	
+//	fname = get_vtk_file_name(fname,dname,name,&fname_len);
+//
+//	for (num_tris = 0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    num_tris += (*s)->num_tri;
+//	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    {
+//	        for (k = 0; k < 3; ++k)
+//		    Index_of_point(Point_of_tri(tri)[k]) = -1;
+//	    }
+//	}
+//	
+//	if (alloc_len_pts < 3*intfc->num_points)
+//	{
+//	    if (pts != NULL)
+//		free(pts);
+//	    alloc_len_pts = 3*intfc->num_points;
+//	    uni_array(&pts,alloc_len_pts,sizeof(double));
+//	}
+//	if (alloc_len_verts < 4*num_tris)
+//	{
+//	    if (verts != NULL)
+//		free(verts);
+//	    alloc_len_verts = 4*num_tris;
+//	    uni_array(&verts,alloc_len_verts,sizeof(int));
+//	}
+//	for (i = 0; i < 3; i++)
+//	{
+//	    L[i] = gr->L[i] - 0.5*gr->h[i]; 
+//	    U[i] = gr->U[i] + 0.5*gr->h[i];
+//	    tol[i] = 0.00001*gr->h[i];
+//	}
+//
+//        for (npts=0, ntris=0, num_surfs=0, s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    if (bdry == YES  &&  !Boundary(*s))
+//		continue; 
+//	    if (bdry == NO  &&  Boundary(*s))
+//		continue;
+//	    if (clip == YES)
+//	    {
+//		plot_surf = NO;
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//	            for (k = 0; k < 3; ++k)
+//		    {
+//			crds = Coords(Point_of_tri(tri)[k]);
+//	                for (l = 0; l < 3; ++l)
+//			    if ((crds[l] < L[l] - tol[l]) || 
+//			        (U[l] + tol[l] < crds[l]))
+//				break;
+//			if (l < 3)
+//			    break;
+//		    }
+//		    if (k == 3)
+//		    {
+//			plot_surf = YES;
+//			for (k = 0; k < 3; ++k)
+//			{
+//		            p = Point_of_tri(tri)[k];
+//			    if (Index_of_point(p) == -1)
+//			    {
+//			        crds = Coords(p);
+//	                        for (l = 0; l < 3; ++l)
+//				    pts[3*npts+l] = crds[l];
+//				Index_of_point(p) = npts++;
+//			    }
+//			    verts[4*ntris+k] = Index_of_point(p);
+//			}
+//			verts[4*ntris+3] = num_surfs;
+//			++ntris;
+//		    }
+//		}
+//		if (plot_surf == YES)
+//		    ++num_surfs;
+//	    }
+//	    else
+//	    {
+//	        for (tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//		     tri = tri->next)
+//	        {
+//	            for (k = 0; k < 3; ++k)
+//		    {
+//		        p = Point_of_tri(tri)[k];
+//			if (Index_of_point(p) == -1)
+//			{
+//			    crds = Coords(p);
+//	                    for (l = 0; l < 3; ++l)
+//				pts[3*npts+l] = crds[l];
+//			    Index_of_point(p) = npts++;
+//			}
+//			verts[4*ntris+k] = Index_of_point(p);
+//		    }
+//		    verts[4*ntris+3] = num_surfs;
+//		    ++ntris;
+//		}
+//		++num_surfs;
+//	    }
+//	}
+//         
+//	if ((file = fopen(fname,"w")) == NULL)
+//	{
+//	    (void) printf("WARNING in vtk_plot_surfaces(), "
+//	                  "can't open %s\n",fname);
+//	    return;
+//	}
+//	
+//	if(print_in_binary)
+//	{
+//	    if((file = fopen(fname, "wb")) == NULL)
+//	    {
+// 		(void) printf("WARNING in vtk_plot_surfaces(), "
+//	  	     	      "cant' open %s\n",fname);
+//	 	return;
+//	    }
+//	
+//	    sprintf(str,"# vtk DataFile Version 3.0\n");
+//	    fwrite(str, sizeof(char), 27, file);
+//	    sprintf(str,"FronTier Interface\n");
+//	    fwrite(str, sizeof(char), 19, file);
+//	    sprintf(str,"BINARY\n");
+//	    fwrite(str, sizeof(char), 7, file);
+//	    sprintf(str,"DATASET POLYDATA\n"); 
+//	    fwrite(str, sizeof(char), 17, file);
+//
+//	    sprintf(str, "FIELD FieldData 2\n");
+//            fwrite(str, sizeof(char), 18, file);
+//	    sprintf(str, "TIME 1 1 float\n");
+//            fwrite(str, sizeof(char), 15, file);
+//	    tmp1 = time;
+//            if(hardware_is_little_endian())
+//	        value1[0] = endian_float_swap(tmp1);
+//            else
+//		value1[0] = tmp1;
+//	    fwrite(value1, sizeof(float), 1, file);
+//
+//	    sprintf(str, "\n");
+//            fwrite(str, sizeof(char), 1, file);
+//	    sprintf(str, "CYCLE 1 1 int\n");
+//            fwrite(str, sizeof(char), 14, file);
+//	    #if defined(int)
+//            #undef int
+//            #define not_int
+//            #endif
+//	    tmp2 = step;
+//            if(hardware_is_little_endian())
+//	        value2[0] = endian_int_swap(tmp2);
+//            else
+//		value2[0] = tmp2;
+//	    fwrite(value2, sizeof(int), 1, file);
+//	    #if defined(not_int)
+//	    #define int double
+//     	    #undef not_int
+//	    #endif
+//	    sprintf(str, "\n");
+//            fwrite(str, sizeof(char), 1, file);
+//
+//            sprintf(str,"POINTS %d float\n", npts);
+//	    length = count_digits(npts);
+//	    fwrite(str, sizeof(char), 14 + length, file);
+//	}
+//	else
+//	{
+//	    if ((file = fopen(fname,"w")) == NULL)
+//            {
+//                (void) printf("WARNING in vtk_plot_surfaces(), "
+//                              "can't open %s\n",fname);
+//                 return;
+//            }
+// 
+//	    (void) fprintf(file,"# vtk DataFile Version 3.0 \n"
+//		                "FronTier Interface \n"
+//		       	        "ASCII \n"
+//			        "DATASET POLYDATA \n");
+//	    (void) fprintf(file, "FIELD FieldData 2\n");
+//	    (void) fprintf(file, "TIME 1 1 float\n");
+//	    (void) fprintf(file, "%5.5e\n", time);
+//	    (void) fprintf(file, "CYCLE 1 1 int\n");
+//	    (void) fprintf(file, "%d\n", step);
+//	    (void) fprintf(file, "POINTS %d double\n",npts);
+//	}
+//	     
+//	for (i = 0; i < npts; ++i)
+//	{
+//	    if(print_in_binary)
+//	    {
+//		float vals[1];
+//		for(j = 0; j < 3; ++j)
+//		{
+//		    if(hardware_is_little_endian())
+//		        vals[0] = endian_float_swap(pts[3*i+j]);
+//		    else
+//			vals[0] = pts[3*i+j];
+//                    fwrite(vals, sizeof(float), 1, file);
+//		}    
+//	     }
+//	     else
+//	         (void) fprintf(file,"%-9g %-9g %-9g\n",
+//		       	        pts[3*i],pts[3*i+1],pts[3*i+2]);
+//	     
+//	}
+//
+//	D = (num_surfs == 1) ? 1.0 : 1/(num_surfs - 1.0);
+//	if(print_in_binary)
+//	{
+//	    sprintf(str, "\nPOLYGONS %d %d\n", ntris, ntris*4);
+//	    length = count_digits(ntris);
+//	    length2 = count_digits(ntris*4);
+//	    fwrite(str, sizeof(char), 12 + length + length2, file);
+//	    for(j = 0; j < ntris; ++j)
+//	    {
+//		for(k = 0; k < 3; ++k)
+//		{
+//                    int vals[1];
+//		    if(k == 0)
+//		    {
+//		        if(hardware_is_little_endian())
+//		            vals[0] = endian_int_swap(3);
+//			else
+//			    vals[0] = 3;
+//			fwrite(vals, sizeof(int), 1, file);
+//		    }
+//		    if(hardware_is_little_endian())
+//                        vals[0] = endian_int_swap(verts[4*j+k]);
+//                    else
+//                        vals[0] = verts[4*j+k];
+//                    fwrite(vals, sizeof(int), 1, file);
+//		}
+//	    }
+//	}
+//	else
+//	{
+//	    fprintf(file,"POLYGONS %d %d \n",ntris,ntris*4); 
+//	    for (j = 0; j < ntris; ++j)
+//	    {
+//	        (void) fprintf(file,"%d %d %d %d \n",
+//			       3,verts[4*j],verts[4*j+1],verts[4*j+2]);
+//	    }
+//	} 
+//	(void) fclose(file);
+//	    
 }	/*end vtk_plot_surfaces*/
 
 

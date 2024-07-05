@@ -164,20 +164,20 @@ EXPORT	void ArrayOfCurvePoints(
  **********************************************************************/
 EXPORT	void ArrayOfIntfcPoints(INTERFACE *intfc, double *coords)
 {
-	int i, n, dim = intfc->dim;
-	POINT	*p;
-	HYPER_SURF_ELEMENT *phse;
-	HYPER_SURF	   *phs;
-	
-	n=0;
-        next_point(intfc,NULL, NULL,NULL);
-	for ((void)next_point(intfc, &p, &phse, &phs); p!= NULL; 
-	     (void)next_point(intfc, &p, &phse, &phs))
-	{
-	    /*Index_of_point(p) = n/dim; */
-	    for (i = 0; i < dim; ++i)
-	    	coords[n++] = Coords(p)[i];
-	}
+//	int i, n, dim = intfc->dim;
+//	POINT	*p;
+//	HYPER_SURF_ELEMENT *phse;
+//	HYPER_SURF	   *phs;
+//	
+//	n=0;
+//        next_point(intfc,NULL, NULL,NULL);
+//	for ((void)next_point(intfc, &p, &phse, &phs); p!= NULL; 
+//	     (void)next_point(intfc, &p, &phse, &phs))
+//	{
+//	    /*Index_of_point(p) = n/dim; */
+//	    for (i = 0; i < dim; ++i)
+//	    	coords[n++] = Coords(p)[i];
+//	}
 }
 
 EXPORT	void ArrayOfSurfaces(
@@ -223,50 +223,50 @@ EXPORT	void ArrayOfSurfTris(
 	double *coords, 
 	int *vertices_index)
 {
-	int ic, n, i, j;
-	POINT *p;
-	
-	TRI *tri;
-	
-	/* reset point index */
-	for(tri = first_tri(surface); !at_end_of_tri_list(tri,surface); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		Index_of_point(p) = -1;		
-	    }
-	}		
-	
-	/* points	 */
-	ic = 0;		n = 0;
-	for(tri = first_tri(surface); !at_end_of_tri_list(tri,surface); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    Index_of_point(p) = n++;		
-		    for (j = 0; j < 3; ++j)
-	    	        coords[ic++] = Coords(p)[j];	
-		}
-	    }
-	}		
-	
-	/* tris */
-	n = 0;
-	for(tri = first_tri(surface); !at_end_of_tri_list(tri,surface); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		vertices_index[n++] = Index_of_point(p);			
-	    }
-	}		
+//	int ic, n, i, j;
+//	POINT *p;
+//	
+//	TRI *tri;
+//	
+//	/* reset point index */
+//	for(tri = first_tri(surface); !at_end_of_tri_list(tri,surface); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		Index_of_point(p) = -1;		
+//	    }
+//	}		
+//	
+//	/* points	 */
+//	ic = 0;		n = 0;
+//	for(tri = first_tri(surface); !at_end_of_tri_list(tri,surface); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    Index_of_point(p) = n++;		
+//		    for (j = 0; j < 3; ++j)
+//	    	        coords[ic++] = Coords(p)[j];	
+//		}
+//	    }
+//	}		
+//	
+//	/* tris */
+//	n = 0;
+//	for(tri = first_tri(surface); !at_end_of_tri_list(tri,surface); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		vertices_index[n++] = Index_of_point(p);			
+//	    }
+//	}		
 }
 
 /**********************************************************************
@@ -307,57 +307,57 @@ EXPORT  void ArrayOfIntfcTris(
 	double *coords, 
 	int *vertex_indices)
 {
-	TRI *tri;
-	SURFACE **s;
-	POINT *p;
-	HYPER_SURF_ELEMENT *hse;
-	HYPER_SURF *hs;
-	int i,n,ic;
-	
-	for (s = intfc->surfaces; s && *s; ++s)
-	{
-	    for(tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-	    		tri = tri->next)
-	    {
-	        for(i = 0; i < 3; i++)
-	        {
-		    p = Point_of_tri(tri)[i]; 
-		    Index_of_point(p) = -1;
-		}
-	    }
-	}
-	n = 0;		ic = 0;
-	for (s = intfc->surfaces; s && *s; ++s)
-	{
-	    for(tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-	    		tri = tri->next)
-	    {
-	        for(i = 0; i < 3; i++)
-	        {
-		    p = Point_of_tri(tri)[i]; 
-		    if (Index_of_point(p) == -1)
-		    {
-		    	Index_of_point(p) = n++;
-			coords[ic++] = Coords(p)[0];
-			coords[ic++] = Coords(p)[1];
-			coords[ic++] = Coords(p)[2];
-		    }
-		}
-	    }
-	}
-	n = 0;
-	for (s = intfc->surfaces; s && *s; ++s)
-	{
-	    for(tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
-	    		tri = tri->next)
-	    {
-	        for(i = 0; i < 3; i++)
-	        {
-	            p = Point_of_tri(tri)[i];
-		    vertex_indices[n++] = Index_of_point(p);
-	        }
-	    }
-	}
+//	TRI *tri;
+//	SURFACE **s;
+//	POINT *p;
+//	HYPER_SURF_ELEMENT *hse;
+//	HYPER_SURF *hs;
+//	int i,n,ic;
+//	
+//	for (s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    for(tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//	    		tri = tri->next)
+//	    {
+//	        for(i = 0; i < 3; i++)
+//	        {
+//		    p = Point_of_tri(tri)[i]; 
+//		    Index_of_point(p) = -1;
+//		}
+//	    }
+//	}
+//	n = 0;		ic = 0;
+//	for (s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    for(tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//	    		tri = tri->next)
+//	    {
+//	        for(i = 0; i < 3; i++)
+//	        {
+//		    p = Point_of_tri(tri)[i]; 
+//		    if (Index_of_point(p) == -1)
+//		    {
+//		    	Index_of_point(p) = n++;
+//			coords[ic++] = Coords(p)[0];
+//			coords[ic++] = Coords(p)[1];
+//			coords[ic++] = Coords(p)[2];
+//		    }
+//		}
+//	    }
+//	}
+//	n = 0;
+//	for (s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    for(tri = first_tri(*s); !at_end_of_tri_list(tri,*s); 
+//	    		tri = tri->next)
+//	    {
+//	        for(i = 0; i < 3; i++)
+//	        {
+//	            p = Point_of_tri(tri)[i];
+//		    vertex_indices[n++] = Index_of_point(p);
+//	        }
+//	    }
+//	}
 }
 
 

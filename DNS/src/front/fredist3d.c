@@ -248,57 +248,57 @@ EXPORT	boolean	compute_average_point(
 EXPORT  void    detect_and_move_points(
 	SURFACE		*s)
 {
-	TRI		*tri;
-	POINT		*p;
-	int		i, num;
-	SMOOTH_PARA	smooth_que[MAX_SMOOTH_PARA];
-	SMOOTH_TOL	stol;
-
-	if (!(first_tri(s)))
-	    return;
-
-	/* smooth paramaters. */
-	stol.cone_ratio = 0.24;  /* h/r = 1.5 */
-	stol.max_cos = 0.939;    /* 20 deg */
-	stol.alpha = sqrt(0.25); /* 0.65 prev */
-
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		Index_of_point(Point_of_tri(tri)[i]) = -1;
-	    }
-	}
-
-	num = 0;
-	/* Compute the the parameters in each points */
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		p = Point_of_tri(tri)[i];
-		if(Boundary_point(p) || Index_of_point(p) != -1)
-		    continue;
-
-		Index_of_point(p) = 1;
-		if(!compute_smooth_para(&smooth_que[num], p,tri,s,&stol))
-		    continue;
-		
-		num++;
-		if(num >= MAX_SMOOTH_PARA)
-		{
-	 	    printf("ERROR detect_and_move_points, array is too large.\n");
-		    clean_up(ERROR);
-		}
-	    }
-	}
-
-	if(num > 0)
-	    s->interface->modified = YES;
-	
-	/* Apply Laplacian smooth */
-	for(i=0; i<num; i++)
-	    compute_point_smooth(&smooth_que[i], &stol, s->interface);
+//	TRI		*tri;
+//	POINT		*p;
+//	int		i, num;
+//	SMOOTH_PARA	smooth_que[MAX_SMOOTH_PARA];
+//	SMOOTH_TOL	stol;
+//
+//	if (!(first_tri(s)))
+//	    return;
+//
+//	/* smooth paramaters. */
+//	stol.cone_ratio = 0.24;  /* h/r = 1.5 */
+//	stol.max_cos = 0.939;    /* 20 deg */
+//	stol.alpha = sqrt(0.25); /* 0.65 prev */
+//
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	    }
+//	}
+//
+//	num = 0;
+//	/* Compute the the parameters in each points */
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if(Boundary_point(p) || Index_of_point(p) != -1)
+//		    continue;
+//
+//		Index_of_point(p) = 1;
+//		if(!compute_smooth_para(&smooth_que[num], p,tri,s,&stol))
+//		    continue;
+//		
+//		num++;
+//		if(num >= MAX_SMOOTH_PARA)
+//		{
+//	 	    printf("ERROR detect_and_move_points, array is too large.\n");
+//		    clean_up(ERROR);
+//		}
+//	    }
+//	}
+//
+//	if(num > 0)
+//	    s->interface->modified = YES;
+//	
+//	/* Apply Laplacian smooth */
+//	for(i=0; i<num; i++)
+//	    compute_point_smooth(&smooth_que[i], &stol, s->interface);
 
 }	/* end tecplot_surface_states */
 

@@ -53,76 +53,76 @@ typedef struct _EDGETRI	EDGETRI;
 
 int compare_null_edges(const void *a, const void *b)
 {
-	EDGETRI	*a1=(EDGETRI*)a, *b1=(EDGETRI*)b;
-	TRI	*t1 = a1->tri, *t2 = b1->tri;
-	int	e1 = a1->edge, e2 = b1->edge;
-	int	p11,p12, p21,p22, m1,m2;
-
-	p11 = Index_of_point(Point_of_tri(t1)[e1]);
-	p12 = Index_of_point(Point_of_tri(t1)[Next_m3(e1)]);
-	
-	p21 = Index_of_point(Point_of_tri(t2)[e2]);
-	p22 = Index_of_point(Point_of_tri(t2)[Next_m3(e2)]);
-
-	m1 = min(p11,p12);
-	m2 = min(p21,p22);
-
-	if(m1 < m2)
-	  return -1;
-	if(m1 > m2)
-	  return 1;
-	
-	m1 = max(p11,p12);
-	m2 = max(p21,p22);
-
-	if(m1 < m2)
-	  return -1;
-	if(m1 > m2)
-	  return 1;
-
+//	EDGETRI	*a1=(EDGETRI*)a, *b1=(EDGETRI*)b;
+//	TRI	*t1 = a1->tri, *t2 = b1->tri;
+//	int	e1 = a1->edge, e2 = b1->edge;
+//	int	p11,p12, p21,p22, m1,m2;
+//
+//	p11 = Index_of_point(Point_of_tri(t1)[e1]);
+//	p12 = Index_of_point(Point_of_tri(t1)[Next_m3(e1)]);
+//	
+//	p21 = Index_of_point(Point_of_tri(t2)[e2]);
+//	p22 = Index_of_point(Point_of_tri(t2)[Next_m3(e2)]);
+//
+//	m1 = min(p11,p12);
+//	m2 = min(p21,p22);
+//
+//	if(m1 < m2)
+//	  return -1;
+//	if(m1 > m2)
+//	  return 1;
+//	
+//	m1 = max(p11,p12);
+//	m2 = max(p21,p22);
+//
+//	if(m1 < m2)
+//	  return -1;
+//	if(m1 > m2)
+//	  return 1;
+//
 	return 0;
 }
 
 /* The compared variables should be rotationally invariant */
 int compare_tris_pointers(const void *a, const void *b)
 {
-	TRI	**a1=(TRI**)a, **b1=(TRI**)b;
-	TRI	*t1 = *a1, *t2 = *b1;
-	POINT	**p1, **p2;
-	int	p1i[3], p2i[3], p1m, p2m, i, s1, s2;
-
-	p1 = Point_of_tri(t1);
-	p2 = Point_of_tri(t2);
-	for(i=0; i<3; i++)
-	{
-	  p1i[i] = Index_of_point(p1[i]);
-	  p2i[i] = Index_of_point(p2[i]);
-	}
-
-	/* comp min point index */
-	p1m = min3(p1i[0],p1i[1],p1i[2]);
-	p2m = min3(p2i[0],p2i[1],p2i[2]);
-	if(p1m < p2m)
-	    return -1;
-	if(p1m > p2m)
-	    return 1;
-
-	/* comp max point index */
-	p1m = max3(p1i[0],p1i[1],p1i[2]);
-	p2m = max3(p2i[0],p2i[1],p2i[2]);
-	if(p1m < p2m)
-	    return -1;
-	if(p1m > p2m)
-	    return 1;
-
-	s1 = p1i[0] + p1i[1] + p1i[2];
-	s2 = p2i[0] + p2i[1] + p2i[2];
-	
-	if(s1 < s2)
-	    return -1;
-	if(s1 > s2)
-	    return 1;
-
+//	TRI	**a1=(TRI**)a, **b1=(TRI**)b;
+//	TRI	*t1 = *a1, *t2 = *b1;
+//	POINT	**p1, **p2;
+//	int	p1i[3], p2i[3], p1m, p2m, i, s1, s2;
+//
+//	p1 = Point_of_tri(t1);
+//	p2 = Point_of_tri(t2);
+//	for(i=0; i<3; i++)
+//	{
+//	  p1i[i] = Index_of_point(p1[i]);
+//	  p2i[i] = Index_of_point(p2[i]);
+//	}
+//
+//	/* comp min point index */
+//	p1m = min3(p1i[0],p1i[1],p1i[2]);
+//	p2m = min3(p2i[0],p2i[1],p2i[2]);
+//	if(p1m < p2m)
+//	    return -1;
+//	if(p1m > p2m)
+//	    return 1;
+//
+//	/* comp max point index */
+//	p1m = max3(p1i[0],p1i[1],p1i[2]);
+//	p2m = max3(p2i[0],p2i[1],p2i[2]);
+//	if(p1m < p2m)
+//	    return -1;
+//	if(p1m > p2m)
+//	    return 1;
+//
+//	s1 = p1i[0] + p1i[1] + p1i[2];
+//	s2 = p2i[0] + p2i[1] + p2i[2];
+//	
+//	if(s1 < s2)
+//	    return -1;
+//	if(s1 > s2)
+//	    return 1;
+//
 	return 0;
 }
 
@@ -956,26 +956,26 @@ int	count_surface_points(
 	SURFACE		*s)
 {
 	int	npt, i;
-	TRI	*tri;
-
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-		Index_of_point(Point_of_tri(tri)[i]) = -1;
-	}
-	
-	npt = 0;
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		if(Index_of_point(Point_of_tri(tri)[i]) == -1)
-		{
-		  Index_of_point(Point_of_tri(tri)[i]) = 0;
-		  npt++;
-	        }
-	    }
-	}
+//	TRI	*tri;
+//
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//		Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	}
+//	
+//	npt = 0;
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		if(Index_of_point(Point_of_tri(tri)[i]) == -1)
+//		{
+//		  Index_of_point(Point_of_tri(tri)[i]) = 0;
+//		  npt++;
+//	        }
+//	    }
+//	}
 
 	return npt;
 }
@@ -985,29 +985,29 @@ int	get_surface_points(
 	SURFACE		*s)
 {
 	int	npt, i;
-	TRI	*tri;
-
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-		Index_of_point(Point_of_tri(tri)[i]) = -1;
-	}
-	
-	npt = 0;
-	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		if(Index_of_point(Point_of_tri(tri)[i]) == -1)
-		{
-		  Index_of_point(Point_of_tri(tri)[i]) = 0;
-		  pts[npt] = Point_of_tri(tri)[i];
-		  pts[npt]->hs = Hyper_surf(s);
-		  pts[npt]->hse = Hyper_surf_element(tri);
-		  npt++;
-	        }
-	    }
-	}
+//	TRI	*tri;
+//
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//		Index_of_point(Point_of_tri(tri)[i]) = -1;
+//	}
+//	
+//	npt = 0;
+//	for (tri=first_tri(s); !at_end_of_tri_list(tri,s); tri=tri->next)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		if(Index_of_point(Point_of_tri(tri)[i]) == -1)
+//		{
+//		  Index_of_point(Point_of_tri(tri)[i]) = 0;
+//		  pts[npt] = Point_of_tri(tri)[i];
+//		  pts[npt]->hs = Hyper_surf(s);
+//		  pts[npt]->hse = Hyper_surf_element(tri);
+//		  npt++;
+//	        }
+//	    }
+//	}
 
 	return npt;
 }
@@ -1255,30 +1255,30 @@ void	merge_surface_points_prev(
 void	assign_index_of_point(
 	INTERFACE	*intfc)
 {
-	SURFACE		**s;
-	POINT		**p;
-	TRI		*tri;
-	int		i,j;
-
-	/* init point index */
-	for(s=intfc->surfaces; s && *s; s++)
-	  for(tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    for(j=0; j<3; j++)
-	      Index_of_point(Point_of_tri(tri)[j]) = -1;
-	
-	/* assign point index, will be used by compare_tris_pointers */
-	i = 0;
-	for(s=intfc->surfaces; s && *s; s++)
-	  for(tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    for(j=0; j<3; j++)
-	    {
-	      p = Point_of_tri(tri);
-	      if(Index_of_point(p[j]) == -1)
-	      {
-		Index_of_point(p[j]) = i;
-	        i++;
-	      }
-	    }
+//	SURFACE		**s;
+//	POINT		**p;
+//	TRI		*tri;
+//	int		i,j;
+//
+//	/* init point index */
+//	for(s=intfc->surfaces; s && *s; s++)
+//	  for(tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    for(j=0; j<3; j++)
+//	      Index_of_point(Point_of_tri(tri)[j]) = -1;
+//	
+//	/* assign point index, will be used by compare_tris_pointers */
+//	i = 0;
+//	for(s=intfc->surfaces; s && *s; s++)
+//	  for(tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    for(j=0; j<3; j++)
+//	    {
+//	      p = Point_of_tri(tri);
+//	      if(Index_of_point(p[j]) == -1)
+//	      {
+//		Index_of_point(p[j]) = i;
+//	        i++;
+//	      }
+//	    }
 }
 
 boolean	merge_tris(
@@ -1525,8 +1525,8 @@ void	merge_null_edges(
 	      print_tri(tri, intfc);
 	    }
 	    
-	    printf("%p %2d  %p(%6d) %p(%6d)\n", (void*)tri, j, 
-	        (void*)p1, Index_of_point(p1), (void*)p2, Index_of_point(p2));
+	    //printf("%p %2d  %p(%6d) %p(%6d)\n", (void*)tri, j, 
+	    //    (void*)p1, Index_of_point(p1), (void*)p2, Index_of_point(p2));
 	  }
 	}
 

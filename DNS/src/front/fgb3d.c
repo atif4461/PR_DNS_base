@@ -1439,59 +1439,59 @@ boolean	compute_average_point(SMOOTH_PARA*,POINT*,TRI*,SURFACE*,SMOOTH_TOL*);
 	TRI	**tris,
 	int	num_tris)
 {
-	int		i, j, k, num;
-	TRI		*tri;
-	POINT		*p;
-	SURFACE		*s;
-	SMOOTH_PARA	smooth_que[MAX_SMOOTH_POINT];
-	SMOOTH_TOL	stol;
-
-	if(num_tris == 0)
-	    return;
-
-	if(3*num_tris >= MAX_SMOOTH_POINT)
-	{
-	    printf("ERROR smooth_tris, too many points  %d.\n", num_tris);
-	    clean_up(ERROR);
-	}
-
-	/* smooth paramaters. */
-	stol.cone_ratio = 0.1;
-	stol.max_cos = 0.6;
-	stol.alpha = sqrt(0.65);
-
-	for(k=0; k<num_tris; k++)
-	{
-	    for (i = 0; i < 3; i++)
-	    {
-		Index_of_point(Point_of_tri(tris[k])[i]) = -1;
-	    }
-	}
-
-	s = tris[0]->surf;
-	num = 0;
-	
-	/* Compute the the parameters in each point */
-	for(k=0; k<num_tris; k++)
-	{
-	    tri = tris[k];
-	    for (i = 0; i < 3; i++)
-	    {
-		p = Point_of_tri(tri)[i];
-		if(Boundary_point(p) || Index_of_point(p) != -1)
-		    continue;
-
-		Index_of_point(p) = 1;
-		if(!compute_average_point(&smooth_que[num], p,tri,s,&stol))
-		    continue;
-		
-		num++;
-	    }
-	}
-
-	/* Apply Laplacian smooth */
-	for(i=0; i<num; i++)
-	    compute_point_smooth(&smooth_que[i], &stol, s->interface);
+//	int		i, j, k, num;
+//	TRI		*tri;
+//	POINT		*p;
+//	SURFACE		*s;
+//	SMOOTH_PARA	smooth_que[MAX_SMOOTH_POINT];
+//	SMOOTH_TOL	stol;
+//
+//	if(num_tris == 0)
+//	    return;
+//
+//	if(3*num_tris >= MAX_SMOOTH_POINT)
+//	{
+//	    printf("ERROR smooth_tris, too many points  %d.\n", num_tris);
+//	    clean_up(ERROR);
+//	}
+//
+//	/* smooth paramaters. */
+//	stol.cone_ratio = 0.1;
+//	stol.max_cos = 0.6;
+//	stol.alpha = sqrt(0.65);
+//
+//	for(k=0; k<num_tris; k++)
+//	{
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		Index_of_point(Point_of_tri(tris[k])[i]) = -1;
+//	    }
+//	}
+//
+//	s = tris[0]->surf;
+//	num = 0;
+//	
+//	/* Compute the the parameters in each point */
+//	for(k=0; k<num_tris; k++)
+//	{
+//	    tri = tris[k];
+//	    for (i = 0; i < 3; i++)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if(Boundary_point(p) || Index_of_point(p) != -1)
+//		    continue;
+//
+//		Index_of_point(p) = 1;
+//		if(!compute_average_point(&smooth_que[num], p,tri,s,&stol))
+//		    continue;
+//		
+//		num++;
+//	    }
+//	}
+//
+//	/* Apply Laplacian smooth */
+//	for(i=0; i<num; i++)
+//	    compute_point_smooth(&smooth_que[i], &stol, s->interface);
 }
 
 	void  seal_null_loop(

@@ -823,130 +823,130 @@ LOCAL  boolean  insert_fixed_curve_crx_on_face(
 	INTERFACE  *intfc, 
 	int	   *index)
 {
-	struct Table    *T = table_of_interface(intfc);
-	RECT_GRID       *rgr = &topological_grid(intfc);
-	size_t 		sizest = size_of_state(intfc);
-	CRXING		*crx_list;
-	int		*face_list;
-	TRI		*tri;
-	SURFACE		*surf, *s;
-	POINT		*newp;
-	BOND_TRI	**btris;
-	Locstate  	sl, sr;
-	double		face_crds[3], *coords, d, dmin;
-	int		i, j, k;
-	int		nc[1], icrds[3], icrds1[3];
-	int		*gmax = rgr->gmax;
-	double		*h = rgr->h;
-	static  GRID_DIRECTION  dir, DIR[3] = {EAST, NORTH, UPPER};
-
-	for(i=0, btris=Btris(b); btris && *btris; btris++, i++)
-	{
-	    if(curve != (*btris)->curve)
-	    {
-	        printf("ERROR insert_fixed_curve_crossings, "
-		       "curve inconsistent.\n");
-		clean_up(ERROR);
-	    }
-
-	    /*find a surface which has physical states on one side. */
-	    s = (*btris)->surface;
-	    if(i == 0)
-	    {
-	        tri = (*btris)->tri;
-		surf = s;
-	    }
-	    else  if( wave_type(s) > wave_type(surf) )
-	    {
-	        tri = (*btris)->tri;
-		surf = s;
-	    }
-	}
-
-	coords = Coords(p);
-	if(!rect_in_which(coords, icrds, rgr))
-	{
-	    return NO;
-	}
-	
-	for(i=0; i<3; i++)
-	    face_crds[i] = cell_edge(icrds[i], i, rgr);
-
-	dmin = HUGE_VAL;
-	for(i=0; i<3; i++)
-	    for(j=0; j<2; j++)
-	    {
-	        d = fabs(coords[i] - face_crds[i] - j*h[i]);
-		if(d < dmin)
-		{
-		    dmin = d;
-		    for(k=0; k<3; k++)
-		        icrds1[k] = i==k ? icrds[k] + j : icrds[k];
-		    dir = DIR[i];
-		}
-	    }
-	
-
-	/*count_grid_curve_crossings3d case */
-	for(i=0; i<3; i++)
-	{
-	    if(icrds1[i]<smin[i] || icrds1[i]>smax[i])
-	        return NO;
-	}
-	if (icrds1[0] == smax[0] && (dir == NORTH || dir == UPPER))
-	    return NO;
-	if (icrds1[1] == smax[1] && (dir == EAST || dir == UPPER))
-	    return NO;
-	if (icrds1[2] == smax[2] && (dir == EAST || dir == NORTH))
-	    return NO;
-
-	k = face_index3d(icrds1[0],icrds1[1],icrds1[2],dir,gmax);
-
-	if(T->curve_crx_count[k] == 0)
-	{
-	    printf("ERROR insert_fixed_curve_crx_on_face, invalid fixed curve crx.\n");
-	    clean_up(ERROR);
-	}
-	if(T->curve_crx_type[k] != 0)
-	{
-	    printf("ERROR insert_fixed_curve_crx_on_face, multi curve crx, invalid for grid based.\n");
-	    clean_up(ERROR);
-	}
-
-	T->curve_crx_type[k]++;
-	face_list = T->curve_crx_lists[k];
-	crx_list = T->curve_crx_store + *index;
-	
-	/*only one curve crx for grid based case */
-	*nc = 0;
-
-	newp = crx_list[*nc].pt = Point(coords);
-	intfc->modified = NO;
-	Index_of_point(newp) = k;
-	    
-	/*printf("#fixed crx0  %d  %d\n", *index, crx_list); */
-	/*print_general_vector("#curve crds0= ", coords, 3, "\n"); */
-	    
-	crx_list[*nc].hsb = Hyper_surf_bdry(curve); 
-	crx_list[*nc].tri = tri;
-	/*find states from  surf */
-	slsr(p, Hyper_surf_element(tri), Hyper_surf(surf), &sl, &sr);
-	ft_assign(left_state(newp), sl, sizest);
-	ft_assign(right_state(newp), sr, sizest);
-	crx_list[*nc].lcomp = negative_component(surf);
-	crx_list[*nc].ucomp = positive_component(surf);
-	
-	if(debugging("curve_fix_crx"))
-	{
-	    print_wall_curve_crx("fix curve_fix", icrds, (int) dir, k, &crx_list[*nc]);
-	    /*remove_from_debug("curve_fix_crx"); */
-	}
-
-	crx_list[*nc].crx_num = 0;
-	face_list[*nc] = *index;
-	++(*nc);    /*useless for grid based */
-	++(*index);
-
+//	struct Table    *T = table_of_interface(intfc);
+//	RECT_GRID       *rgr = &topological_grid(intfc);
+//	size_t 		sizest = size_of_state(intfc);
+//	CRXING		*crx_list;
+//	int		*face_list;
+//	TRI		*tri;
+//	SURFACE		*surf, *s;
+//	POINT		*newp;
+//	BOND_TRI	**btris;
+//	Locstate  	sl, sr;
+//	double		face_crds[3], *coords, d, dmin;
+//	int		i, j, k;
+//	int		nc[1], icrds[3], icrds1[3];
+//	int		*gmax = rgr->gmax;
+//	double		*h = rgr->h;
+//	static  GRID_DIRECTION  dir, DIR[3] = {EAST, NORTH, UPPER};
+//
+//	for(i=0, btris=Btris(b); btris && *btris; btris++, i++)
+//	{
+//	    if(curve != (*btris)->curve)
+//	    {
+//	        printf("ERROR insert_fixed_curve_crossings, "
+//		       "curve inconsistent.\n");
+//		clean_up(ERROR);
+//	    }
+//
+//	    /*find a surface which has physical states on one side. */
+//	    s = (*btris)->surface;
+//	    if(i == 0)
+//	    {
+//	        tri = (*btris)->tri;
+//		surf = s;
+//	    }
+//	    else  if( wave_type(s) > wave_type(surf) )
+//	    {
+//	        tri = (*btris)->tri;
+//		surf = s;
+//	    }
+//	}
+//
+//	coords = Coords(p);
+//	if(!rect_in_which(coords, icrds, rgr))
+//	{
+//	    return NO;
+//	}
+//	
+//	for(i=0; i<3; i++)
+//	    face_crds[i] = cell_edge(icrds[i], i, rgr);
+//
+//	dmin = HUGE_VAL;
+//	for(i=0; i<3; i++)
+//	    for(j=0; j<2; j++)
+//	    {
+//	        d = fabs(coords[i] - face_crds[i] - j*h[i]);
+//		if(d < dmin)
+//		{
+//		    dmin = d;
+//		    for(k=0; k<3; k++)
+//		        icrds1[k] = i==k ? icrds[k] + j : icrds[k];
+//		    dir = DIR[i];
+//		}
+//	    }
+//	
+//
+//	/*count_grid_curve_crossings3d case */
+//	for(i=0; i<3; i++)
+//	{
+//	    if(icrds1[i]<smin[i] || icrds1[i]>smax[i])
+//	        return NO;
+//	}
+//	if (icrds1[0] == smax[0] && (dir == NORTH || dir == UPPER))
+//	    return NO;
+//	if (icrds1[1] == smax[1] && (dir == EAST || dir == UPPER))
+//	    return NO;
+//	if (icrds1[2] == smax[2] && (dir == EAST || dir == NORTH))
+//	    return NO;
+//
+//	k = face_index3d(icrds1[0],icrds1[1],icrds1[2],dir,gmax);
+//
+//	if(T->curve_crx_count[k] == 0)
+//	{
+//	    printf("ERROR insert_fixed_curve_crx_on_face, invalid fixed curve crx.\n");
+//	    clean_up(ERROR);
+//	}
+//	if(T->curve_crx_type[k] != 0)
+//	{
+//	    printf("ERROR insert_fixed_curve_crx_on_face, multi curve crx, invalid for grid based.\n");
+//	    clean_up(ERROR);
+//	}
+//
+//	T->curve_crx_type[k]++;
+//	face_list = T->curve_crx_lists[k];
+//	crx_list = T->curve_crx_store + *index;
+//	
+//	/*only one curve crx for grid based case */
+//	*nc = 0;
+//
+//	newp = crx_list[*nc].pt = Point(coords);
+//	intfc->modified = NO;
+//	Index_of_point(newp) = k;
+//	    
+//	/*printf("#fixed crx0  %d  %d\n", *index, crx_list); */
+//	/*print_general_vector("#curve crds0= ", coords, 3, "\n"); */
+//	    
+//	crx_list[*nc].hsb = Hyper_surf_bdry(curve); 
+//	crx_list[*nc].tri = tri;
+//	/*find states from  surf */
+//	slsr(p, Hyper_surf_element(tri), Hyper_surf(surf), &sl, &sr);
+//	ft_assign(left_state(newp), sl, sizest);
+//	ft_assign(right_state(newp), sr, sizest);
+//	crx_list[*nc].lcomp = negative_component(surf);
+//	crx_list[*nc].ucomp = positive_component(surf);
+//	
+//	if(debugging("curve_fix_crx"))
+//	{
+//	    print_wall_curve_crx("fix curve_fix", icrds, (int) dir, k, &crx_list[*nc]);
+//	    /*remove_from_debug("curve_fix_crx"); */
+//	}
+//
+//	crx_list[*nc].crx_num = 0;
+//	face_list[*nc] = *index;
+//	++(*nc);    /*useless for grid based */
+//	++(*index);
+//
 	return YES;
 }
 
@@ -1039,181 +1039,181 @@ LOCAL void insert_curve_face_crossings(
 	GRID_DIRECTION  dir,
 	int		*index)
 {
-	struct Table    *T = table_of_interface(intfc);
-	RECT_GRID       *rgr = &topological_grid(intfc);
-	size_t 		sizest = size_of_state(intfc);
-	CRXING		*crx_list, *crx0, *crx;
-	int		*face_list;
-	TRI		*tri;
-	SURFACE		*surf, *crx_surf;
-	HYPER_SURF	*hs_on;
-	POINT		*newp;
-	Locstate  	sl, sr;
-	double		crds_crx[MAXD], *pt1, *pt2, *coords;
-	double           *h = rgr->h, tol;
-	int		i,j,k,l,iv,ie[4], c0, c1, fixed;
-	int		ix,iy,iz;
-	int		*gmax = rgr->gmax;
-	int		nc[1];
-	boolean		found;
-
-	tol = min3(h[0], h[1], h[2])*1.0e-5;
-	ix = icrds[0];
-	iy = icrds[1];
-	iz = icrds[2];
-
-	edge_index_of_face(ie,ix,iy,iz,dir,gmax);
-
-	/*(1)moving curve: find 2 wall crx and 1 fluid crx on 4 edges of the face. */
-	/*   fixed curve: find 3 wall crx on 4 edges of the face. */
-	
-	j = 0;
-	l = 0;
-	for(i=0; i<4; i++)
-	{
-	    if(T->seg_crx_count[ie[i]] == 0)
-	        continue;
-	    k = T->seg_crx_lists[ie[i]][0];
-	    crx = &T->crx_store[k];
-	    
-	    if(is_wall_surface(Surface_of_hs(crx->hs)))
-	    {
-	        /*2 wall crx */
-	        if(j == 0)
-	            pt1 = Coords(crx->pt);
-	        else  if(j == 1)
-	            pt2 = Coords(crx->pt);
-	        else  if(j == 2)
-		{
-		    print_general_vector("third wall crx", Coords(crx->pt), 3, "\n");
-		}
-	        else
-		{
-	            printf("ERROR in insert_curve_crossings ");
-		    printf("4 wall crossings in one face, impossible for grid based.\n");
-		    clean_up(ERROR);
-	        }
-		j++;
-	    }
-	    else
-	    {
-	        /*1 fluid crx */
-	        crx0 = crx;
-		if(l==1)
-		{
-		    printf("ERROR in insert_curve_crossings ");
-		    printf("2 fluid crossings in one face, impossible for grid based.\n");
-		    
-		    print_int_vector("icrds=", icrds, 3, "\n");
-		    printf("dir = %d\n", dir);
-		    
-		    print_curve_face_crossings(intfc, icrds, dir);
-		    clean_up(ERROR);
-		}
-		l++;
-	    }
-	}
-	
-	/*3 wall crxs, must be wall fixed curve case, shoud be inserted before this part */
-	if(j == 3)
-	{
-	    printf("ERROR in insert_curve_crossings, fixed wall crx happens");
-	    printf(" wall crossings=%d fluid crossings=%d in one face. \n", j, l);
-	    clean_up(ERROR);
-	}
-	/*must be 2 wall crxs, 1 fluid crx case, possible moving curve case */
-	if(j != 2 && l != 1)
-	{
-	    printf("ERROR in insert_curve_crossings, impossible crx ");
-	    printf("wall crossings=%d fluid crossings=%d in one face. \n", j, l);
-	    clean_up(ERROR);
-	}
-
-	/*(3) insert curve crx, ref: add_to_crx_list */
-	k = face_index3d(ix,iy,iz,dir,gmax);
-	face_list = T->curve_crx_lists[k];
-	crx_list = T->curve_crx_store + *index;
-
-	T->curve_crx_type[k]++;
-
-	/*only one curve crx for grid based case */
-	*nc = 0;
-
-	if(debugging("line_tri"))
-	    found = tst_line_tri_crossing_on_face(crds_crx,&tri,&surf,
-	        pt1,pt2,icrds,intfc,tol);
-
-	found = line_tri_crossing_on_face(crds_crx,&tri,&surf,
-	    pt1,pt2,icrds,intfc,tol);
-	
-	/*printf("#found %d\n", found); */
-	if(found)
-	{
-	    /*pt position */
-	    newp = crx_list[*nc].pt = Point(crds_crx);
-	    intfc->modified = NO;
-	    Index_of_point(newp) = k;
-	    
-	    /*printf("#kcrx0  %d  %d\n", *index, crx_list); */
-	    /*print_general_vector("#curve crds0= ", crds_crx, 3, "\n"); */
-	    
-	    interpolate_crx_pt_states_on_tri(intfc,newp,tri,surf);
-	    crx_list[*nc].hsb = NULL;
-	    crx_list[*nc].tri = tri;
-	    /*physical surf */
-	    crx_list[*nc].lcomp = negative_component(surf);
-	    crx_list[*nc].ucomp = positive_component(surf);
-	}
-	else
-	{
-	    /*using the projection of the fluid crx as the curve crx */
-	    /*ref: fill_missing_crx */
-	    /*pt position */
-	    line_point_projection(crds_crx,&iv,Coords(crx0->pt),pt1,pt2,tol);
-	    newp = crx_list[*nc].pt = Point(crds_crx);
-	    intfc->modified = NO;
-	    
-	    Index_of_point(newp) = k;
-
-	    crx_surf = Surface_of_hs(crx0->hs);
-	    c0 = negative_component(crx_surf);
-	    c1 = positive_component(crx_surf);
-	
-	    /*pt state */
-	    coords = Coords(newp);
-	    intfc->modified = NO;
-	    nearest_intfc_state(coords,c0,intfc,left_state(newp),NULL,&hs_on);
-	    nearest_intfc_state(coords,c1,intfc,right_state(newp),NULL,&hs_on);
-
-	    if(debugging("line_proj"))
-	    {
-	        print_general_vector("pt=", Coords(crx0->pt), 3, "\n");
-	        print_tri(crx0->tri, intfc); 
-	    }
-	    /*printf("#proj crds %d  %d  %d \n", *index, c0, c1); */
-	    /*print_general_vector("crds= ", crds_crx, 3, "\n"); */
-
-	    crx_list[*nc].hsb = NULL; /*Hyper_surf(crx_surf); */
-	    crx_list[*nc].tri = NULL;
-	    /*physical surf */
-	    crx_list[*nc].lcomp = c0;
-	    crx_list[*nc].ucomp = c1;
-	}
-
-	adjust_face_crossing(Coords(newp),intfc,icrds,dir);
-
-	if(debugging("curve_fix_crx"))
-	{
-	    print_wall_curve_crx("curve_fix", icrds, (int) dir, k, &crx_list[*nc]);
-	    remove_from_debug("curve_fix_crx");
-	}
-
-	crx_list[*nc].crx_num = 0;
-	face_list[*nc] = *index;
-	++(*nc);    /*useless for grid based */
-	++(*index);
-
-	remove_from_debug("line_tri");
+//	struct Table    *T = table_of_interface(intfc);
+//	RECT_GRID       *rgr = &topological_grid(intfc);
+//	size_t 		sizest = size_of_state(intfc);
+//	CRXING		*crx_list, *crx0, *crx;
+//	int		*face_list;
+//	TRI		*tri;
+//	SURFACE		*surf, *crx_surf;
+//	HYPER_SURF	*hs_on;
+//	POINT		*newp;
+//	Locstate  	sl, sr;
+//	double		crds_crx[MAXD], *pt1, *pt2, *coords;
+//	double           *h = rgr->h, tol;
+//	int		i,j,k,l,iv,ie[4], c0, c1, fixed;
+//	int		ix,iy,iz;
+//	int		*gmax = rgr->gmax;
+//	int		nc[1];
+//	boolean		found;
+//
+//	tol = min3(h[0], h[1], h[2])*1.0e-5;
+//	ix = icrds[0];
+//	iy = icrds[1];
+//	iz = icrds[2];
+//
+//	edge_index_of_face(ie,ix,iy,iz,dir,gmax);
+//
+//	/*(1)moving curve: find 2 wall crx and 1 fluid crx on 4 edges of the face. */
+//	/*   fixed curve: find 3 wall crx on 4 edges of the face. */
+//	
+//	j = 0;
+//	l = 0;
+//	for(i=0; i<4; i++)
+//	{
+//	    if(T->seg_crx_count[ie[i]] == 0)
+//	        continue;
+//	    k = T->seg_crx_lists[ie[i]][0];
+//	    crx = &T->crx_store[k];
+//	    
+//	    if(is_wall_surface(Surface_of_hs(crx->hs)))
+//	    {
+//	        /*2 wall crx */
+//	        if(j == 0)
+//	            pt1 = Coords(crx->pt);
+//	        else  if(j == 1)
+//	            pt2 = Coords(crx->pt);
+//	        else  if(j == 2)
+//		{
+//		    print_general_vector("third wall crx", Coords(crx->pt), 3, "\n");
+//		}
+//	        else
+//		{
+//	            printf("ERROR in insert_curve_crossings ");
+//		    printf("4 wall crossings in one face, impossible for grid based.\n");
+//		    clean_up(ERROR);
+//	        }
+//		j++;
+//	    }
+//	    else
+//	    {
+//	        /*1 fluid crx */
+//	        crx0 = crx;
+//		if(l==1)
+//		{
+//		    printf("ERROR in insert_curve_crossings ");
+//		    printf("2 fluid crossings in one face, impossible for grid based.\n");
+//		    
+//		    print_int_vector("icrds=", icrds, 3, "\n");
+//		    printf("dir = %d\n", dir);
+//		    
+//		    print_curve_face_crossings(intfc, icrds, dir);
+//		    clean_up(ERROR);
+//		}
+//		l++;
+//	    }
+//	}
+//	
+//	/*3 wall crxs, must be wall fixed curve case, shoud be inserted before this part */
+//	if(j == 3)
+//	{
+//	    printf("ERROR in insert_curve_crossings, fixed wall crx happens");
+//	    printf(" wall crossings=%d fluid crossings=%d in one face. \n", j, l);
+//	    clean_up(ERROR);
+//	}
+//	/*must be 2 wall crxs, 1 fluid crx case, possible moving curve case */
+//	if(j != 2 && l != 1)
+//	{
+//	    printf("ERROR in insert_curve_crossings, impossible crx ");
+//	    printf("wall crossings=%d fluid crossings=%d in one face. \n", j, l);
+//	    clean_up(ERROR);
+//	}
+//
+//	/*(3) insert curve crx, ref: add_to_crx_list */
+//	k = face_index3d(ix,iy,iz,dir,gmax);
+//	face_list = T->curve_crx_lists[k];
+//	crx_list = T->curve_crx_store + *index;
+//
+//	T->curve_crx_type[k]++;
+//
+//	/*only one curve crx for grid based case */
+//	*nc = 0;
+//
+//	if(debugging("line_tri"))
+//	    found = tst_line_tri_crossing_on_face(crds_crx,&tri,&surf,
+//	        pt1,pt2,icrds,intfc,tol);
+//
+//	found = line_tri_crossing_on_face(crds_crx,&tri,&surf,
+//	    pt1,pt2,icrds,intfc,tol);
+//	
+//	/*printf("#found %d\n", found); */
+//	if(found)
+//	{
+//	    /*pt position */
+//	    newp = crx_list[*nc].pt = Point(crds_crx);
+//	    intfc->modified = NO;
+//	    Index_of_point(newp) = k;
+//	    
+//	    /*printf("#kcrx0  %d  %d\n", *index, crx_list); */
+//	    /*print_general_vector("#curve crds0= ", crds_crx, 3, "\n"); */
+//	    
+//	    interpolate_crx_pt_states_on_tri(intfc,newp,tri,surf);
+//	    crx_list[*nc].hsb = NULL;
+//	    crx_list[*nc].tri = tri;
+//	    /*physical surf */
+//	    crx_list[*nc].lcomp = negative_component(surf);
+//	    crx_list[*nc].ucomp = positive_component(surf);
+//	}
+//	else
+//	{
+//	    /*using the projection of the fluid crx as the curve crx */
+//	    /*ref: fill_missing_crx */
+//	    /*pt position */
+//	    line_point_projection(crds_crx,&iv,Coords(crx0->pt),pt1,pt2,tol);
+//	    newp = crx_list[*nc].pt = Point(crds_crx);
+//	    intfc->modified = NO;
+//	    
+//	    Index_of_point(newp) = k;
+//
+//	    crx_surf = Surface_of_hs(crx0->hs);
+//	    c0 = negative_component(crx_surf);
+//	    c1 = positive_component(crx_surf);
+//	
+//	    /*pt state */
+//	    coords = Coords(newp);
+//	    intfc->modified = NO;
+//	    nearest_intfc_state(coords,c0,intfc,left_state(newp),NULL,&hs_on);
+//	    nearest_intfc_state(coords,c1,intfc,right_state(newp),NULL,&hs_on);
+//
+//	    if(debugging("line_proj"))
+//	    {
+//	        print_general_vector("pt=", Coords(crx0->pt), 3, "\n");
+//	        print_tri(crx0->tri, intfc); 
+//	    }
+//	    /*printf("#proj crds %d  %d  %d \n", *index, c0, c1); */
+//	    /*print_general_vector("crds= ", crds_crx, 3, "\n"); */
+//
+//	    crx_list[*nc].hsb = NULL; /*Hyper_surf(crx_surf); */
+//	    crx_list[*nc].tri = NULL;
+//	    /*physical surf */
+//	    crx_list[*nc].lcomp = c0;
+//	    crx_list[*nc].ucomp = c1;
+//	}
+//
+//	adjust_face_crossing(Coords(newp),intfc,icrds,dir);
+//
+//	if(debugging("curve_fix_crx"))
+//	{
+//	    print_wall_curve_crx("curve_fix", icrds, (int) dir, k, &crx_list[*nc]);
+//	    remove_from_debug("curve_fix_crx");
+//	}
+//
+//	crx_list[*nc].crx_num = 0;
+//	face_list[*nc] = *index;
+//	++(*nc);    /*useless for grid based */
+//	++(*index);
+//
+//	remove_from_debug("line_tri");
 }
 
 

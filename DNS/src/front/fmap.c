@@ -3748,36 +3748,36 @@ EXPORT void FT_ArrayOfSurfPoints(
 	SURFACE *surf,
 	POINT **pts)
 {
-	POINT *p;
-	TRI *tri;
-	int i,n;
-
-	/* reset point index */
-	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		Index_of_point(p) = -1;		
-	    }
-	}		
-	
-	/* points	 */
-	n = 0;
-	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    pts[n++] = p;
-		    Index_of_point(p) = n;		
-		}
-	    }
-	}		
+//	POINT *p;
+//	TRI *tri;
+//	int i,n;
+//
+//	/* reset point index */
+//	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		Index_of_point(p) = -1;		
+//	    }
+//	}		
+//	
+//	/* points	 */
+//	n = 0;
+//	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    pts[n++] = p;
+//		    Index_of_point(p) = n;		
+//		}
+//	    }
+//	}		
 }	/* end FT_ArrayOfSurfPoints */
 
 /***********************************************************************
@@ -3794,37 +3794,37 @@ EXPORT 	int FT_NumOfCurvePoints(CURVE *c)
  ***********************************************************************/
 EXPORT	int FT_NumOfSurfPoints(SURFACE *surf)
 {
-	POINT *p;
-	TRI *tri;
-	int i,n;
-
-	/* reset point index */
-	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		Index_of_point(p) = -1;		
-	    }
-	}		
-	
-	/* points	 */
-	n = 0;
-	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
-			tri = tri->next)
-	{
-	    for(i = 0; i < 3; i++)
-	    {
-	        p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == -1)
-		{
-		    Index_of_point(p) = n++;		
-		}
-	    }
-	}		
-	
-	return n;
+//	POINT *p;
+//	TRI *tri;
+//	int i,n;
+//
+//	/* reset point index */
+//	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		Index_of_point(p) = -1;		
+//	    }
+//	}		
+//	
+//	/* points	 */
+//	n = 0;
+//	for(tri = first_tri(surf); !at_end_of_tri_list(tri,surf); 
+//			tri = tri->next)
+//	{
+//	    for(i = 0; i < 3; i++)
+//	    {
+//	        p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == -1)
+//		{
+//		    Index_of_point(p) = n++;		
+//		}
+//	    }
+//	}		
+//	
+//	return n;
 }	/* end FT_NumOfSurfPoints */
 
 /***********************************************************************

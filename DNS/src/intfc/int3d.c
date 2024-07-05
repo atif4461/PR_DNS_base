@@ -1140,70 +1140,70 @@ LIB_LOCAL void i_fprint_surface(
 	FILE		*file,
 	SURFACE		*s)
 {
-	size_t num_pos_c, num_neg_c;
-	int    num_tri;
-	int    i, num_points;
-	CURVE  **pos_cur,**neg_cur;
-	TRI    *tri;
-	POINT  *p;
-
-	(void) fprintf(file,"\tSurface %llu:\n",(long long unsigned int)surface_number(s));
-	if (s == NULL)
-	{
-	    (void) fprintf(file,"\t\t NULL Surface\n\tEnd of Surface\n\n");
-	    return;
-	}
-	(void) fprintf(file,"\tHypersurface of surface = %llu\n",
-		       (long long unsigned int)hypersurface_number(Hyper_surf(s)));
-	(void) fprintf(file,"\tHypersurface index = %d\n",
-		       Hyper_surf_index(s));
-	(void) fprintf(file,"\tPositive Component = %-4d   "
-			    "Negative Component = %-4d    ",
-		            positive_component(s),negative_component(s));
-	(void) fprintf(file,"%s\n\n",
-		       is_bdry(s) ? "Boundary Surface" : "Interior Surface");
-
-	num_pos_c = Num_pos_curves_of_surface(s);
-	num_neg_c = Num_neg_curves_of_surface(s);
-	pos_cur = s->pos_curves;
-	neg_cur = s->neg_curves;
-
-	(void) fprintf(file,"\t%lu Positively Oriented Bounding Curves : ",
-		       num_pos_c);
-	while (num_pos_c--)
-		(void) fprintf(file,"%llu ",(long long unsigned int)curve_number(*pos_cur++));
-	(void) fprintf(file,"\n");
-	(void) fprintf(file,"\t%lu Negatively Oriented Bounding Curves : ",
-		       num_neg_c);
-	while (num_neg_c--)
-		(void) fprintf(file,"%llu ",(long long unsigned int)curve_number(*neg_cur++));
-	(void) fprintf(file,"\n\n");
-
-	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-	{
-		Index_of_point(Point_of_tri(tri)[0]) =
-		    Index_of_point(Point_of_tri(tri)[1]) =
-		    Index_of_point(Point_of_tri(tri)[2]) = ERROR;
-	}
-	num_points = 0;
-	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-	    	p = Point_of_tri(tri)[i];
-	    	if (Index_of_point(p) == ERROR)
-	    	    Index_of_point(p) = num_points++;
-	    }
-	}
-	(void) fprintf(file,"\t%d Points on Surface\n",num_points);
-
-	num_tri = s->num_tri;
-	(void) fprintf(file,"\t%d Triangles on Surface\n",num_tri);
-	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-	    fprint_triangle_numbers(file,tri);
-
-	user_fprint_surface(file,s);
-	(void) fprintf(file,"\tEnd of Surface\n\n");
+//	size_t num_pos_c, num_neg_c;
+//	int    num_tri;
+//	int    i, num_points;
+//	CURVE  **pos_cur,**neg_cur;
+//	TRI    *tri;
+//	POINT  *p;
+//
+//	(void) fprintf(file,"\tSurface %llu:\n",(long long unsigned int)surface_number(s));
+//	if (s == NULL)
+//	{
+//	    (void) fprintf(file,"\t\t NULL Surface\n\tEnd of Surface\n\n");
+//	    return;
+//	}
+//	(void) fprintf(file,"\tHypersurface of surface = %llu\n",
+//		       (long long unsigned int)hypersurface_number(Hyper_surf(s)));
+//	(void) fprintf(file,"\tHypersurface index = %d\n",
+//		       Hyper_surf_index(s));
+//	(void) fprintf(file,"\tPositive Component = %-4d   "
+//			    "Negative Component = %-4d    ",
+//		            positive_component(s),negative_component(s));
+//	(void) fprintf(file,"%s\n\n",
+//		       is_bdry(s) ? "Boundary Surface" : "Interior Surface");
+//
+//	num_pos_c = Num_pos_curves_of_surface(s);
+//	num_neg_c = Num_neg_curves_of_surface(s);
+//	pos_cur = s->pos_curves;
+//	neg_cur = s->neg_curves;
+//
+//	(void) fprintf(file,"\t%lu Positively Oriented Bounding Curves : ",
+//		       num_pos_c);
+//	while (num_pos_c--)
+//		(void) fprintf(file,"%llu ",(long long unsigned int)curve_number(*pos_cur++));
+//	(void) fprintf(file,"\n");
+//	(void) fprintf(file,"\t%lu Negatively Oriented Bounding Curves : ",
+//		       num_neg_c);
+//	while (num_neg_c--)
+//		(void) fprintf(file,"%llu ",(long long unsigned int)curve_number(*neg_cur++));
+//	(void) fprintf(file,"\n\n");
+//
+//	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//	{
+//		Index_of_point(Point_of_tri(tri)[0]) =
+//		    Index_of_point(Point_of_tri(tri)[1]) =
+//		    Index_of_point(Point_of_tri(tri)[2]) = ERROR;
+//	}
+//	num_points = 0;
+//	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//	    	p = Point_of_tri(tri)[i];
+//	    	if (Index_of_point(p) == ERROR)
+//	    	    Index_of_point(p) = num_points++;
+//	    }
+//	}
+//	(void) fprintf(file,"\t%d Points on Surface\n",num_points);
+//
+//	num_tri = s->num_tri;
+//	(void) fprintf(file,"\t%d Triangles on Surface\n",num_tri);
+//	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//	    fprint_triangle_numbers(file,tri);
+//
+//	user_fprint_surface(file,s);
+//	(void) fprintf(file,"\tEnd of Surface\n\n");
 }		/*end i_fprint_surface*/
 
 /*
@@ -1227,274 +1227,274 @@ LIB_LOCAL SURFACE *read_print_surface(
 	INTERFACE_ADDRESSES *iaddr,
 	boolean                overlay)
 {
-	FILE		*file = io_type->file;
-	COMPONENT	pcomp = 0, ncomp = 0;
-	CURVE		**newc;
-	CURVE		**pos_curves, **neg_curves;
-	POINT		**new_pts;
+//	FILE		*file = io_type->file;
+//	COMPONENT	pcomp = 0, ncomp = 0;
+//	CURVE		**newc;
+//	CURVE		**pos_curves, **neg_curves;
+//	POINT		**new_pts;
 	SURFACE		*s;
-	TRI		**new_tris, *tri;
-	int		j, k, n_pos_curves, n_neg_curves, ncurves, ntris;
-	ORIENTATION	orient;
-	int		npts;
-	uint64_t	old_surf, old_curve;
-	size_t		size_tri;
-	int		indx[3],hs_index;
-	char		bdry_string[20];
-	char		indx_str[3][20];
-	int 		status;
-
-	debug_print("restart","Entered read_print_surface\n");
-
-	ncurves = iaddr->num_curves;
-	if (ncurves != size_of_pointers(intfc->curves))
-	{
-	    screen("ERROR in read_print_surface(), "
-	    	   "inconsistent interface curve list\n");
-	    clean_up(ERROR);
-	    debug_print("restart","Left read_print_surface\n");
-	    return NULL;
-	}
-
-		/* Read Components and Boundary Flag: */
-
-	(void) fgetstring(file,"Surface");
-	status = fscanf(file,"%llu:",(long long unsigned int *)(&old_surf));
-	iaddr->surfaces[s_index] = old_surf;
-	(void) fgetstring(file,"Hypersurface index =");
-	status =  fscanf(file,"%d:",&hs_index);
-	(void) fgetstring(file,"Positive");
-	status = fscanf(file,"%*s %*s %d %*s %*s %*s %d %s %*s",
-		      &pcomp,&ncomp,bdry_string);
-
-		/* Determine the CURVES which bound it: */
-
-	status = fscanf(file,"%d %*s %*s %*s %*s %*s",&n_pos_curves);
-	iaddr->num_pcurves[s_index] = n_pos_curves;
-	uni_array(&pos_curves,n_pos_curves+1,sizeof(CURVE *));
-	uni_array(iaddr->pcurves+s_index,n_pos_curves,sizeof(uint64_t));
-	for (j = 0; j < n_pos_curves; ++j)
-	{
-	    status = fscanf(file,"%llu",(long long unsigned int *)(&old_curve));
-	    iaddr->pcurves[s_index][j] = old_curve;
-	    for (k = 0; k < ncurves; ++k)
-	    	if (old_curve == iaddr->curves[k])
-		    break;
-	    if (k == ncurves)
-	    {
-	    	screen("ERROR in read_print_surface(), "
-	    	       "inconsistent pos curve list\n");
-	    	clean_up(ERROR);
-	        debug_print("restart","Left read_print_surface\n");
-	    	return NULL;
-	    }
-	    pos_curves[j] = intfc->curves[k];
-	}
-	pos_curves[n_pos_curves] = NULL;
-	status = fscanf(file,"%d %*s %*s %*s %*s %*s",&n_neg_curves);
-	iaddr->num_ncurves[s_index] = n_neg_curves;
-	uni_array(&neg_curves,n_neg_curves+1,sizeof(CURVE *));
-	uni_array(iaddr->ncurves+s_index,n_neg_curves,sizeof(uint64_t));
-	for (j = 0; j < n_neg_curves; ++j)
-	{
-	    status = fscanf(file,"%llu",(long long unsigned int *)(&old_curve));
-	    iaddr->ncurves[s_index][j] = old_curve;
-	    for (k = 0; k < ncurves; ++k)
-	    	if (old_curve == iaddr->curves[k])
-		    break;
-	    if (k == ncurves)
-	    {
-	    	screen("ERROR in read_print_surface(), "
-	    	       "inconsistent neg curve list\n");
-	    	clean_up(ERROR);
-	        debug_print("restart","Left read_print_surface\n");
-	    	return NULL;
-	    }
-	    neg_curves[j] = intfc->curves[k];
-	}
-	neg_curves[n_neg_curves] = NULL;
-
-	s = make_surface(ncomp,pcomp,neg_curves,pos_curves);
-	Hyper_surf_index(s) = hs_index;
-	if (strcmp(bdry_string,"Boundary") == 0)
-	    set_is_bdry(s);
-	else
-	    set_not_bdry(s);
-	size_tri = i_user_interface(s->interface).size_tri;
-
-			/* Read Triangles */
-
-	status = fscanf(file,"%d %*s %*s %*s",&npts);
-	status = fscanf(file,"%d %*s %*s %*s",&ntris);
-	if (ntris == 0)
-	{
-	    (void) printf("WARNING in read_print_surface(), "
-			  "no tris on surface\n");
-	    user_read_print_surface(s,io_type,overlay);
-	    (void) fgetstring(file,"End of Surface");
-	    debug_print("restart","Left read_print_surface\n");
-	    return s;
-	}
-
-	uni_array(&new_pts,npts,sizeof(POINT *));
-	for (j = 0; j < npts; ++j) 
-	{
-	    new_pts[j] = Point(NULL);
-	    Index_of_point(new_pts[j]) = j;
-	}
-
-	uni_array(&new_tris,ntris,sizeof(TRI *));
-	for (j = 0; j < ntris; ++j)
-	    new_tris[j] = (TRI *)store(size_tri);
-
-	new_tris[0]->prev = head_of_tri_list(s);
-	new_tris[0]->next = tail_of_tri_list(s);
-	first_tri(s) = last_tri(s) = new_tris[0];
-	s->num_tri = 1;
-	new_tris[0]->surf = s;
-
-	for (j = 1; j < ntris; ++j)
-	    insert_tri_at_tail_of_list(new_tris[j],s);
-
-	for (j = 0; j < ntris; ++j)
-	{
-	    tri = new_tris[j];
-	    status = fscanf(file,"%*s %*d %*s %*s %s %*s %s %*s %s %*s %d\n",
-			       indx_str[0],indx_str[1],indx_str[2],
-			       &Boundary_tri(tri));
-
-	    for (k = 0; k < 3; ++k)
-	    {
-	        if (strcmp(indx_str[k],"NULL") == 0)
-	    	    Tri_on_side(tri,k) = NULL;
-		else
-		{
-		    (void) sscanf(indx_str[k],"%d",&Index_on_side(tri,k));
-		    if (!is_side_bdry(tri,k))
-			Tri_on_side(tri,k) = new_tris[Index_on_side(tri,k)];
-		    else
-			Bond_tri_on_side(tri,k) = NULL;
-		}
-	    }
-	    (void) fgetstring(file,"Original side length");
-	    status = fscanf(file,"%lf %lf %lf",tri->side_length0,
-				tri->side_length0+1,tri->side_length0+2);
-
-	    (void) fgetstring(file,"Points - Indices");
-	    status = fscanf(file,"%d %d %d",indx,indx+1,indx+2);
-	    for (k = 0; k < 3; ++k)
-	    	Point_of_tri(tri)[k] = new_pts[indx[k]];
-	    (void) fgetstring(file,"Positions");
-	    if (getc(file) != '\f')	/* NOBINARY */
-	    {
-	        static const char *fmt = 
-				"%lf %lf %lf %*s %lf %lf %lf %*s %lf %lf %lf";
-	        status = fscanf(file,fmt,Coords(Point_of_tri(tri)[0]),
-				       Coords(Point_of_tri(tri)[0])+1,
-	    			       Coords(Point_of_tri(tri)[0])+2,
-				       Coords(Point_of_tri(tri)[1]),
-				       Coords(Point_of_tri(tri)[1])+1,
-				       Coords(Point_of_tri(tri)[1])+2,
-				       Coords(Point_of_tri(tri)[2]),
-				       Coords(Point_of_tri(tri)[2])+1,
-				       Coords(Point_of_tri(tri)[2])+2);
-	    }
-	    else
-	    {
-	        (void) getc(file);
-		(void) read_binary_real_array(Coords(Point_of_tri(tri)[0]),3,
-		                              io_type);
-		(void) read_binary_real_array(Coords(Point_of_tri(tri)[1]),3,
-		                              io_type);
-		(void) read_binary_real_array(Coords(Point_of_tri(tri)[2]),
-		                              3,io_type);
-	    }
-	    Tri_index(tri) = j;	
-	    set_normal_of_tri(tri);
-	}
-
-		/* Set Boundary Bonds of Tris */
-
-	orient = POSITIVE_ORIENTATION;
-	for (newc = s->pos_curves; ; ++newc)
-	{
-	    BOND *nbond;
-	    int  ibond, itri;
-
-	    /* Test both pos and neg oriented curves */
-
-	    if (!(newc && *newc))
-	    {
-	    	if (orient == POSITIVE_ORIENTATION)
-	    	{
-	    	    newc = s->neg_curves;
-	    	    orient = NEGATIVE_ORIENTATION;
-	    	    if (newc == NULL)
-	    	        break;
-	    	    newc--;
-	    	    continue;
-	    	}
-	    	else
-		    break;
-	    }
-
-	    /* Reject second occurence of same curve as both pcomp and ncomp */
-
-	    if (orient == NEGATIVE_ORIENTATION)
-	    {
-		if (pointer_is_in_array(*newc,s->pos_curves))
-		    continue;
-	    }
-	    if (!index_of_pointer_in_array(*newc,intfc->curves,&j))
-	    {
-	    	screen("ERROR in read_print_surface(), "
-	    	       "inconsistent curve list\n");
-	    	clean_up(ERROR);
-	        debug_print("restart","Left read_print_surface\n");
-	    	return NULL;
-	    }
-	    
-	    /**************IMPORTANT NOTE*****************************/
-	    /*
-	    *	The construction below makes the implicit assumption
-	    *	that the triangles in the Btris(bond) list along a given
-	    *	curve are parallel in the sense the for any pair of
-	    *	bonds b1 and b2 on a curve c,  and any index i,
-	    *	Btris(b1)[i] and Btris(b2)[i] lie on the same surface
-	    *	with the same orientation with respect to c.  The use of
-	    *	this assumption allows the correspondence code to check
-	    *	the surfaces of only the first bond on c.
-	    */
-
-	    for (k = 0; k < iaddr->num_surfs[j]; ++k)
-	    {
-	    	if (old_surf != iaddr->surfs[j][k])
-		    continue;
-
-	    	ibond = 0; nbond = (*newc)->first;
-	    	for (; nbond != NULL; nbond = nbond->next, ++ibond)
-	    	{
-	    	    itri = iaddr->tris[j][ibond][k];
-	    	    tri = new_tris[itri];
-
-	    	    /*
-	    	     * Reset the point pointer for a bond
-	    	     * to the pointers for its node.
-	    	     * Reset point pointers for a tri to
-	    	     * the pointers for its bond.
-	    	     * Otherwise, bonds and nodes will be
-	    	      * reset by following surfaces.
-	    	    */
-
-		    reset_tri_points_at_bond(tri,nbond);
-	    	    (void) link_tri_to_bond(NULL,tri,s,nbond,*newc);
-	    	}
-	    }
-	}
-	free_these(4,new_tris,pos_curves,neg_curves,new_pts);
-	user_read_print_surface(s,io_type,overlay);
-	(void) fgetstring(file,"End of Surface");
-	debug_print("restart","Left read_print_surface\n");
+//	TRI		**new_tris, *tri;
+//	int		j, k, n_pos_curves, n_neg_curves, ncurves, ntris;
+//	ORIENTATION	orient;
+//	int		npts;
+//	uint64_t	old_surf, old_curve;
+//	size_t		size_tri;
+//	int		indx[3],hs_index;
+//	char		bdry_string[20];
+//	char		indx_str[3][20];
+//	int 		status;
+//
+//	debug_print("restart","Entered read_print_surface\n");
+//
+//	ncurves = iaddr->num_curves;
+//	if (ncurves != size_of_pointers(intfc->curves))
+//	{
+//	    screen("ERROR in read_print_surface(), "
+//	    	   "inconsistent interface curve list\n");
+//	    clean_up(ERROR);
+//	    debug_print("restart","Left read_print_surface\n");
+//	    return NULL;
+//	}
+//
+//		/* Read Components and Boundary Flag: */
+//
+//	(void) fgetstring(file,"Surface");
+//	status = fscanf(file,"%llu:",(long long unsigned int *)(&old_surf));
+//	iaddr->surfaces[s_index] = old_surf;
+//	(void) fgetstring(file,"Hypersurface index =");
+//	status =  fscanf(file,"%d:",&hs_index);
+//	(void) fgetstring(file,"Positive");
+//	status = fscanf(file,"%*s %*s %d %*s %*s %*s %d %s %*s",
+//		      &pcomp,&ncomp,bdry_string);
+//
+//		/* Determine the CURVES which bound it: */
+//
+//	status = fscanf(file,"%d %*s %*s %*s %*s %*s",&n_pos_curves);
+//	iaddr->num_pcurves[s_index] = n_pos_curves;
+//	uni_array(&pos_curves,n_pos_curves+1,sizeof(CURVE *));
+//	uni_array(iaddr->pcurves+s_index,n_pos_curves,sizeof(uint64_t));
+//	for (j = 0; j < n_pos_curves; ++j)
+//	{
+//	    status = fscanf(file,"%llu",(long long unsigned int *)(&old_curve));
+//	    iaddr->pcurves[s_index][j] = old_curve;
+//	    for (k = 0; k < ncurves; ++k)
+//	    	if (old_curve == iaddr->curves[k])
+//		    break;
+//	    if (k == ncurves)
+//	    {
+//	    	screen("ERROR in read_print_surface(), "
+//	    	       "inconsistent pos curve list\n");
+//	    	clean_up(ERROR);
+//	        debug_print("restart","Left read_print_surface\n");
+//	    	return NULL;
+//	    }
+//	    pos_curves[j] = intfc->curves[k];
+//	}
+//	pos_curves[n_pos_curves] = NULL;
+//	status = fscanf(file,"%d %*s %*s %*s %*s %*s",&n_neg_curves);
+//	iaddr->num_ncurves[s_index] = n_neg_curves;
+//	uni_array(&neg_curves,n_neg_curves+1,sizeof(CURVE *));
+//	uni_array(iaddr->ncurves+s_index,n_neg_curves,sizeof(uint64_t));
+//	for (j = 0; j < n_neg_curves; ++j)
+//	{
+//	    status = fscanf(file,"%llu",(long long unsigned int *)(&old_curve));
+//	    iaddr->ncurves[s_index][j] = old_curve;
+//	    for (k = 0; k < ncurves; ++k)
+//	    	if (old_curve == iaddr->curves[k])
+//		    break;
+//	    if (k == ncurves)
+//	    {
+//	    	screen("ERROR in read_print_surface(), "
+//	    	       "inconsistent neg curve list\n");
+//	    	clean_up(ERROR);
+//	        debug_print("restart","Left read_print_surface\n");
+//	    	return NULL;
+//	    }
+//	    neg_curves[j] = intfc->curves[k];
+//	}
+//	neg_curves[n_neg_curves] = NULL;
+//
+//	s = make_surface(ncomp,pcomp,neg_curves,pos_curves);
+//	Hyper_surf_index(s) = hs_index;
+//	if (strcmp(bdry_string,"Boundary") == 0)
+//	    set_is_bdry(s);
+//	else
+//	    set_not_bdry(s);
+//	size_tri = i_user_interface(s->interface).size_tri;
+//
+//			/* Read Triangles */
+//
+//	status = fscanf(file,"%d %*s %*s %*s",&npts);
+//	status = fscanf(file,"%d %*s %*s %*s",&ntris);
+//	if (ntris == 0)
+//	{
+//	    (void) printf("WARNING in read_print_surface(), "
+//			  "no tris on surface\n");
+//	    user_read_print_surface(s,io_type,overlay);
+//	    (void) fgetstring(file,"End of Surface");
+//	    debug_print("restart","Left read_print_surface\n");
+//	    return s;
+//	}
+//
+//	uni_array(&new_pts,npts,sizeof(POINT *));
+//	for (j = 0; j < npts; ++j) 
+//	{
+//	    new_pts[j] = Point(NULL);
+//	    Index_of_point(new_pts[j]) = j;
+//	}
+//
+//	uni_array(&new_tris,ntris,sizeof(TRI *));
+//	for (j = 0; j < ntris; ++j)
+//	    new_tris[j] = (TRI *)store(size_tri);
+//
+//	new_tris[0]->prev = head_of_tri_list(s);
+//	new_tris[0]->next = tail_of_tri_list(s);
+//	first_tri(s) = last_tri(s) = new_tris[0];
+//	s->num_tri = 1;
+//	new_tris[0]->surf = s;
+//
+//	for (j = 1; j < ntris; ++j)
+//	    insert_tri_at_tail_of_list(new_tris[j],s);
+//
+//	for (j = 0; j < ntris; ++j)
+//	{
+//	    tri = new_tris[j];
+//	    status = fscanf(file,"%*s %*d %*s %*s %s %*s %s %*s %s %*s %d\n",
+//			       indx_str[0],indx_str[1],indx_str[2],
+//			       &Boundary_tri(tri));
+//
+//	    for (k = 0; k < 3; ++k)
+//	    {
+//	        if (strcmp(indx_str[k],"NULL") == 0)
+//	    	    Tri_on_side(tri,k) = NULL;
+//		else
+//		{
+//		    (void) sscanf(indx_str[k],"%d",&Index_on_side(tri,k));
+//		    if (!is_side_bdry(tri,k))
+//			Tri_on_side(tri,k) = new_tris[Index_on_side(tri,k)];
+//		    else
+//			Bond_tri_on_side(tri,k) = NULL;
+//		}
+//	    }
+//	    (void) fgetstring(file,"Original side length");
+//	    status = fscanf(file,"%lf %lf %lf",tri->side_length0,
+//				tri->side_length0+1,tri->side_length0+2);
+//
+//	    (void) fgetstring(file,"Points - Indices");
+//	    status = fscanf(file,"%d %d %d",indx,indx+1,indx+2);
+//	    for (k = 0; k < 3; ++k)
+//	    	Point_of_tri(tri)[k] = new_pts[indx[k]];
+//	    (void) fgetstring(file,"Positions");
+//	    if (getc(file) != '\f')	/* NOBINARY */
+//	    {
+//	        static const char *fmt = 
+//				"%lf %lf %lf %*s %lf %lf %lf %*s %lf %lf %lf";
+//	        status = fscanf(file,fmt,Coords(Point_of_tri(tri)[0]),
+//				       Coords(Point_of_tri(tri)[0])+1,
+//	    			       Coords(Point_of_tri(tri)[0])+2,
+//				       Coords(Point_of_tri(tri)[1]),
+//				       Coords(Point_of_tri(tri)[1])+1,
+//				       Coords(Point_of_tri(tri)[1])+2,
+//				       Coords(Point_of_tri(tri)[2]),
+//				       Coords(Point_of_tri(tri)[2])+1,
+//				       Coords(Point_of_tri(tri)[2])+2);
+//	    }
+//	    else
+//	    {
+//	        (void) getc(file);
+//		(void) read_binary_real_array(Coords(Point_of_tri(tri)[0]),3,
+//		                              io_type);
+//		(void) read_binary_real_array(Coords(Point_of_tri(tri)[1]),3,
+//		                              io_type);
+//		(void) read_binary_real_array(Coords(Point_of_tri(tri)[2]),
+//		                              3,io_type);
+//	    }
+//	    Tri_index(tri) = j;	
+//	    set_normal_of_tri(tri);
+//	}
+//
+//		/* Set Boundary Bonds of Tris */
+//
+//	orient = POSITIVE_ORIENTATION;
+//	for (newc = s->pos_curves; ; ++newc)
+//	{
+//	    BOND *nbond;
+//	    int  ibond, itri;
+//
+//	    /* Test both pos and neg oriented curves */
+//
+//	    if (!(newc && *newc))
+//	    {
+//	    	if (orient == POSITIVE_ORIENTATION)
+//	    	{
+//	    	    newc = s->neg_curves;
+//	    	    orient = NEGATIVE_ORIENTATION;
+//	    	    if (newc == NULL)
+//	    	        break;
+//	    	    newc--;
+//	    	    continue;
+//	    	}
+//	    	else
+//		    break;
+//	    }
+//
+//	    /* Reject second occurence of same curve as both pcomp and ncomp */
+//
+//	    if (orient == NEGATIVE_ORIENTATION)
+//	    {
+//		if (pointer_is_in_array(*newc,s->pos_curves))
+//		    continue;
+//	    }
+//	    if (!index_of_pointer_in_array(*newc,intfc->curves,&j))
+//	    {
+//	    	screen("ERROR in read_print_surface(), "
+//	    	       "inconsistent curve list\n");
+//	    	clean_up(ERROR);
+//	        debug_print("restart","Left read_print_surface\n");
+//	    	return NULL;
+//	    }
+//	    
+//	    /**************IMPORTANT NOTE*****************************/
+//	    /*
+//	    *	The construction below makes the implicit assumption
+//	    *	that the triangles in the Btris(bond) list along a given
+//	    *	curve are parallel in the sense the for any pair of
+//	    *	bonds b1 and b2 on a curve c,  and any index i,
+//	    *	Btris(b1)[i] and Btris(b2)[i] lie on the same surface
+//	    *	with the same orientation with respect to c.  The use of
+//	    *	this assumption allows the correspondence code to check
+//	    *	the surfaces of only the first bond on c.
+//	    */
+//
+//	    for (k = 0; k < iaddr->num_surfs[j]; ++k)
+//	    {
+//	    	if (old_surf != iaddr->surfs[j][k])
+//		    continue;
+//
+//	    	ibond = 0; nbond = (*newc)->first;
+//	    	for (; nbond != NULL; nbond = nbond->next, ++ibond)
+//	    	{
+//	    	    itri = iaddr->tris[j][ibond][k];
+//	    	    tri = new_tris[itri];
+//
+//	    	    /*
+//	    	     * Reset the point pointer for a bond
+//	    	     * to the pointers for its node.
+//	    	     * Reset point pointers for a tri to
+//	    	     * the pointers for its bond.
+//	    	     * Otherwise, bonds and nodes will be
+//	    	      * reset by following surfaces.
+//	    	    */
+//
+//		    reset_tri_points_at_bond(tri,nbond);
+//	    	    (void) link_tri_to_bond(NULL,tri,s,nbond,*newc);
+//	    	}
+//	    }
+//	}
+//	free_these(4,new_tris,pos_curves,neg_curves,new_pts);
+//	user_read_print_surface(s,io_type,overlay);
+//	(void) fgetstring(file,"End of Surface");
+//	debug_print("restart","Left read_print_surface\n");
 	return s;
 }		/*end read_print_surface*/
 
@@ -1780,68 +1780,68 @@ LOCAL void fprint_triangle_numbers(
 	FILE		*file,
 	TRI		*tri)
 {
-	INTERFACE  *intfc = current_interface();
-	POINT	   *p;
-	int	   i, side;
-	static const char *sideno[] = {"01", "12", "20"};
-
-	if (tri == NULL)
-	{
-	    (void) fprintf(file,"NULL Triangle\n"); 
-	    return;
-	}
-	(void) fprintf(file,"\tTri %d Borders",Tri_index(tri));
-	for (side = 0; side < 3; ++side)
-	{
-	    if (is_side_bdry(tri,side))
-	    {
-		BOND_TRI *bt = Bond_tri_on_side(tri,side);
-		if (bt == NULL)
-		    (void) fprintf(file," Bond%s NULL",sideno[side]);
-		else
-	    	    (void) fprintf(file," Bond%s %llu",sideno[side],
-				    (long long unsigned int)bond_number(bt->bond,intfc));
-	    }
-	    else if (Tri_on_side(tri,side) == NULL)
-		(void) fprintf(file," Tri%s NULL",sideno[side]);
-	    else
-		(void) fprintf(file," Tri%s %d",sideno[side],
-			       Tri_index(Tri_on_side(tri,side)));
-
-	}
-	(void) fprintf(file," Boundary %d\n",Boundary_tri(tri));
-	/* For elastic surface */
-	(void) fprintf(file,"\tOriginal side length %-"FFMT" %-"FFMT" %-"FFMT"",
-			tri->side_length0[0],tri->side_length0[1],
-			tri->side_length0[2]);
-	(void) fprintf(file,"\n");
-
-	(void) fprintf(file,"\tPoints - Indices %-4d %-4d %-4d Positions",
-		       Index_of_point(Point_of_tri(tri)[0]),
-		       Index_of_point(Point_of_tri(tri)[1]),
-		       Index_of_point(Point_of_tri(tri)[2]));
-	if (is_binary_output() == YES)
-	{
-	    (void) fprintf(file,"\f%c",9);
-	    for (i = 0; i < 3; ++i)
-	    {
-	    	p = Point_of_tri(tri)[i];
-	    	(void) fwrite((const void *) Coords(p),sizeof(double),3,file);
-	    }
-	}
-	else
-	{
-	    static const char *fmt[] = {	" %-"FFMT" %-"FFMT" %-"FFMT" ->",
-					        " %-"FFMT" %-"FFMT" %-"FFMT" ->",
-					        " %-"FFMT" %-"FFMT" %-"FFMT};
-	    for (i = 0; i < 3; ++i)
-	    {
-	    	p = Point_of_tri(tri)[i];
-	    	(void) fprintf(file,fmt[i],
-			       Coords(p)[0],Coords(p)[1],Coords(p)[2]);
-	    }
-	}
-	(void) fprintf(file,"\n");
+//	INTERFACE  *intfc = current_interface();
+//	POINT	   *p;
+//	int	   i, side;
+//	static const char *sideno[] = {"01", "12", "20"};
+//
+//	if (tri == NULL)
+//	{
+//	    (void) fprintf(file,"NULL Triangle\n"); 
+//	    return;
+//	}
+//	(void) fprintf(file,"\tTri %d Borders",Tri_index(tri));
+//	for (side = 0; side < 3; ++side)
+//	{
+//	    if (is_side_bdry(tri,side))
+//	    {
+//		BOND_TRI *bt = Bond_tri_on_side(tri,side);
+//		if (bt == NULL)
+//		    (void) fprintf(file," Bond%s NULL",sideno[side]);
+//		else
+//	    	    (void) fprintf(file," Bond%s %llu",sideno[side],
+//				    (long long unsigned int)bond_number(bt->bond,intfc));
+//	    }
+//	    else if (Tri_on_side(tri,side) == NULL)
+//		(void) fprintf(file," Tri%s NULL",sideno[side]);
+//	    else
+//		(void) fprintf(file," Tri%s %d",sideno[side],
+//			       Tri_index(Tri_on_side(tri,side)));
+//
+//	}
+//	(void) fprintf(file," Boundary %d\n",Boundary_tri(tri));
+//	/* For elastic surface */
+//	(void) fprintf(file,"\tOriginal side length %-"FFMT" %-"FFMT" %-"FFMT"",
+//			tri->side_length0[0],tri->side_length0[1],
+//			tri->side_length0[2]);
+//	(void) fprintf(file,"\n");
+//
+//	(void) fprintf(file,"\tPoints - Indices %-4d %-4d %-4d Positions",
+//		       Index_of_point(Point_of_tri(tri)[0]),
+//		       Index_of_point(Point_of_tri(tri)[1]),
+//		       Index_of_point(Point_of_tri(tri)[2]));
+//	if (is_binary_output() == YES)
+//	{
+//	    (void) fprintf(file,"\f%c",9);
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//	    	p = Point_of_tri(tri)[i];
+//	    	(void) fwrite((const void *) Coords(p),sizeof(double),3,file);
+//	    }
+//	}
+//	else
+//	{
+//	    static const char *fmt[] = {	" %-"FFMT" %-"FFMT" %-"FFMT" ->",
+//					        " %-"FFMT" %-"FFMT" %-"FFMT" ->",
+//					        " %-"FFMT" %-"FFMT" %-"FFMT};
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//	    	p = Point_of_tri(tri)[i];
+//	    	(void) fprintf(file,fmt[i],
+//			       Coords(p)[0],Coords(p)[1],Coords(p)[2]);
+//	    }
+//	}
+//	(void) fprintf(file,"\n");
 }		/*end fprint_triangle_numbers*/
 
 LIB_LOCAL void print_tris_on_surface(

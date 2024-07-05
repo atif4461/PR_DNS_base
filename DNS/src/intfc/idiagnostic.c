@@ -59,26 +59,26 @@ EXPORT  int 	points_on_surface(
 	SURFACE 	*s)
 {
   	int		i, num_points;
-	TRI		*tri;
-	POINT		*p;
-
-	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-	{
-	    Index_of_point(Point_of_tri(tri)[0]) = Index_of_point(Point_of_tri(tri)[1]) =
-	        Index_of_point(Point_of_tri(tri)[2]) = ERROR;
-	}
-	num_points = 0;
-	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (Index_of_point(p) == ERROR)
-	        {
-		    Index_of_point(p) = num_points++;
-		}
-	    }
-	}
+//	TRI		*tri;
+//	POINT		*p;
+//
+//	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//	{
+//	    Index_of_point(Point_of_tri(tri)[0]) = Index_of_point(Point_of_tri(tri)[1]) =
+//	        Index_of_point(Point_of_tri(tri)[2]) = ERROR;
+//	}
+//	num_points = 0;
+//	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (Index_of_point(p) == ERROR)
+//	        {
+//		    Index_of_point(p) = num_points++;
+//		}
+//	    }
+//	}
 	return num_points;
 } 		/*end points_on_surface*/
 
