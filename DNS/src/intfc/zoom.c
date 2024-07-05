@@ -75,7 +75,7 @@ EXPORT INTERFACE *i_zoom_interface(
 	cur_intfc = current_interface();
 	if ((zoom_intfc = copy_interface(given_intfc)) == NULL)
 	{
-		Error(ERROR,"Unable to copy interface.");
+		Error_prdns(ERROR,"Unable to copy interface.");
 		clean_up(ERROR);
 	}
 
@@ -91,7 +91,7 @@ EXPORT INTERFACE *i_zoom_interface(
 		static	double** M = NULL;
 		
 		if (M == NULL)
-			bi_array(&M,MAXD,MAXD,FLOAT);
+			bi_array(&M,MAXD,MAXD,sizeof(double));
 
 		Qi = M;
 		for (i = 0; i < dim; i++)
@@ -100,7 +100,7 @@ EXPORT INTERFACE *i_zoom_interface(
 	}
 
 	if (pc == NULL)
-		bi_array(&pc,MAXNCORNERS,MAXD,FLOAT);
+		bi_array(&pc,MAXNCORNERS,MAXD,sizeof(double));
 
 	calculate_box(L,U,pc,Q,Qi,dim);
 
@@ -150,13 +150,13 @@ EXPORT	void rotate_and_zoom_rect_grid(
 	static double **pc = NULL;
 
 	if (pc == NULL)
-	    bi_array(&pc,MAXNCORNERS,MAXD,FLOAT);
+	    bi_array(&pc,MAXNCORNERS,MAXD,sizeof(double));
 	if (Q != NULL)
 	{	
 	    static double** M = NULL;
 		
 	    if (M == NULL)
-	    	bi_array(&M,MAXD,MAXD,FLOAT);
+	    	bi_array(&M,MAXD,MAXD,sizeof(double));
 
 	    Qi = M;
 	    for (i = 0; i < dim; i++)

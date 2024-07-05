@@ -1682,7 +1682,7 @@ extern void vtk_plot_scatter(Front* front)
         fprintf(file,"ASCII\n");
 
 	fprintf(file,"DATASET UNSTRUCTURED_GRID\n");
-	fprintf(file,"POINTS %d FLOAT\n",n);
+	fprintf(file,"POINTS %d sizeof(double)\n",n);
 
         for (i = 0; i < eqn_params->num_drops; i++)
         {
@@ -1695,7 +1695,7 @@ extern void vtk_plot_scatter(Front* front)
                 fprintf(file,"%f %f %f\n",coords[0],coords[1],coords[2]);
         }
 	fprintf(file,"POINT_DATA %d\n",n);
-	fprintf(file,"SCALARS radius FLOAT\n");
+	fprintf(file,"SCALARS radius sizeof(double)\n");
 	fprintf(file,"LOOKUP_TABLE default\n");
 	for (i = 0; i < eqn_params->num_drops; i++)
         {
@@ -1747,7 +1747,7 @@ extern void vtk_plot_sample_traj(Front* front)
         fprintf(file,"ASCII\n");
 
 	fprintf(file,"DATASET UNSTRUCTURED_GRID\n");
-	fprintf(file,"POINTS %d FLOAT\n",step+1);
+	fprintf(file,"POINTS %d sizeof(double)\n",step+1);
 
 	for (i = 0; i < step+1; i++)
 	{
@@ -1994,12 +1994,12 @@ extern double* ComputePDF(
 	    max_bin_num = num_bins;
 	    if (PDF != NULL)
 	       free_these(1,PDF);
-	    FT_VectorMemoryAlloc((POINTER*)&PDF,num_bins,FLOAT);
+	    FT_VectorMemoryAlloc((POINTER*)&PDF,num_bins,sizeof(double));
 	}
 	else if(num_bins == 0)
 	{
 	    if (PDF == NULL)
-	        FT_VectorMemoryAlloc((POINTER*)&PDF,1,FLOAT);
+	        FT_VectorMemoryAlloc((POINTER*)&PDF,1,sizeof(double));
 	    PDF[0] = 1.0;
 	    num_bins = 1;
 	    return PDF;

@@ -533,7 +533,7 @@ EXPORT int comps_consistent_at_node(
 	    uni_array(&On.nc,On.num_c,sizeof(CURVE *));
 	    uni_array(&On.nopp,On.num_c,sizeof(NODE *));
 	    uni_array(&On.pt,On.num_c,sizeof(POINT *));
-	    uni_array(&On.ang,On.num_c,FLOAT);
+	    uni_array(&On.ang,On.num_c,sizeof(double));
 	    uni_array(&On.orient,On.num_c,INT);
 	    alloc_num_c = On.num_c;
 	}

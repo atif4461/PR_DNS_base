@@ -123,7 +123,7 @@ LOCAL	Front *f_copy_front(
 {
 	Front		*newfr;
 
-	scalar(&newfr,sizeof(Front));
+	scalar_prdns(&newfr,sizeof(Front));
 	copy_into_front(newfr,fr);
 	return newfr;
 }		/*end f_copy_front*/
@@ -343,7 +343,7 @@ EXPORT	MAX_FRONT_SPEED	*f_alloc_MaxFrontSpeed(
 	if (mxsp != NULL)
 	    return mxsp;
 
-	scalar(&mxsp,sizeof(MAX_FRONT_SPEED));
+	scalar_prdns(&mxsp,sizeof(MAX_FRONT_SPEED));
 
 	mxsp->_sizest = sizest;
 	if (mxsp->_sizest > 0)
@@ -351,7 +351,7 @@ EXPORT	MAX_FRONT_SPEED	*f_alloc_MaxFrontSpeed(
 	    bi_array(&buf,MAXD+1,1,mxsp->_sizest);
 	    mxsp->_mxspst = (Locstate*)buf;
 	}
-	bi_array(&mxsp->_coords,MAXD+1,MAXD,FLOAT);
+	bi_array(&mxsp->_coords,MAXD+1,MAXD,sizeof(double));
 	for (i = 0; i <= MAXD; ++i)
 	{
 	    if (mxsp->_sizest > 0)
@@ -553,7 +553,7 @@ EXPORT	Tan_stencil *alloc_tan_stencil(
 	size = ls_offset + 2*npts*sizeof(Locstate);
 	rs_offset = ls_offset + npts*sizeof(Locstate);
 
-	scalar(&store,size);
+	scalar_prdns(&store,size);
 	sten = (Tan_stencil*)store;
 	sten->hsstore = (HYPER_SURF**)(store + hs_offset);
 	sten->hsestore = (HYPER_SURF_ELEMENT**)(store + hse_offset);
@@ -1275,17 +1275,17 @@ EXPORT	double	f_mean_curvature_at_point3d(
 	for(i = 0; i < 2; ++i)
 	    tmp_p = (tmp_p < limit[i+1])?tmp_p:limit[i+1];
 
-	bi_array(&new_coords,48,3,FLOAT);
+	bi_array(&new_coords,48,3,sizeof(double));
 	
 	if(height == NULL)
 	{
-	    bi_array(&tmp2,48,5,FLOAT);
-            bi_array(&least,48,5,FLOAT);
-	    bi_array(&rotation,3,3,FLOAT);
-            bi_array(&tmp_matrix,48,5,FLOAT);
-	    uni_array(&tmp1,48,FLOAT);
-	    uni_array(&unit_vec,48,FLOAT);
-	    uni_array(&height,48,FLOAT);
+	    bi_array(&tmp2,48,5,sizeof(double));
+            bi_array(&least,48,5,sizeof(double));
+	    bi_array(&rotation,3,3,sizeof(double));
+            bi_array(&tmp_matrix,48,5,sizeof(double));
+	    uni_array(&tmp1,48,sizeof(double));
+	    uni_array(&unit_vec,48,sizeof(double));
+	    uni_array(&height,48,sizeof(double));
 	    uni_array(&p_listold,48,sizeof(POINT*));
 	    uni_array(&p_list,48,sizeof(POINT*));
 	
@@ -1415,7 +1415,7 @@ EXPORT	double	f_mean_curvature_at_point3d(
 	    double tmp4 = 0,length_v = 0;
             double *tmp3 = NULL;
 
-	    uni_array(&tmp3,5-k,FLOAT);
+	    uni_array(&tmp3,5-k,sizeof(double));
 
 	    for(i = 0; i < nt-k;++i)
 	    {

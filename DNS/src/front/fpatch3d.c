@@ -2153,7 +2153,7 @@ INTERFACE	*rbox_recon_interface(
 	DEBUG_ENTER(rbox_recon_interface)
 
 	rfr = copy_front(fr);
-	scalar(&(rfr->rect_grid),sizeof(RECT_GRID));
+	scalar_prdns(&(rfr->rect_grid),sizeof(RECT_GRID));
 	
 	rbox_set_recon_grid(rfr->rect_grid, rbox, fr->interf);
 	

@@ -1525,7 +1525,7 @@ boolean	compute_average_point(SMOOTH_PARA*,POINT*,TRI*,SURFACE*,SMOOTH_TOL*);
 	/*TMP copy the states from the first point, 
 	  otherwise sl, sr will be NULL */
 	midp = copy_point(Point_of_tri(tri)[side]);
-	ft_assign(Coords(midp), avep, 3*FLOAT);
+	ft_assign(Coords(midp), avep, 3*sizeof(double));
 	
 	printf("#seal_null_loop is called. num_null_sides = %d\n", num_null_sides);
 	print_general_vector("avep= ", avep, 3, "\n");
@@ -3854,8 +3854,8 @@ EXPORT	boolean	check_degenerated_loop(
 	for (j = 0; j < 3; ++j) normal[j] = 0.0;
 	for (i = 0; i < *num_sides; ++i)
 	{
-	    difference(Coords(pts[i]),Coords(pts[i+1]),v1,3);
-	    difference(Coords(pts[(i+2)%(*num_sides+1)]),
+	    difference_prdns(Coords(pts[i]),Coords(pts[i+1]),v1,3);
+	    difference_prdns(Coords(pts[(i+2)%(*num_sides+1)]),
 	    		Coords(pts[i+1]),v2,3);
 	    Cross3d(v2,v1,cprod);
 	    for (j = 0; j < 3; ++j) normal[j] += cprod[j];
@@ -4715,7 +4715,7 @@ LOCAL  void  pp_send_box(
 
 	len = sizeof(COMM_BOX);
 
-	scalar(&storage, len);
+	scalar_prdns(&storage, len);
 	buf = storage;
 
 	for (i = 0; i < 4; i++)
@@ -4811,7 +4811,7 @@ LOCAL    void    pp_receive_box(
 	    return;
         
 	len = sizeof(COMM_BOX);
-	scalar(&storage, len);
+	scalar_prdns(&storage, len);
 	pp_recv(0, src_id, (POINTER)(storage), len);
 
 	buf = storage;
@@ -5278,9 +5278,9 @@ void	make_ggrid(
 
 	set_dual_grid(&Dgr, pgr);
 	
-	ft_assign(ggr->h, Dgr.h, 3*FLOAT);
-	ft_assign(ggr->GL, Dgr.L, 3*FLOAT);
-	ft_assign(ggr->GU, Dgr.U, 3*FLOAT);
+	ft_assign(ggr->h, Dgr.h, 3*sizeof(double));
+	ft_assign(ggr->GL, Dgr.L, 3*sizeof(double));
+	ft_assign(ggr->GU, Dgr.U, 3*sizeof(double));
 	ft_assign(ggr->gmax, Dgr.gmax, 3*INT);
 
 	rbox = &ggr->rbox;
@@ -5624,8 +5624,8 @@ void	rbox_copy(
 
 	ft_assign(b1->bmin, b2->bmin, 3*INT);
 	ft_assign(b1->bmax, b2->bmax, 3*INT);
-	ft_assign(b1->fmin, b2->fmin, 3*FLOAT);
-	ft_assign(b1->fmax, b2->fmax, 3*FLOAT);
+	ft_assign(b1->fmin, b2->fmin, 3*sizeof(double));
+	ft_assign(b1->fmax, b2->fmax, 3*sizeof(double));
 	
 	np = b2->np;
 	b1->np = np;

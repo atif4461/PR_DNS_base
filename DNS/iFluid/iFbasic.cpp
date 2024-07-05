@@ -354,8 +354,8 @@ void Incompress_Solver_Smooth_Basis::getNearestInterfacePoint(
 
 	if (pts_kappa == NULL)
 	{
-	    FT_VectorMemoryAlloc((POINTER*)&pts_kappa,MAXD,FLOAT);
-	    FT_MatrixMemoryAlloc((POINTER*)&pts_nor,MAXD,MAXD,FLOAT);
+	    FT_VectorMemoryAlloc((POINTER*)&pts_kappa,MAXD,sizeof(double));
+	    FT_MatrixMemoryAlloc((POINTER*)&pts_nor,MAXD,MAXD,sizeof(double));
 	}
 	nearest_interface_point(p,comp,intfc,NO_BOUNDARIES,NULL,q,t,&hse,&hs);
 	if (hse != NULL)

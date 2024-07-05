@@ -1860,7 +1860,7 @@ LIB_LOCAL void i_fprint_node(
 	else if (is_binary_output() == YES)
 	{
 	    (void) fprintf(file,"\f%c",dim);
-	    (void) fwrite((const void *)Coords(node->posn),FLOAT,dim,file);
+	    (void) fwrite((const void *)Coords(node->posn),sizeof(double),dim,file);
 	    (void) fprintf(file,"\n");
 	}
 	else
@@ -2483,11 +2483,11 @@ LIB_LOCAL void i_fprint_curve(
 	    	    int remaining = curve->num_points - i;
 	    	    (void) fprintf(file,"\f%c",dim*min(4,remaining));
 	    	}
-	    	(void) fwrite((const void*)Coords(bond->start),FLOAT,dim,file);
+	    	(void) fwrite((const void*)Coords(bond->start),sizeof(double),dim,file);
 	    }
 	    if (i%4 == 0)
 	        (void) fprintf(file,"\f%c",dim);
-	    (void) fwrite((const void*)Coords(curve->last->end),FLOAT,dim,file);
+	    (void) fwrite((const void*)Coords(curve->last->end),sizeof(double),dim,file);
 	}
 	else
 	{
@@ -3383,7 +3383,7 @@ EXPORT POINT *i_Static_point(
 	size_t		size_point = 0;
 
 	size_point = i_user_interface(intfc).size_point;
-	scalar(&static_alloced_point,size_point);
+	scalar_prdns(&static_alloced_point,size_point);
 	if (static_alloced_point == NULL)
 	    return NULL;
 
@@ -3772,7 +3772,7 @@ LIB_LOCAL void i_fprint_point(
 	if (is_binary_output() == YES)
 	{
 	    (void) fprintf(file,"\f%c",dim);
-	    (void) fwrite((const void *) Coords(point),FLOAT,dim,file);
+	    (void) fwrite((const void *) Coords(point),sizeof(double),dim,file);
 	}
 	else
 	{
@@ -4454,7 +4454,7 @@ EXPORT	boolean	retriangulate_polygon(
 
 	/* Memory allocation and management */
 	if (r == NULL)
-	    bi_array(&r,3,3,FLOAT);
+	    bi_array(&r,3,3,sizeof(double));
 	if ((nv+ninternal_v) > max_n_v)
 	{
 	    if (pts != NULL)
@@ -4469,7 +4469,7 @@ EXPORT	boolean	retriangulate_polygon(
 	    uni_array(&p,max_n_v,sizeof(double*));
 	    uni_array(&pts,max_n_v,sizeof(POINT*));
 	    in.size_pointlist = (size_t)2*(max_n_v);
-	    uni_array(&in.pointlist,in.size_pointlist,FLOAT);
+	    uni_array(&in.pointlist,in.size_pointlist,sizeof(double));
 	    in.size_segmentlist = (size_t)2*(max_n_v);
 	    uni_array(&in.segmentlist,in.size_segmentlist,INT);
 	}
@@ -5826,7 +5826,7 @@ LOCAL	struct Table	*GetNextFreeTable(void)
 	}
 	else
 	{
-	    scalar(&table,sizeof(struct Table));
+	    scalar_prdns(&table,sizeof(struct Table));
 	}
 	if (table == NULL)
 	    return NULL;
@@ -5948,7 +5948,7 @@ EXPORT  POINTER store(
 	    struct Chunk *chunk;
 	    size_t csize;
 	    csize = naligns*sizeof(ALIGN)+sizeof(struct Chunk)-sizeof(ALIGN);
-	    scalar(&chunk,csize);
+	    scalar_prdns(&chunk,csize);
 	    if (chunk == NULL)
 	        return NULL;
 	    zero_scalar(chunk,csize);
@@ -6069,7 +6069,7 @@ LOCAL	struct Chunk *GetNextFreeChunk(
 	    	LastFreeChunk = NULL;
 	}
 	else
-	    scalar(&chunk,csize);
+	    scalar_prdns(&chunk,csize);
 	if (chunk == NULL)
 	    return NULL;
 	zero_scalar(chunk,csize);

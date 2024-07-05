@@ -871,13 +871,13 @@ EXPORT  void average_btris(
 		    /*two points corresponding to start and end states */
 		    if(btris[j]->orient == POSITIVE_ORIENTATION)
 		    {
-		        ft_assign(crdss[j], Coords(Point_of_tri(tris[j])[i]), 3*FLOAT);
-		        ft_assign(crdse[j], Coords(Point_of_tri(tris[j])[Next_m3(i)]), 3*FLOAT);
+		        ft_assign(crdss[j], Coords(Point_of_tri(tris[j])[i]), 3*sizeof(double));
+		        ft_assign(crdse[j], Coords(Point_of_tri(tris[j])[Next_m3(i)]), 3*sizeof(double));
 		    }
 		    else
 		    {
-		        ft_assign(crdse[j], Coords(Point_of_tri(tris[j])[i]), 3*FLOAT);
-		        ft_assign(crdss[j], Coords(Point_of_tri(tris[j])[Next_m3(i)]), 3*FLOAT);
+		        ft_assign(crdse[j], Coords(Point_of_tri(tris[j])[i]), 3*sizeof(double));
+		        ft_assign(crdss[j], Coords(Point_of_tri(tris[j])[Next_m3(i)]), 3*sizeof(double));
 		    }
 		}
 
@@ -2161,7 +2161,7 @@ LOCAL   boolean match_tris_in_block(
 	    if (dist)
 		free_these(2,dist,rot);
 	    n_alloc = 2*nt;
-	    bi_array(&dist,n_alloc,n_alloc,FLOAT);
+	    bi_array(&dist,n_alloc,n_alloc,sizeof(double));
 	    bi_array(&rot,n_alloc,n_alloc,INT);
 	}
 	for (i = 0; i < nt; ++i)

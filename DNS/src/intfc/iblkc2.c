@@ -873,13 +873,13 @@ EXPORT	BLK_CRX *alloc_blk_crx(
 {
 	BLK_CRX *blk_crx;
 
-	scalar(&blk_crx,sizeof(BLK_CRX));
+	scalar_prdns(&blk_crx,sizeof(BLK_CRX));
 	tri_array(&blk_crx->comp,2,2,2,sizeof(COMPONENT));
 	tri_array(&blk_crx->ix,2,2,2,sizeof(int));
 	tri_array(&blk_crx->iy,2,2,2,sizeof(int));
 	tri_array(&blk_crx->iz,2,2,2,sizeof(int));
 	tri_array(&blk_crx->crx,3,2,2,sizeof(BBI_POINT*));
-	quad_array(&blk_crx->corner_coords,2,2,2,3,FLOAT);
+	quad_array(&blk_crx->corner_coords,2,2,2,3,sizeof(double));
 	bi_array(&blk_crx->curve_crx,3,2,sizeof(BBI_POINT*));
 	if (alloc_BBI_POINT)
 	{

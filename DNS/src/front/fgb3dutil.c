@@ -1055,8 +1055,8 @@ EXPORT	void set_crx_storage_for_reconstruction(
 	uni_array(&T->components,n_reg_nodes,sizeof(COMPONENT));
 	if (dim == 3 && volume_frac != NULL)
 	{
-	    tri_array(&T->area,gmax[0],gmax[1],gmax[2],FLOAT);
-	    tri_array(&T->vol_frac,gmax[0],gmax[1],gmax[2],FLOAT);
+	    tri_array(&T->area,gmax[0],gmax[1],gmax[2],sizeof(double));
+	    tri_array(&T->vol_frac,gmax[0],gmax[1],gmax[2],sizeof(double));
 	}
 	else
 	    T->area = T->vol_frac = NULL;

@@ -352,7 +352,7 @@ EXPORT	void set_front_pp_grid(
 	    Pmax = pp_grid->gmax[i] = subdomains(init)[i];
 	    pp_grid->nn *= Pmax;
 
-	    uni_array(&pp_grid->dom[i],Pmax + 1,FLOAT);
+	    uni_array(&pp_grid->dom[i],Pmax + 1,sizeof(double));
 
 	    pp_grid->dom[i][0]    = comp_glbgr->L[i];
 	    pp_grid->dom[i][Pmax] = comp_glbgr->U[i];
@@ -472,7 +472,7 @@ EXPORT void scatter_top_grid_float_array(
 	    if (min_gmax > gmax[i])
 		min_gmax = gmax[i];
 	}
-	size = max_buf*FLOAT;
+	size = max_buf*sizeof(double);
 	for (i = 0; i < dim; i++)
 	    size *= (gmax[i] + 1);
 	size /= (min_gmax + 1);
@@ -540,8 +540,8 @@ LOCAL	void bundle_array_buffer(
 	    for (i = bmin[0]; i < bmax[0]; ++i)
 	    {
 	    	ic = d_index1d(i,gmax);
-		ft_assign(variable,(POINTER)&array[ic],FLOAT);
-		variable += FLOAT;
+		ft_assign(variable,(POINTER)&array[ic],sizeof(double));
+		variable += sizeof(double);
 	    }
 	    break;
 	case 2:
@@ -549,8 +549,8 @@ LOCAL	void bundle_array_buffer(
 	    for (j = bmin[1]; j < bmax[1]; ++j)
 	    {
 	    	ic = d_index2d(i,j,gmax);
-		ft_assign(variable,(POINTER)&array[ic],FLOAT);
-		variable += FLOAT;
+		ft_assign(variable,(POINTER)&array[ic],sizeof(double));
+		variable += sizeof(double);
 	    }
 	    break;
 	case 3:
@@ -559,8 +559,8 @@ LOCAL	void bundle_array_buffer(
 	    for (k = bmin[2]; k < bmax[2]; ++k)
 	    {
 	    	ic = d_index3d(i,j,k,gmax);
-		ft_assign(variable,array+ic,FLOAT);
-		variable += FLOAT;
+		ft_assign(variable,array+ic,sizeof(double));
+		variable += sizeof(double);
 	    }
 	}
 }	/* end bundle_array_buffer */
@@ -581,8 +581,8 @@ LOCAL	void unbundle_array_buffer(
 	    for (i = bmin[0]; i < bmax[0]; ++i)
 	    {
 	    	ic = d_index1d(i,gmax);
-		ft_assign(array+ic,variable,FLOAT);
-		variable += FLOAT;
+		ft_assign(array+ic,variable,sizeof(double));
+		variable += sizeof(double);
 	    }
 	    break;
 	case 2:
@@ -590,8 +590,8 @@ LOCAL	void unbundle_array_buffer(
 	    for (j = bmin[1]; j < bmax[1]; ++j)
 	    {
 	    	ic = d_index2d(i,j,gmax);
-		ft_assign(array+ic,variable,FLOAT);
-		variable += FLOAT;
+		ft_assign(array+ic,variable,sizeof(double));
+		variable += sizeof(double);
 	    }
 	    break;
 	case 3:
@@ -600,8 +600,8 @@ LOCAL	void unbundle_array_buffer(
 	    for (k = bmin[2]; k < bmax[2]; ++k)
 	    {
 	    	ic = d_index3d(i,j,k,gmax);
-		ft_assign(array+ic,variable,FLOAT);
-		variable += FLOAT;
+		ft_assign(array+ic,variable,sizeof(double));
+		variable += sizeof(double);
 	    }
 	}
 }	/* end unbundle_array_buffer */
@@ -636,7 +636,7 @@ LOCAL	int set_send_buffer_limits(
 	len = 1;
 	for (i = 0; i < dim; ++i)
 	    len *= (bmax[i] - bmin[i]);
-	return len*FLOAT;
+	return len*sizeof(double);
 }	/* end set_send_buffer_limits */
 
 
@@ -669,7 +669,7 @@ LOCAL	int set_recv_buffer_limits(
 	len = 1;
 	for (i = 0; i < dim; ++i)
 	    len *= (bmax[i] - bmin[i]);
-	return len*FLOAT;
+	return len*sizeof(double);
 }	/* end set_recv_buffer_limits */
 
 
@@ -722,7 +722,7 @@ EXPORT	boolean cpu_adapt_front(
 	}
 
 	if (sub_cpu == NULL)
-	    uni_array(&sub_cpu,pp_numnodes(),FLOAT);
+	    uni_array(&sub_cpu,pp_numnodes(),sizeof(double));
 
 	G = front->pp_grid->gmax;
 
@@ -739,8 +739,8 @@ EXPORT	boolean cpu_adapt_front(
 	case 2:
 	    if (x_average == NULL)
 	    {
-	    	uni_array(&x_average,G[0],FLOAT);
-	    	uni_array(&y_average,G[1],FLOAT);
+	    	uni_array(&x_average,G[0],sizeof(double));
+	    	uni_array(&y_average,G[1],sizeof(double));
 	    }
 	    for (i = 0; i < G[0]; ++i)
 	    {
@@ -840,9 +840,9 @@ EXPORT	boolean cpu_adapt_front(
 	case 3:
 	    if (x_average == NULL)
             {
-                uni_array(&x_average,G[0],FLOAT);
-                uni_array(&y_average,G[1],FLOAT);
-             	uni_array(&z_average,G[2],FLOAT);
+                uni_array(&x_average,G[0],sizeof(double));
+                uni_array(&y_average,G[1],sizeof(double));
+             	uni_array(&z_average,G[2],sizeof(double));
 	    }
 	    for (i = 0; i < G[0]; ++i)
 	    {
@@ -2018,7 +2018,7 @@ LOCAL	int set_send_comp_buffer_limits(
 	len = 1;
 	for (i = 0; i < dim; ++i)
 	    len *= (bmax[i] - bmin[i]);
-	return len*FLOAT;
+	return len*sizeof(double);
 }	/* end set_send_comp_buffer_limits */
 
 
@@ -2051,7 +2051,7 @@ LOCAL	int set_recv_comp_buffer_limits(
 	len = 1;
 	for (i = 0; i < dim; ++i)
 	    len *= (bmax[i] - bmin[i]);
-	return len*FLOAT;
+	return len*sizeof(double);
 }	/* end set_recv_comp_buffer_limits */
 
 

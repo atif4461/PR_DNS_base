@@ -811,7 +811,7 @@ EXPORT	void fshow_curve_states(
 	(void) fprintf(file,"%s\n",(is_bdry(c)) ? "Boundary curve" :
 						  "Interior curve");
 
-	if (sizest == FLOAT)
+	if (sizest == sizeof(double))
 	{
 	    (void) fprintf(file,"\t\t\t    l_st\tr_st\n");
 
@@ -860,7 +860,7 @@ EXPORT	void fshow_curve_states(
 			   ((double *)sl)[0],((double *)sr)[0]);
 	    (void) fprintf(file,"\n");
 	}
-	else if (sizest == 2 * FLOAT)
+	else if (sizest == 2 * sizeof(double))
 	{
 	    (void) fprintf(file,"\t\t\t    l_st\t\tr_st\n");
 	    b = c->first;
@@ -3469,7 +3469,7 @@ LOCAL	void	hdf_plot_var3d(
 	hx = (U[0] - L[0])/(width - 1);
 	hy = (U[1] - L[1])/(height - 1);
 	uni_array(&r_val,width*height,sizeof(uint8));
-	uni_array(&var_val,width*height,FLOAT);
+	uni_array(&var_val,width*height,sizeof(double));
 	if(my_id == io_node)
 	{
 	    uni_array(&tmp_val,width*height,sizeof(uint8));
@@ -3498,13 +3498,13 @@ LOCAL	void	hdf_plot_var3d(
 	{
 	    find_Cartesian_coordinates(i,pp_grid,icoords);
 	    if (icoords[idir] != pp_grid->gmax[idir]/2) continue;
-	    pp_send(hdf_comp_tag,&ext_val,2*FLOAT,i);
+	    pp_send(hdf_comp_tag,&ext_val,2*sizeof(double),i);
 	}
 	for (i = 0; i < pp_numnodes(); i++)
 	{
 	    find_Cartesian_coordinates(i,pp_grid,icoords);
 	    if (icoords[idir] != pp_grid->gmax[idir]/2) continue;
-	    pp_recv(hdf_comp_tag,i,ext_val,2*FLOAT); 
+	    pp_recv(hdf_comp_tag,i,ext_val,2*sizeof(double)); 
 	    if (min_val > ext_val[0]) min_val = ext_val[0];
 	    if (max_val < ext_val[1]) max_val = ext_val[1];
 	}
@@ -4093,7 +4093,7 @@ LOCAL	void	gv_plot_var2d(
 	    (void) printf("Plotting: %s\n",var_name);
 	}
 
-	uni_array(&var_val,npts,FLOAT);
+	uni_array(&var_val,npts,sizeof(double));
 
 	max_val = -HUGE; 	min_val = HUGE;
 	

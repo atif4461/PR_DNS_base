@@ -1256,7 +1256,7 @@ EXPORT O_NODE *make_onode(
 	onode->nc     = (CURVE **) Store(num_curves * sizeof(CURVE *));
 	onode->nopp   = (NODE **)  Store(num_curves * sizeof(NODE *));
 	onode->pt     = (POINT **) Store(num_curves * sizeof(POINT *));
-	onode->ang    = (double *)  Store(num_curves * FLOAT);
+	onode->ang    = (double *)  Store(num_curves * sizeof(double));
 	onode->orient = (ORIENTATION *)    Store(num_curves * INT);
 
 	if (onode->orient == NULL) /* Out of space */

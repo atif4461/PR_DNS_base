@@ -100,7 +100,7 @@ EXPORT	void I_SmoothSurfColor(
 	int i,n,num_tri = surf->num_tri;
 	TRI *tri;
 
-	uni_array(&color,num_tri,FLOAT);
+	uni_array(&color,num_tri,sizeof(double));
 
 	for (i = 0; i < num_rounds; ++i)
 	{

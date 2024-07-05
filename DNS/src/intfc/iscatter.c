@@ -204,7 +204,7 @@ EXPORT	PP_GRID *set_pp_grid(
 	    Pmax = pp_grid->gmax[i] = subdomains(init)[i];
 	    pp_grid->nn *= Pmax;
 
-	    uni_array(&pp_grid->dom[i],Pmax + 1,FLOAT);
+	    uni_array(&pp_grid->dom[i],Pmax + 1,sizeof(double));
 
 	    pp_grid->dom[i][0]    = comp_glbgr->L[i];
 	    pp_grid->dom[i][Pmax] = comp_glbgr->U[i];

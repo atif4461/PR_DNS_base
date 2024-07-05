@@ -35,6 +35,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "../iFluid/ifluid_basic.h"
 #include "climate.h"
 #include <sys/time.h>
+#include <torch/torch.h>
+//#include <torch/script.h> // One-stop header.
+#include <cuda.h>
+#include <iostream>
+#include <memory>
 
 #define		MAX_NUM_VERTEX_IN_CELL		20
 	/*  Local Application Function Declarations */
@@ -323,6 +328,41 @@ static  void melting_flow_driver(
         gettimeofday(&tv8, NULL);
         printf("atif0 Melting flow driver initialize :  %10.2f \n", (tv8.tv_usec - tv7.tv_usec)/1000000.0 + (tv8.tv_sec - tv7.tv_sec));
 #endif
+
+
+
+
+
+      	//std::cout << "CUDA Version: " << CUDA_VERSION / 1000 << (CUDA_VERSION / 10) % 100 << std::endl;
+	//torch::Tensor tensor = torch::rand({2, 3});
+	//std::cout << tensor << std::endl;
+	//
+	//torch::jit::script::Module module;
+	//try {
+	//  // Deserialize the ScriptModule from a file using torch::jit::load().
+        //  // module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5_uv_1000_8_8_100_0.5_0.001_32/model.pt");
+	//  module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5/autoreg5_1000_8_8_100_0.5_0.001_64/model.pt");
+	//}
+	//catch (const c10::Error& e) {
+	//  std::cerr << "error loading the model\n";
+	//  return -1;
+	//}
+	//
+	//std::cout << "ok\n";
+	//
+	//// Create a vector of inputs.
+	//std::vector<torch::jit::IValue> inputs;
+	//inputs.push_back(torch::ones({1, 10, 256, 256}));
+	//
+	//// Execute the model and turn its output into a tensor.
+	//at::Tensor output = module.forward(inputs).toTensor();
+	//std::cout << output.sizes() << " shape and slice " ;//<< output.slice(/*dim=*/1, /*start=*/0, /*end=*/1) << '\n';
+
+
+
+
+
+
 
         for (;;)
         {

@@ -268,7 +268,7 @@ EXPORT HYPER_SURF *find_correspond_hyper_surface(
 		    (void) printf("Adding %llu to hypersurface list\n",
 				  (long long unsigned int)hypersurface_number(*chs));
 		}
-		scalar(&hsl->next,sizeof(HS_LIST));
+		scalar_prdns(&hsl->next,sizeof(HS_LIST));
 		hsl->next->prev = hsl;
 		hsl = hsl->next;
 		hsl->next = NULL;
@@ -291,7 +291,7 @@ EXPORT HYPER_SURF *find_correspond_hyper_surface(
 	    	    (void) printf("Adding %llu to hypersurface list\n",
 	    			  (long long unsigned int)hypersurface_number(*chs));
 	    	}
-	    	scalar(&hsl->next,sizeof(HS_LIST));
+	    	scalar_prdns(&hsl->next,sizeof(HS_LIST));
 	    	hsl->next->prev = hsl;
 	    	hsl = hsl->next;
 	    	hsl->next = NULL;
@@ -906,7 +906,7 @@ LOCAL CORRESPOND *new_correspond_struct(void)
 {
 	CORRESPOND	*crspd;
 
-	scalar(&crspd,sizeof(CORRESPOND));
+	scalar_prdns(&crspd,sizeof(CORRESPOND));
 
 	return crspd;
 }		/*end new_correspond_struct*/

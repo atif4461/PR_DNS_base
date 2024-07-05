@@ -443,8 +443,8 @@ EXPORT	void	tecplot_box(
 {
 	double	L[3], U[3];
 
-	ft_assign(L, L0, 3*FLOAT);
-	ft_assign(U, U0, 3*FLOAT);
+	ft_assign(L, L0, 3*sizeof(double));
+	ft_assign(U, U0, 3*sizeof(double));
 
 	L[0] += shx;
 	L[1] += shy;
@@ -581,8 +581,8 @@ LOCAL  double  tst_pt1[3] = { 1.01255, 0.1418, 1.435 };
 
 EXPORT	void	set_tst_posn(double    *pos)
 {
-	/*ft_assign(tst_pt, pos, 3*FLOAT); */
-	/*ft_assign(tst_pt1, pos, 3*FLOAT); */
+	/*ft_assign(tst_pt, pos, 3*sizeof(double)); */
+	/*ft_assign(tst_pt1, pos, 3*sizeof(double)); */
 }
 
 EXPORT  void    tecplot_surface_in_ball(
@@ -653,8 +653,8 @@ LOCAL	void tecplot_surface_in_box(
 
 	if(fbox == NULL)
 	{
-	    bi_array(&fbox, 2, 3, FLOAT);
-	    bi_array(&bbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
+	    bi_array(&bbox, 2, 3, sizeof(double));
 	}
 
 	for(i=0; i<3; i++)
@@ -1017,7 +1017,7 @@ LOCAL	void	tecplot_plot_surfaces(
 	    if (pts != NULL)
 		free(pts);
 	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,FLOAT);
+	    uni_array(&pts,alloc_len_pts,sizeof(double));
 	}
 	if (alloc_len_verts < 4*num_tris)
 	{
@@ -1400,7 +1400,7 @@ LOCAL	void	gview_plot_surfaces(
 	    if (pts != NULL)
 		free(pts);
 	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,FLOAT);
+	    uni_array(&pts,alloc_len_pts,sizeof(double));
 	}
 	if (alloc_len_verts < 4*num_tris)
 	{
@@ -1570,7 +1570,7 @@ LOCAL	void	gview_plot_color_scaled_surfaces(
 	    if (pts != NULL)
 		free(pts);
 	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,FLOAT);
+	    uni_array(&pts,alloc_len_pts,sizeof(double));
 	}
 	if (alloc_len_verts < 4*num_tris)
 	{
@@ -1584,7 +1584,7 @@ LOCAL	void	gview_plot_color_scaled_surfaces(
 	    if (color_intensity != NULL)
 		free(color_intensity);
 	    alloc_len_color = num_tris;
-	    uni_array(&color_intensity,alloc_len_color,FLOAT);
+	    uni_array(&color_intensity,alloc_len_color,sizeof(double));
 	}
 	for (i = 0; i < 3; i++)
 	{
@@ -3037,8 +3037,8 @@ LOCAL   void gview_plot_color_surfaces(
             if (neg_pts != NULL)
                 free(neg_pts);
             alloc_len_pts = 3*intfc->num_points;
-            uni_array(&pos_pts,alloc_len_pts,FLOAT);
-            uni_array(&neg_pts,alloc_len_pts,FLOAT);
+            uni_array(&pos_pts,alloc_len_pts,sizeof(double));
+            uni_array(&neg_pts,alloc_len_pts,sizeof(double));
         }
         if (alloc_len_verts < 4*num_tris)
         {
@@ -3739,7 +3739,7 @@ LOCAL	void	vtk_plot_surfaces(
 	    if (pts != NULL)
 		free(pts);
 	    alloc_len_pts = 3*intfc->num_points;
-	    uni_array(&pts,alloc_len_pts,FLOAT);
+	    uni_array(&pts,alloc_len_pts,sizeof(double));
 	}
 	if (alloc_len_verts < 4*num_tris)
 	{
@@ -5055,8 +5055,8 @@ make_frame:
 	if (current_max_num_points < max_num_points)
 	{
 	    if (x != NULL) free_these(2,x,y);
-	    uni_array(&x,max_num_points,FLOAT);
-	    uni_array(&y,max_num_points,FLOAT);
+	    uni_array(&x,max_num_points,sizeof(double));
+	    uni_array(&y,max_num_points,sizeof(double));
 	    current_max_num_points = max_num_points;
 	}
 #if defined __MPI__
@@ -5082,8 +5082,8 @@ make_frame:
 	    if (pp_mynode() != 0)
 	    {
 		pp_send(10,(POINTER)&num_points,INT,0);
-		pp_send(10,(POINTER)x,num_points*FLOAT,0);
-		pp_send(10,(POINTER)y,num_points*FLOAT,0);
+		pp_send(10,(POINTER)x,num_points*sizeof(double),0);
+		pp_send(10,(POINTER)y,num_points*sizeof(double),0);
 	    }
 	    else
 #endif /* defined __MPI__ */
@@ -5098,8 +5098,8 @@ make_frame:
 	    	for (j = 0; j < num_curves; ++j)
 	    	{
 	    	    pp_recv(10,i,(POINTER)&num_points,INT);
-	    	    pp_recv(10,i,(POINTER)x,num_points*FLOAT);
-	    	    pp_recv(10,i,(POINTER)y,num_points*FLOAT);
+	    	    pp_recv(10,i,(POINTER)x,num_points*sizeof(double));
+	    	    pp_recv(10,i,(POINTER)y,num_points*sizeof(double));
 	    	    gd_plotdata(num_points,x,y);
 	    	}
 	    }

@@ -73,7 +73,7 @@ EXPORT	void find_tangent_to_curve(
 
 	if (bdir == NULL)
 	{
-	    scalar(&bdir,sizeof(BOND));
+	    scalar_prdns(&bdir,sizeof(BOND));
 	    bdir->start = Static_point(fr->interf);
 	    bdir->end = Static_point(fr->interf);
 	}
@@ -371,7 +371,7 @@ EXPORT	void find_secant_to_curve(
 
 	if (bdir == NULL)
 	{
-	    scalar(&bdir,sizeof(BOND));
+	    scalar_prdns(&bdir,sizeof(BOND));
 	    bdir->start = Static_point(fr->interf);
 	    bdir->end = Static_point(fr->interf);
 	}
@@ -1872,7 +1872,7 @@ EXPORT	void propagated_tangent_bond_at_node(
 
 	if (tan_bond->start == NULL || tan_bond->end == NULL)
 	{
-		Error(0,"ERROR: in propagated_tangent_bond_at_node()\n");
+		Error_prdns(0,"ERROR: in propagated_tangent_bond_at_node()\n");
 		screen("NULL endpoint on bond\n");
 		clean_up(ERROR);
 	}

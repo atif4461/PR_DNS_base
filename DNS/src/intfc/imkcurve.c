@@ -214,7 +214,7 @@ EXPORT	void coords_on_ellips(
 *
 *	Computes the incremented theta in the polar coordinated
 *	of the z = constant cross section of an ellipsoid.
-*	The difference new_theta - theta is determined so that
+*	The difference_prdns new_theta - theta is determined so that
 *	the displacement of the two consecutive points on the
 *	ellipsoid are approximately separated by the distance
 *	space in the scaled metric with scale vector h.
@@ -669,7 +669,7 @@ LOCAL	BLK_CRX_2D *alloc_blk_crx2d(
 {
 	BLK_CRX_2D *blk_crx;
 
-	scalar(&blk_crx,sizeof(BLK_CRX));
+	scalar_prdns(&blk_crx,sizeof(BLK_CRX));
 	bi_array(&blk_crx->comp,2,2,sizeof(COMPONENT));
 	bi_array(&blk_crx->ix,2,2,sizeof(int));
 	bi_array(&blk_crx->iy,2,2,sizeof(int));
@@ -1189,8 +1189,8 @@ LOCAL	POINTER init_multi_circle_params(RECT_GRID *gr)
 	int i;
 	screen("Enter number of circles: ");
 	Scanf("%d\n",&mc_params.num_cir);
-	uni_array(&mc_params.rad,mc_params.num_cir,FLOAT);
-	bi_array(&mc_params.cen,mc_params.num_cir,2,FLOAT);
+	uni_array(&mc_params.rad,mc_params.num_cir,sizeof(double));
+	bi_array(&mc_params.cen,mc_params.num_cir,2,sizeof(double));
 	for (i = 0; i < mc_params.num_cir; ++i)
 	{
 	    screen("Enter the center coords of the %d-th circle: ",i+1);
@@ -1209,9 +1209,9 @@ LOCAL	POINTER init_sine_wave_params(RECT_GRID *gr)
 	Scanf("%f\n",&sine_params.z0);
 	screen("Enter number of modes: ");
 	Scanf("%d\n",&sine_params.num_modes);
-	bi_array(&sine_params.nu,sine_params.num_modes,1,FLOAT);
-	uni_array(&sine_params.A,sine_params.num_modes,FLOAT);
-	uni_array(&sine_params.phase,sine_params.num_modes,FLOAT);
+	bi_array(&sine_params.nu,sine_params.num_modes,1,sizeof(double));
+	uni_array(&sine_params.A,sine_params.num_modes,sizeof(double));
+	uni_array(&sine_params.phase,sine_params.num_modes,sizeof(double));
 	for (i = 0; i < sine_params.num_modes; ++i)
 	{
 	    screen("Enter the frequency of the %d-th mode: ",i);

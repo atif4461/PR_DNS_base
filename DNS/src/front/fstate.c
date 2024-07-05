@@ -51,7 +51,7 @@ EXPORT	void	f_alloc_state(
 	Locstate        *state,
 	size_t          sizest)
 {
-	scalar(state,sizest);
+	scalar_prdns(state,sizest);
 }               /*end f_alloc_state*/
 
 EXPORT	Locstate	f_alloc_intfc_state(
@@ -293,7 +293,7 @@ EXPORT	ConstantFlowRegion	*SetConstantFlowRegion(
 	    }
 	    return cfr;
 	}
-	scalar(&cfr,sizeof(ConstantFlowRegion));
+	scalar_prdns(&cfr,sizeof(ConstantFlowRegion));
 	cfr->Fsr.comp = comp;
 	sprintf(cfr->Fsr.type,"CONSTANT_REGION");
 	cfr->Fsr._ComponentsMatch = equivalent_comps;
@@ -313,7 +313,7 @@ EXPORT	FlowSpecifiedRegion	*SetSkipComponentRegion(
 {
 	FlowSpecifiedRegion	*fsr;
 
-	scalar(&fsr,sizeof(FlowSpecifiedRegion));
+	scalar_prdns(&fsr,sizeof(FlowSpecifiedRegion));
 	fsr->comp = comp;
 	sprintf(fsr->type,"SKIP_COMPONENT_REGION");
 	fsr->_ComponentsMatch = equivalent_comps;
@@ -330,7 +330,7 @@ EXPORT	FlowSpecifiedRegion	*SetSkipAllComponents(void)
 {
 	FlowSpecifiedRegion	*fsr;
 
-	scalar(&fsr,sizeof(FlowSpecifiedRegion));
+	scalar_prdns(&fsr,sizeof(FlowSpecifiedRegion));
 	fsr->comp = NO_COMP;
 	sprintf(fsr->type,"SKIP_ALL_COMPONENTS");
 	fsr->_ComponentsMatch = SkipAllComps;
@@ -418,7 +418,7 @@ EXPORT	boolean	f_sort_bond_tris(
 	    return YES;
 
 	if (stemp == NULL)
-	    scalar(&stemp,size_of_state(intfc));
+	    scalar_prdns(&stemp,size_of_state(intfc));
 
 	for (c = intfc->curves; c && *c; ++c)
 	{

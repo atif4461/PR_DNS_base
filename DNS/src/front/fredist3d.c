@@ -194,7 +194,7 @@ EXPORT	boolean	compute_smooth_para(
 	{
 	    smooth_para->pt = p;
 	    smooth_para->tri = tri;
-	    ft_assign(smooth_para->avep, avep, 3*FLOAT);
+	    ft_assign(smooth_para->avep, avep, 3*sizeof(double));
 	    smooth_para->cor = dist/lenk > stol->cone_ratio ? dist/lenk : -1.0;
 	    smooth_para->cos = max_cos > stol->max_cos ? max_cos : -1.0;
 	    
@@ -238,7 +238,7 @@ EXPORT	boolean	compute_average_point(
 		    
 	smooth_para->pt = p;
 	smooth_para->tri = tri;
-	ft_assign(smooth_para->avep, avep, 3*FLOAT);
+	ft_assign(smooth_para->avep, avep, 3*sizeof(double));
 	smooth_para->cor = -1.0;
 	smooth_para->cos = -1.0;
 	    
@@ -350,7 +350,7 @@ EXPORT  void	smooth_curve(
 	}
 
 	for(i=0; i<num; i++)
-	    ft_assign(Coords(pt[i]), newpt[i], 3*FLOAT);
+	    ft_assign(Coords(pt[i]), newpt[i], 3*sizeof(double));
 
 }
 
@@ -2846,7 +2846,7 @@ EXPORT	boolean	point_outside_open_bdry(
 
 	return NO;
 
-	zero_scalar(nor, 3*FLOAT);
+	zero_scalar(nor, 3*sizeof(double));
 	for(i=0; i<3; i++)
 	{
 	    if(rect_boundary_type(intfc,i,0) == OPEN_BOUNDARY && 
@@ -2880,8 +2880,8 @@ EXPORT	void	triangle_height_vec(
 	double	v[3], nor[3], len;
 	int	k;
 
-	difference(p1, p, v, 3);
-	difference(p2, p, nor, 3);
+	difference_prdns(p1, p, v, 3);
+	difference_prdns(p2, p, nor, 3);
 	len = Dot3d(v,nor)/Dot3d(nor,nor);
 	for(k=0; k<3; k++)
 	    hv[k] = v[k] - len*nor[k];
@@ -3013,13 +3013,13 @@ LOCAL void    cal_surface_area(
                     if(dist < mindist)
                     {
                         mindist = dist;
-                        ft_assign(mincrds, cen, 3*FLOAT);
+                        ft_assign(mincrds, cen, 3*sizeof(double));
                     }
 
                     if(dist > maxdist)
                     {
                         maxdist = dist;
-                        ft_assign(maxcrds, cen, 3*FLOAT);
+                        ft_assign(maxcrds, cen, 3*sizeof(double));
                     }
                 }
 

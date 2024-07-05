@@ -777,8 +777,8 @@ EXPORT	boolean intersection_of_two_o_curves(
 	    pmid = Static_point(fr->interf);
 	    p1_opp = Static_point(fr->interf);
 	    p2_opp = Static_point(fr->interf);
-	    scalar(&bdir1,sizeof(BOND));
-	    scalar(&bdir2,sizeof(BOND));
+	    scalar_prdns(&bdir1,sizeof(BOND));
+	    scalar_prdns(&bdir2,sizeof(BOND));
 	    bdir1->start = Static_point(fr->interf);
 	    bdir1->end = Static_point(fr->interf);
 	    bdir2->start = Static_point(fr->interf);

@@ -303,7 +303,7 @@ EXPORT	int	add_bstate_to_list(
 	}
 	if (bstate_list(intfc)[index] == NULL)
 	{
-	    scalar(&bstate_list(intfc)[index],sizeof(BOUNDARY_STATE));
+	    scalar_prdns(&bstate_list(intfc)[index],sizeof(BOUNDARY_STATE));
 	}
 	new_bstate = bstate_list(intfc)[index];
 	*new_bstate = *bstate;

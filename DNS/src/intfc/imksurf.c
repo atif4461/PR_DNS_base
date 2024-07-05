@@ -3228,8 +3228,8 @@ LOCAL 	POINTER init_ellipsoid_params(
 {
 	static ELLIP_PARAMS params;
 
-	uni_array(&params.cen,MAXD,FLOAT);
-	uni_array(&params.rad,MAXD,FLOAT);
+	uni_array(&params.cen,MAXD,sizeof(double));
+	uni_array(&params.rad,MAXD,sizeof(double));
 	screen("Enter the coordinates of the ellipsoid center: ");
 	Scanf("%f %f %f\n",&params.cen[0],&params.cen[1],&params.cen[2]);
 	screen("Enter the three radii of the ellipsoid: ");
@@ -3246,8 +3246,8 @@ LOCAL 	POINTER init_multi_ellipsoid_params(
 
 	screen("Enter number of ellipoids: ");
 	Scanf("%d\n",&params.num_ellip);
-	bi_array(&params.cen,params.num_ellip,MAXD,FLOAT);
-	bi_array(&params.rad,params.num_ellip,MAXD,FLOAT);
+	bi_array(&params.cen,params.num_ellip,MAXD,sizeof(double));
+	bi_array(&params.rad,params.num_ellip,MAXD,sizeof(double));
 
 	for (i = 0; i < params.num_ellip; ++i)
 	{
@@ -3267,8 +3267,8 @@ LOCAL 	POINTER init_hyperboloid_params(
 {
 	static ELLIP_PARAMS params;
 
-	uni_array(&params.cen,MAXD,FLOAT);
-	uni_array(&params.rad,MAXD,FLOAT);
+	uni_array(&params.cen,MAXD,sizeof(double));
+	uni_array(&params.rad,MAXD,sizeof(double));
 	screen("Enter the coordinates of the hyperboloid center: ");
 	Scanf("%f %f %f\n",&params.cen[0],&params.cen[1],&params.cen[2]);
 	screen("The hyperboloid equation is x^2/a^2 + y^2/b^2 - z^2/c^2 = 1\n");
@@ -3283,8 +3283,8 @@ LOCAL 	POINTER init_paraboloid_params(
 {
 	static ELLIP_PARAMS params;
 
-	uni_array(&params.cen,MAXD,FLOAT);
-	uni_array(&params.rad,MAXD,FLOAT);
+	uni_array(&params.cen,MAXD,sizeof(double));
+	uni_array(&params.rad,MAXD,sizeof(double));
 	screen("Enter the coordinates of the hyperboloid center: ");
 	Scanf("%f %f %f\n",&params.cen[0],&params.cen[1],&params.cen[2]);
 	screen("The paraboloid equation is x^2/a^2 + y^2/b^2 - z = 0\n");
@@ -3310,9 +3310,9 @@ LOCAL 	POINTER init_sine_wave_params(
 	fpoly.z0 = z0;
 	screen("Enter number of modes: ");
         Scanf("%d\n",&fpoly.num_modes);
-        bi_array(&fpoly.nu,fpoly.num_modes,1,FLOAT);
-        uni_array(&fpoly.A,fpoly.num_modes,FLOAT);
-        uni_array(&fpoly.phase,fpoly.num_modes,FLOAT);
+        bi_array(&fpoly.nu,fpoly.num_modes,1,sizeof(double));
+        uni_array(&fpoly.A,fpoly.num_modes,sizeof(double));
+        uni_array(&fpoly.phase,fpoly.num_modes,sizeof(double));
         for (i = 0; i < fpoly.num_modes; ++i)
         {
 	    for (j = 0; j < dim-1; ++j)
@@ -3410,7 +3410,7 @@ LOCAL	double multi_ellipsoid_func(
 	num_ellip = params->num_ellip;
 	if (d == NULL)
 	{
-	    uni_array(&d,num_ellip,FLOAT);
+	    uni_array(&d,num_ellip,sizeof(double));
 	    cen = params->cen;
 	    rad = params->rad;
 	}
@@ -3833,9 +3833,9 @@ LOCAL	boolean grid_crx_from_comp(
 	int     i,num_iter = 50;
 	double   coords1[MAXD], coords2[MAXD];
 
-	ft_assign(coords1, crds1, dim*FLOAT);
-	ft_assign(coords2, crds2, dim*FLOAT);
-	ft_assign(crx_crds, crds1, dim*FLOAT);
+	ft_assign(coords1, crds1, dim*sizeof(double));
+	ft_assign(coords2, crds2, dim*sizeof(double));
+	ft_assign(crx_crds, crds1, dim*sizeof(double));
 	
 	f1 = (*func)(func_params,coords1);
 	f2 = (*func)(func_params,coords2);
@@ -3995,7 +3995,7 @@ LOCAL  int install_grid_curve_crx_from_comp(
 	BBI_POINT  *crx_store = eg_crx->crx_store;
 	COMPONENT  ***comp = eg_crx->comp;
 	
-	bi_array(&face_coords, 4, 3, FLOAT);
+	bi_array(&face_coords, 4, 3, sizeof(double));
 
 	n_curve_crx = 0;
 
@@ -4571,7 +4571,7 @@ EXPORT boolean read_sdl_surface(
 	while (fgetstring(sdl_file,"vertex"))
 	    num_vtx++;
 	printf("num_vtx = %d\n",num_vtx);
-	uni_array(&vertex,num_vtx,FLOAT);
+	uni_array(&vertex,num_vtx,sizeof(double));
 	uni_array(&index,num_vtx,INT);
 	fflush(stdout);
 	fclose(sdl_file);
@@ -4743,7 +4743,7 @@ EXPORT boolean read_vtk_surface(
 	}
 	fgetstring(vtk_file,"POINTS");
 	status = fscanf(vtk_file,"%d\n",&num_vtx);
-	uni_array(&vertex,3*num_vtx,FLOAT);
+	uni_array(&vertex,3*num_vtx,sizeof(double));
 	uni_array(&index,num_vtx,INT);
 	if (!fgetstring(vtk_file,"double"))
 	{

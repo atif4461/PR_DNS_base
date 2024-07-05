@@ -333,8 +333,8 @@ EXPORT	boolean	tris_sect(
 
 	if(fbox1 == NULL)
 	{
-	    bi_array(&fbox1, 2, 3, FLOAT);
-	    bi_array(&fbox2, 2, 3, FLOAT);
+	    bi_array(&fbox1, 2, 3, sizeof(double));
+	    bi_array(&fbox2, 2, 3, sizeof(double));
 	}
 	
 	/* bounding boxes of two tris. */
@@ -351,11 +351,11 @@ EXPORT	void	plane_of_tri(
 	double	n[3], len;
 	int	i;
 
-	ft_assign(n, Tri_normal(t), 3*FLOAT);
+	ft_assign(n, Tri_normal(t), 3*sizeof(double));
 	len = Mag3d(n);
 	for(i=0; i<3; i++)
 	    n[i] /= len;
-	ft_assign(plane, n, 3*FLOAT);
+	ft_assign(plane, n, 3*sizeof(double));
 	plane[3] = Dot3d(n,Coords(Point_of_tri(t)[0]));
 }
 
@@ -366,9 +366,9 @@ EXPORT	void	swap_positions(
 {
 	double	v[5];
 
-	ft_assign(v, v1, dim*FLOAT);
-	ft_assign(v1, v2, dim*FLOAT);
-	ft_assign(v2, v, dim*FLOAT);
+	ft_assign(v, v1, dim*sizeof(double));
+	ft_assign(v1, v2, dim*sizeof(double));
+	ft_assign(v2, v, dim*sizeof(double));
 }
 
 EXPORT	boolean  skip_bdry_tri(
@@ -439,8 +439,8 @@ EXPORT	boolean	test_tris_intersection(
 	    if(!plane_side_intersection(plane, t1, side1, pe2, &iv))
 		return NO;
 	    
-	    difference(pe1, Coords(p), pe1, 3);
-	    difference(pe2, Coords(p), pe2, 3);
+	    difference_prdns(pe1, Coords(p), pe1, 3);
+	    difference_prdns(pe2, Coords(p), pe2, 3);
 	    
 	    return    Dot3d(pe1, pe2) > 0 ? YES : NO;
 	}
@@ -463,9 +463,9 @@ EXPORT	boolean	test_tris_intersection(
 		continue;
 	    
 	    if(j == 0)
-		ft_assign(ps1, pi, 3*FLOAT);
+		ft_assign(ps1, pi, 3*sizeof(double));
 	    else
-		ft_assign(pe1, pi, 3*FLOAT);
+		ft_assign(pe1, pi, 3*sizeof(double));
 	
 	    j++;
 	}
@@ -490,9 +490,9 @@ EXPORT	boolean	test_tris_intersection(
 		continue;
 		
 	    if(j == 0)
-		ft_assign(ps2, pi, 3*FLOAT);
+		ft_assign(ps2, pi, 3*sizeof(double));
 	    else
-		ft_assign(pe2, pi, 3*FLOAT);
+		ft_assign(pe2, pi, 3*sizeof(double));
 	    j++;
 	}
 	if(j != 2)
@@ -526,9 +526,9 @@ EXPORT	boolean	test_tris_intersection(
 
 	/* points ps1, pe1, ps2, pe2 must be in the intersection 
 	   line of the two planes. */
-	difference(pe1, ps1, pe1, 3);
-	difference(ps2, ps1, ps2, 3);
-	difference(pe2, ps1, pe2, 3);
+	difference_prdns(pe1, ps1, pe1, 3);
+	difference_prdns(ps2, ps1, ps2, 3);
+	difference_prdns(pe2, ps1, pe2, 3);
 
 	de1 = Dot3d(pe1, pe1);
 	ds2 = Dot3d(pe1, ps2);
@@ -844,8 +844,8 @@ EXPORT	int	count_tris_in_top_box(
 
 	if(fbox == NULL)
 	{
-	    bi_array(&fbox, 2, 3, FLOAT);
-	    bi_array(&bbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
+	    bi_array(&bbox, 2, 3, sizeof(double));
 	}
 
 	for(i=0; i<3; i++)
@@ -888,8 +888,8 @@ EXPORT	int	tris_set_in_top_box(
 
 	if(fbox == NULL)
 	{
-	    bi_array(&fbox, 2, 3, FLOAT);
-	    bi_array(&bbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
+	    bi_array(&bbox, 2, 3, sizeof(double));
 	}
 
 	for(i=0; i<3; i++)
@@ -932,7 +932,7 @@ EXPORT	void	tris_bound_box(
 	static double	**fbox1 = NULL;
 	
 	if(fbox1 == NULL)
-	    bi_array(&fbox1, 2, 3, FLOAT);
+	    bi_array(&fbox1, 2, 3, sizeof(double));
 
 	for(j=0; j<3; j++)
 	{
@@ -964,7 +964,7 @@ EXPORT	boolean	tris_crx_plane(
 	int		i;
 
 	if(fbox == NULL)
-	    bi_array(&fbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
 
 	fside = L[dir] + plane[dir]*h[dir];
 	for(i=0; i<ntris; i++)
@@ -1074,8 +1074,8 @@ EXPORT  boolean tri_in_grid_block(
 		}
 
 		/* tri intersect one side */
-		ft_assign(pmin, bmin, 3*FLOAT);
-		ft_assign(pmax, bmax, 3*FLOAT);
+		ft_assign(pmin, bmin, 3*sizeof(double));
+		ft_assign(pmax, bmax, 3*sizeof(double));
 		pmin[i] = j == 0 ? bmin[i] : bmax[i];
 		pmax[i] = pmin[i];
 
@@ -1225,7 +1225,7 @@ EXPORT  int	rect_boxes_from_tangled_tris(
 	DEBUG_ENTER(rect_boxes_from_tangled_tris)
 
 	if(fbox == NULL)
-	    bi_array(&fbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
 
 	sect_tol = 1.0e-6*min3(h[0], h[1], h[2]);
 	set_tol_for_tri_sect(sect_tol);
@@ -1420,7 +1420,7 @@ EXPORT	boolean	tangled_tris_bound_box(
 	int		i, j, k;
 	
 	if(fbox == NULL)
-	    bi_array(&fbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
 
 	nstris = sect_tris_in_box(sect_tris, MAX_TANGLED_TRIS, 
 			kmin,kmax, intfc);
@@ -1933,8 +1933,8 @@ LOCAL	boolean	add_to_tri_pairs(
 	p2 = Coords(Point_of_tri(tri2)[side2]);
 	p3 = Coords(Point_of_tri(tri2)[Next_m3(side2)]);
 	
-	difference(p0, p1, v1, 3);
-	difference(p3, p2, v2, 3);
+	difference_prdns(p0, p1, v1, 3);
+	difference_prdns(p3, p2, v2, 3);
 	
 	/* constraint, the angle between two null sides is not small. */
 	if(angflag && Dot3d(v1,v2) > Mag3d(v1)*Mag3d(v2)*ang_tol)
@@ -2235,7 +2235,7 @@ boolean	point_is_in_tri(
 	    if(maxlen < Mag3d(s[i]))
 		maxlen = Mag3d(s[i]);
 
-	difference(pt, p0, v, 3);
+	difference_prdns(pt, p0, v, 3);
 	
 	if(Dot3d(v,nor)/Mag3d(nor) < tol*maxlen && 
 	   within_tri(pt, p0, p1, p2, nor, 0.0))
@@ -2419,8 +2419,8 @@ LOCAL	boolean null_side_tris_loop(
 	    normal[j] = 0.0;
 	for (i = 0; i < num_sides; ++i)
 	{
-	    difference(Coords(pts[i]),Coords(pts[i+1]),v1,3);
-	    difference(Coords(pts[(i+2)%(num_sides+1)]),
+	    difference_prdns(Coords(pts[i]),Coords(pts[i+1]),v1,3);
+	    difference_prdns(Coords(pts[(i+2)%(num_sides+1)]),
 	    		Coords(pts[i+1]),v2,3);
 	    Cross3d(v2,v1,cprod);
 	    for (j = 0; j < 3; ++j) 
@@ -2567,7 +2567,7 @@ EXPORT	void  seal_null_loop_in_center(
 	/*TMP copy the states from the first point, 
 	  otherwise sl, sr will be NULL */
 	midp = copy_point(Point_of_tri(tri)[side]);
-	ft_assign(Coords(midp), avep, 3*FLOAT);
+	ft_assign(Coords(midp), avep, 3*sizeof(double));
 	
 	for(i=0; i<n_sides; i++)
 	{
@@ -3329,7 +3329,7 @@ EXPORT	void	compute_point_smooth(
 	for(i=0; i<3; i++)
 	    avep[i] = alpha*smooth_para->avep[i] + (1.0-alpha)*Coords(p)[i];
 
-	ft_assign(Coords(p), avep, 3*FLOAT);
+	ft_assign(Coords(p), avep, 3*sizeof(double));
 	nt = set_tri_list_around_point(p, tri, &ptris, intfc);
 	for(i=0; i<nt; i++)
 	    set_normal_of_tri(ptris[i]);

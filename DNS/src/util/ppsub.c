@@ -1242,7 +1242,7 @@ LOCAL	long	*long_work_vector(
 	    if (work != NULL)
 	    	free(work);
 	    work_len = n;
-	    scalar(&lwork,work_len*SizeWork);
+	    scalar_prdns(&lwork,work_len*SizeWork);
 	    work = (void*)lwork;
 	}
 	return lwork;
@@ -1257,7 +1257,7 @@ LOCAL	int	*int_work_vector(
 	    if (work != NULL)
 	    	free(work);
 	    work_len = n;
-	    scalar(&iwork,work_len*SizeWork);
+	    scalar_prdns(&iwork,work_len*SizeWork);
 	    work = (void*)iwork;
 	}
 	return iwork;
@@ -1272,7 +1272,7 @@ LOCAL	double	*float_work_vector(
 	    if (work != NULL)
 	    	free(work);
 	    work_len = n;
-	    scalar(&fwork,work_len*SizeWork);
+	    scalar_prdns(&fwork,work_len*SizeWork);
 	    work = (void*)fwork;
 	}
 	return fwork;

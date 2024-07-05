@@ -1267,7 +1267,7 @@ void	extend_long_ref_side_for_surf(
 	static Locstate	ans = NULL;
 
 	if(ans == NULL)
-	    scalar(&ans, fr->sizest);
+	    scalar_prdns(&ans, fr->sizest);
 	
 	hmin = min3(gr->h[0], gr->h[1], gr->h[2]);
 	tol = 0.7;
@@ -1281,7 +1281,7 @@ void	extend_long_ref_side_for_surf(
 		    continue;
 		
 		p1 = Point_of_tri(tri)[i];
-		difference(Coords(p1), pt, v, 3);
+		difference_prdns(Coords(p1), pt, v, 3);
 		len = fabs(Dot3d(v, nor));
 		if(len < tol*hmin)
 		    continue;

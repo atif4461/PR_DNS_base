@@ -86,8 +86,8 @@ EXPORT void rotate_matrix(
 	if (first)
 	{
 	    first = NO;
-	    bi_array(&mtmp1,3,3,FLOAT);
-	    bi_array(&mtmp2,3,3,FLOAT);
+	    bi_array(&mtmp1,3,3,sizeof(double));
+	    bi_array(&mtmp2,3,3,sizeof(double));
 	}
 
 	if (M == M1)

@@ -947,7 +947,7 @@ EXPORT  void plane_fit_normal3d(
 	    return;
 	}
 	if (r == NULL)
-	    bi_array(&r,3,3,FLOAT);
+	    bi_array(&r,3,3,sizeof(double));
 	tri = Tri_of_hse(hse);
 	Tri_list_at_vertex.p = p;
 	Tri_list_at_vertex.num_tris =
@@ -1005,7 +1005,7 @@ EXPORT  void plane_fit_normal3d_along_wall(
 	static double **r = NULL;
 
 	if (r == NULL)
-	    bi_array(&r,3,3,FLOAT);
+	    bi_array(&r,3,3,sizeof(double));
 
 	n = 0;
 	/*add all points in tris1 including the two bdry points */
@@ -1415,7 +1415,7 @@ EXPORT	void set_normal_of_tri(
 	{
 	    static double **sstore;
 	    if (sstore == NULL)
-		bi_array(&sstore,3,3,FLOAT);
+		bi_array(&sstore,3,3,sizeof(double));
 	    s = sstore;
 	    for (i = 0; i < 3; ++i)
 	    {
@@ -3246,7 +3246,7 @@ EXPORT boolean WLSP_compute_normal2d(
 	if (ngbpts == NULL)
 	{
 	    uni_array(&pts,num_pts,sizeof(POINT*));
-	    bi_array(&ngbpts,num_pts,2,FLOAT);
+	    bi_array(&ngbpts,num_pts,2,sizeof(double));
 	}
 
 	if (!IntfcGetPointChain(p,pts,num_pts))

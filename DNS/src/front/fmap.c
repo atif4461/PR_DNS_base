@@ -855,7 +855,7 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 
 	if (blk_cell == NULL)
 	{
-	    scalar(&blk_cell,sizeof(INTRP_CELL));
+	    scalar_prdns(&blk_cell,sizeof(INTRP_CELL));
 	    uni_array(&blk_cell->var,MAX_NUM_VERTEX_IN_CELL,sizeof(double));
 	    uni_array(&blk_cell->dist,MAX_NUM_VERTEX_IN_CELL,sizeof(double));
 	    bi_array(&blk_cell->coords,MAX_NUM_VERTEX_IN_CELL,MAXD,
@@ -912,7 +912,7 @@ EXPORT	boolean FT_IntrpStateVarAtCoords(
 	    if (debugging("the_pt"))
 		printf("Using nearest_intfc_state()\n");
 	    if (state == NULL)
-		scalar(&state,front->sizest);
+		scalar_prdns(&state,front->sizest);
 	    nearest_intfc_state(coords,comp,front->grid_intfc,state,NULL,NULL);
 	    *ans = get_state(state);
 	    return YES;
@@ -937,7 +937,7 @@ EXPORT	boolean FT_CompGridIntrpStateVarAtCoords(
 
 	if (blk_cell == NULL)
 	{
-	    scalar(&blk_cell,sizeof(INTRP_CELL));
+	    scalar_prdns(&blk_cell,sizeof(INTRP_CELL));
 	    uni_array(&blk_cell->var,MAX_NUM_VERTEX_IN_CELL,sizeof(double));
 	    uni_array(&blk_cell->dist,MAX_NUM_VERTEX_IN_CELL,sizeof(double));
 	    bi_array(&blk_cell->coords,MAX_NUM_VERTEX_IN_CELL,MAXD,
@@ -982,7 +982,7 @@ EXPORT	boolean FT_CompGridIntrpStateVarAtCoords(
 	    if (debugging("the_pt"))
 		printf("Using nearest_intfc_state()\n");
 	    if (state == NULL)
-		scalar(&state,front->sizest);
+		scalar_prdns(&state,front->sizest);
 	    nearest_intfc_state(coords,comp,front->comp_grid_intfc,state,
 				NULL,NULL);
 	    *ans = get_state(state);
@@ -2450,14 +2450,14 @@ EXPORT	Nor_stencil *FT_CreateNormalStencil(
 	
 	if (sten == NULL)
 	{
-	    scalar(&sten,sizeof(Nor_stencil));
+	    scalar_prdns(&sten,sizeof(Nor_stencil));
 	    current_npts = npts;
-	    bi_array(&sten->pts,npts,MAXD,FLOAT);
+	    bi_array(&sten->pts,npts,MAXD,sizeof(double));
 	}
 	if (current_npts < npts)
 	{
 	    free_these(1,sten->pts);
-	    bi_array(&sten->pts,npts,MAXD,FLOAT);
+	    bi_array(&sten->pts,npts,MAXD,sizeof(double));
 	    current_npts = npts;
 	}
 	sten->comp = comp;
@@ -2566,8 +2566,8 @@ LOCAL void FrontPreAdvance2d(
 	pp_global_imax(&max_body_index,1);
 	if (max_body_index == 0) return;
 
-	uni_array(&torque,max_body_index,FLOAT);
-	bi_array(&force,max_body_index,MAXD,FLOAT);
+	uni_array(&torque,max_body_index,sizeof(double));
+	bi_array(&force,max_body_index,MAXD,sizeof(double));
 	for (i = 0; i < max_body_index; ++i)
 	{
 	    torque[i] = 0.0;
@@ -2724,8 +2724,8 @@ LOCAL void FrontPreAdvance3d(
 	pp_global_imax(&max_body_index,1);
 	if (max_body_index == 0) return;
 
-	bi_array(&torque,max_body_index,MAXD,FLOAT);
-	bi_array(&force,max_body_index,MAXD,FLOAT);
+	bi_array(&torque,max_body_index,MAXD,sizeof(double));
+	bi_array(&force,max_body_index,MAXD,sizeof(double));
 	for (i = 0; i < max_body_index; ++i)
 	{
 	    for (j = 0; j < dim; ++j)

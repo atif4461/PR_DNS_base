@@ -130,7 +130,7 @@ EXPORT void augment_rproblem_list(
 	    /* install new rproblem */
 
 	debug_print("rproblem","Entered augment_rproblem_list()\n");
-	scalar(&rp,size_rproblem);
+	scalar_prdns(&rp,size_rproblem);
 	if (debugging("rproblem"))
 	    (void) printf("curr_rp %p rp %p\n",(POINTER)*curr_rp,(POINTER)rp);
 	rp->old_intfc = old_intfc;
@@ -316,8 +316,8 @@ EXPORT void init_cfamily(
 	CURVE		*c,
 	ORIENTATION	orient)
 {
-	scalar(cfamily,sizeof(O_CURVE_FAMILY));
-	scalar(&(*cfamily)->first,sizeof(O_CURVE));
+	scalar_prdns(cfamily,sizeof(O_CURVE_FAMILY));
+	scalar_prdns(&(*cfamily)->first,sizeof(O_CURVE));
 
 	(*cfamily)->last = (*cfamily)->first;
 	(*cfamily)->first->curve = c;
@@ -362,7 +362,7 @@ EXPORT	void add_oc_curve_to_family(
 	    return;
 	if (!*cfamily) 
 	{
-	    scalar(cfamily,sizeof(O_CURVE_FAMILY));
+	    scalar_prdns(cfamily,sizeof(O_CURVE_FAMILY));
 	    (*cfamily)->first = (*cfamily)->last = oc;
 	    oc->prev = oc->next = NULL;
 	    return;
@@ -391,7 +391,7 @@ EXPORT void init_o_curve(
 	CURVE		*c,
 	ORIENTATION	orient)
 {
-	scalar(ocurve,sizeof(O_CURVE));
+	scalar_prdns(ocurve,sizeof(O_CURVE));
 	(*ocurve)->curve = c;
 	(*ocurve)->orient = orient;
 	(*ocurve)->prev = NULL;
@@ -601,7 +601,7 @@ EXPORT	RP_NODE *add_to_rp_node_list(
 	    if (rpn->old_node == oldn && rpn->node == n)
 		return rpn;
 
-	scalar(&rpn,size_rp_node);
+	scalar_prdns(&rpn,size_rp_node);
 
 	rpn->next = NULL;	rpn->prev = rp->last_rp_node;
 	if (rp->last_rp_node)

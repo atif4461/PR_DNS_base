@@ -26,6 +26,11 @@ set (CMAKE_CUDA_FLAGS "-I/{MPI_HOME}/include/ -L/{MPI_HOME}/lib -lmpi")
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g ")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g ")
 
+# Link Torch
+find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+
+
 
 #detect dependencies
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")

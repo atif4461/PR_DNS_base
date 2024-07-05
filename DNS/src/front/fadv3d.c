@@ -958,7 +958,7 @@ LOCAL	void unfold_interface_section(
 	    max_num_tris = 2*nt_tmp+1;
 	    uni_array(&tris_tmp,max_num_tris,sizeof(TRI*));
 	    uni_array(&tris_new,max_num_tris,sizeof(TRI*));
-	    uni_array(&l,max_num_tris,FLOAT);
+	    uni_array(&l,max_num_tris,sizeof(double));
 	  }
 	  for (i = 0; i < nt_tmp; ++i)
 	    tris_tmp[i] = tris[i];

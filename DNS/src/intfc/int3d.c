@@ -1826,7 +1826,7 @@ LOCAL void fprint_triangle_numbers(
 	    for (i = 0; i < 3; ++i)
 	    {
 	    	p = Point_of_tri(tri)[i];
-	    	(void) fwrite((const void *) Coords(p),FLOAT,3,file);
+	    	(void) fwrite((const void *) Coords(p),sizeof(double),3,file);
 	    }
 	}
 	else

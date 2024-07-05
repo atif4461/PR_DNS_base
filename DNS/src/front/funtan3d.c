@@ -1336,7 +1336,7 @@ LOCAL 	boolean  c_bonds_intersect(
 	a10 = -a01;           a11 =  QDot3d(d1,d1); b1  =  QDot3d(d,d1);
 
 	D =  (a00*a11 - a10*a01);
-	if (D == 0.0) /*FLOATING POINT TOLERANCE TEST*/
+	if (D == 0.0) /*sizeof(double)ING POINT TOLERANCE TEST*/
 	    return NO;
 	t0 = (b0*a11 - b1*a01)/D;
 	t1 = (b0*a10 - b1*a00)/D;
@@ -1395,7 +1395,7 @@ LOCAL boolean cdt_triangulate_one_tri(
 	    if (in.pointlist != NULL)
 		free(in.pointlist);
 	    in.size_pointlist = (size_t)2*nv;
-	    uni_array(&in.pointlist,in.size_pointlist,FLOAT);
+	    uni_array(&in.pointlist,in.size_pointlist,sizeof(double));
 	}
 	for (i = 0; i < nv; ++i)
 	{

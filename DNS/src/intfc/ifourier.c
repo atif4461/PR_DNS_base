@@ -54,14 +54,14 @@ EXPORT	FOURIER_POLY  *allocate_fourier_poly(
 	    return NULL;
 
 	naFP = num_aligns(sizeof(FOURIER_POLY));
-	naA = num_aligns(nmodes*FLOAT);
-	naP = num_aligns(nmodes*FLOAT);
+	naA = num_aligns(nmodes*sizeof(double));
+	naP = num_aligns(nmodes*sizeof(double));
 	naNUP = num_aligns(nmodes*sizeof(double*));
-	naNUS = num_aligns(nmodes*(dim-1)*FLOAT);
+	naNUS = num_aligns(nmodes*(dim-1)*sizeof(double));
 	size = sizeof(ALIGN)*(naFP + naA + naP + naNUP + naNUS);
 
 	if (fpstore == NULL)
-	    scalar(&fpstore,size);
+	    scalar_prdns(&fpstore,size);
 	else
 	    zero_scalar(fpstore,size);
 
@@ -242,7 +242,7 @@ EXPORT 	FOURIER_POLY	*get_fourier_bubble(
 	screen("Enter the number of bubbles %s: ",mesg);
 	(void) Scanf("%d\n",&nb);
 
-	uni_array(&x,nb,FLOAT); uni_array(&a,nb,FLOAT); uni_array(&l,nb,FLOAT);
+	uni_array(&x,nb,sizeof(double)); uni_array(&a,nb,sizeof(double)); uni_array(&l,nb,sizeof(double));
 	for (i = 0; i < nb; ++i)
 	{
 	    screen("Enter the center of bubble %d: ",i+1);
@@ -476,11 +476,11 @@ EXPORT	LEGENDRE_POLY  *allocate_legendre_poly(
 	    return NULL;
 
 	naLP = num_aligns(sizeof(LEGENDRE_POLY));
-	naA = num_aligns((max_degree+1)*FLOAT);
+	naA = num_aligns((max_degree+1)*sizeof(double));
 	size = sizeof(ALIGN)*(naLP + naA);
 
 	if (lpstore == NULL)
-	    scalar(&lpstore,size);
+	    scalar_prdns(&lpstore,size);
 	else
 	    zero_scalar(lpstore,size);
 
@@ -601,7 +601,7 @@ EXPORT	LEGENDRE_POLY	*get_legendre_multi_mode(
 	    }
 	}
 
-	uni_array(&amplitude,num_modes,FLOAT);
+	uni_array(&amplitude,num_modes,sizeof(double));
 	uni_array(&mode_degree,num_modes,INT);
 	prompt_for_legendre_multi_modes(a0,0,num_modes,amplitude,mode_degree);
 

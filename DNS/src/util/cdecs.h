@@ -385,7 +385,7 @@ struct _Error {
 	struct _Error *next;
 };
 
-#define Error(__num,__mess)  log_error(__FILE__,__LINE__,__num,__mess)
+#define Error_prdns(__num,__mess)  log_error(__FILE__,__LINE__,__num,__mess)
 
 
 /* Opaque holder for storing location in file for output */

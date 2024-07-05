@@ -1806,7 +1806,7 @@ LOCAL void shortest_distance3d(
 *
 *		3.2 For the ONVERTEX case with the closest point being
 *                   on the same vertex, we have the same agorithm as 
-*                   ONEDGE case. The only difference is that we need 
+*                   ONEDGE case. The only difference_prdns is that we need 
 *		    to dertermine if the  other two points of ntp are 
 *		    on the same or different side of the plane of the 
 *		    triangle tp with pt.
@@ -3987,7 +3987,7 @@ int	i, iv0;
 	    if(distance_between_positions(Coords(pt[i]), crds, 3) < tol)
 	    {
 	        *iv = i;
-		ft_assign(crx, Coords(pt[i]), 3*FLOAT);
+		ft_assign(crx, Coords(pt[i]), 3*sizeof(double));
 		return YES;
 	    }
 
@@ -4009,7 +4009,7 @@ int	i, iv0;
 	/*point is inside the tri */
 	if(within_tri(crds,p0,p1,p2,norm,0.0))
 	{
-	    ft_assign(crx,crds,3*FLOAT);
+	    ft_assign(crx,crds,3*sizeof(double));
 	    return YES;
 	}
 	return NO;
@@ -4033,9 +4033,9 @@ int	i,iv,ie;
 	for (i = 0; i < 3; ++i)
 	    norm[i] = n[i]/D;
 
-	difference(crds1, p0, v, 3);
+	difference_prdns(crds1, p0, v, 3);
 	t1 = Dot3d(v, norm);
-	difference(crds2, p0, v, 3);
+	difference_prdns(crds2, p0, v, 3);
 	t2 = Dot3d(v, norm);
 
 	/*near the plane of the tri */
@@ -4090,7 +4090,7 @@ int	 i;
 
 	*iv = ERROR;
 	
-	difference(crds1,crds2,n,3);
+	difference_prdns(crds1,crds2,n,3);
 	D = Mag3d(n);
 	if(D < tol)
 	{
@@ -4102,9 +4102,9 @@ int	 i;
 	for(i=0; i<3; i++)
 	    n[i] /= D;
 	
-	difference(crds1, pt, v, 3);
+	difference_prdns(crds1, pt, v, 3);
 	t1 = Dot3d(v, n);
-	difference(crds2, pt, v, 3);
+	difference_prdns(crds2, pt, v, 3);
 	t2 = Dot3d(v, n);
 	
 	/*On the same side of the plane */
@@ -4178,7 +4178,7 @@ LOCAL COMPONENT comp_from_line_tri(
 	for(i=0; i<3; i++)
 	    crds2[i] /= 3.0;
 
-	ft_assign(crx, crds2, 3*FLOAT);
+	ft_assign(crx, crds2, 3*sizeof(double));
         dist = distance_between_positions(crds1, crds2, 3); 
 
 	for (iz = izmin; iz <= izmax; ++iz)
@@ -4202,7 +4202,7 @@ LOCAL COMPONENT comp_from_line_tri(
 			    if(dist0 < dist)
 			    {
 			        dist = dist0;
-				ft_assign(crx, crx0, 3*FLOAT);
+				ft_assign(crx, crx0, 3*sizeof(double));
 				tri = t[i];
 				s = T->surfaces[iz][iy][ix][i];
 			    }
@@ -4211,7 +4211,7 @@ LOCAL COMPONENT comp_from_line_tri(
 		}
 	    }
 	}
-	difference(crds1, crds2, crx0, 3);
+	difference_prdns(crds1, crds2, crx0, 3);
 	
 	tnor = Tri_normal(tri);
 	*ip = Dot3d(tnor, crx0)/(Mag3d(tnor)*Mag3d(crx0));
@@ -4249,7 +4249,7 @@ LOCAL COMPONENT component_wrt_icoords3d_vertex(
 
 	hmin = min3(h[0], h[1], h[2]);
 	tol = 1.0e-8*hmin;
-	difference(coords, Coords(p), v, 3);
+	difference_prdns(coords, Coords(p), v, 3);
 	for(i=0; i<3; i++)
 	    crds[i] = Coords(p)[i] + 1.0e-2*hmin*v[i]/Mag3d(v);
 

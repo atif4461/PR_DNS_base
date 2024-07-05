@@ -611,7 +611,7 @@ static double	**fbox = NULL;
 static CURVE_CRX_SORT    *c_crx = NULL;
 
 	if(fbox == NULL)
-	    bi_array(&fbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
 	if(c_crx == NULL)
 	    uni_array(&c_crx, MAX_CURVE_CRX_SORT, sizeof(CURVE_CRX_SORT));
 
@@ -676,7 +676,7 @@ static CURVE_CRX_SORT    *c_crx = NULL;
 			    /*printf("#crx found\n"); */
 			    /*print_general_vector("crx = ", crx, 3, "\n"); */
 
-			    ft_assign(c_crx[num].crx, crx, 3*FLOAT);
+			    ft_assign(c_crx[num].crx, crx, 3*sizeof(double));
 			    c_crx[num].tri = *t;
 			    c_crx[num].surf = *s;
 	    		    num++;
@@ -729,7 +729,7 @@ static double		 **fbox = NULL;
 static CURVE_CRX_SORT    *c_crx = NULL;
 
 	if(fbox == NULL)
-	    bi_array(&fbox, 2, 3, FLOAT);
+	    bi_array(&fbox, 2, 3, sizeof(double));
 	if(c_crx == NULL)
 	    uni_array(&c_crx, MAX_CURVE_CRX_SORT, sizeof(CURVE_CRX_SORT));
 
@@ -790,7 +790,7 @@ static CURVE_CRX_SORT    *c_crx = NULL;
 
 	    		if(line_tri_crossing(crx,*t, pt1, pt2, tol))
 	    		{
-			    ft_assign(c_crx[num].crx, crx, 3*FLOAT);
+			    ft_assign(c_crx[num].crx, crx, 3*sizeof(double));
 			    c_crx[num].tri = *t;
 			    c_crx[num].surf = *s;
 	    		    num++;
@@ -804,7 +804,7 @@ static CURVE_CRX_SORT    *c_crx = NULL;
 	{
 	    qsort(c_crx, num, sizeof(CURVE_CRX_SORT), compare_crx);
 	    
-	    ft_assign(crx, c_crx[0].crx, 3*FLOAT);
+	    ft_assign(crx, c_crx[0].crx, 3*sizeof(double));
 	    *ptri = c_crx[0].tri;
 	    *psurf = c_crx[0].surf;
 	    return YES;

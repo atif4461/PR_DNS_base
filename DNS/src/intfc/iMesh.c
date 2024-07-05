@@ -122,7 +122,7 @@ void iMesh_newMesh(/*in*/  const char *options,
         FTMESH *mesh;
 	int dim;
 
-	scalar(&mesh,sizeof(FTMESH));
+	scalar_prdns(&mesh,sizeof(FTMESH));
 	zero_scalar(mesh,sizeof(FTMESH));
 
         *instance = (iMesh_Instance)mesh;
@@ -242,7 +242,7 @@ void iMesh_createEnt(iMesh_Instance instance,
 	dim = Dimension(((FTMESH*)instance)->intfc);
 	lower_hand = (FTEHANDLE**) (lower_order_entity_handles);
 
-	scalar(&hand,sizeof(FTEHANDLE));
+	scalar_prdns(&hand,sizeof(FTEHANDLE));
 	zero_scalar(hand,sizeof(FTEHANDLE));
 	*new_entity_handle = (iBase_EntityHandle)hand;
 
@@ -291,7 +291,7 @@ void iMesh_createVtx(iMesh_Instance instance,
 	int dim = Dimension(intfc);
 	FTEHANDLE *hand;
 
-	scalar(&hand,sizeof(FTEHANDLE));
+	scalar_prdns(&hand,sizeof(FTEHANDLE));
 	zero_scalar(hand,sizeof(FTEHANDLE));
 	hand->topo = iMesh_POINT;
 	coords[0] = x;
@@ -423,7 +423,7 @@ void iMesh_getRootSet(iMesh_Instance instance,
 	FTMESH *mesh = (FTMESH*)instance;
 	FT_ESET_HANDLE *hand;
 
-	scalar(&hand,sizeof(FT_ESET_HANDLE));
+	scalar_prdns(&hand,sizeof(FT_ESET_HANDLE));
 	zero_scalar(hand,sizeof(FT_ESET_HANDLE));
 	hand->type = INTERFACE_SET;
 	hand->ent_set_data = (POINTER)mesh->intfc;
@@ -1162,7 +1162,7 @@ void iMesh_createTag(iMesh_Instance instance,
 {
 	FT_ETAG	*etag;
 
-	scalar (&etag,sizeof(FT_ETAG));
+	scalar_prdns (&etag,sizeof(FT_ETAG));
 	zero_scalar(etag,sizeof(FT_ETAG));
 
 	sprintf(etag->name,"%s",tag_name);
@@ -2069,7 +2069,7 @@ void iMesh_initEntArrIter(iMesh_Instance instance,
 	FT_ESET_HANDLE *ent_set = (FT_ESET_HANDLE*)entity_set_handle;
 	int i,total_num_ents;
 
-	scalar(&IT,sizeof(IterData));
+	scalar_prdns(&IT,sizeof(IterData));
 	zero_scalar(IT,sizeof(IterData));
 
         IT->topo = requested_entity_topology;
@@ -2280,7 +2280,7 @@ void iMesh_getNextEntArrIter(iMesh_Instance instance,
 	    *entity_handles_allocated = YES;
 	    for (i = 0; i < array_size; ++i)
 	    {
-		scalar(&ents[i],sizeof(FTEHANDLE));
+		scalar_prdns(&ents[i],sizeof(FTEHANDLE));
 		zero_scalar(ents[i],sizeof(FTEHANDLE));
 	    }
 	}
@@ -2474,7 +2474,7 @@ void iMesh_createEntSet(iMesh_Instance instance,
                           /*out*/ int *err)
 {
 	FT_ESET_HANDLE *ent_set;
-	scalar(&ent_set,sizeof(FT_ESET_HANDLE));
+	scalar_prdns(&ent_set,sizeof(FT_ESET_HANDLE));
 	zero_scalar(ent_set,sizeof(FT_ESET_HANDLE));
 	*entity_set_created = (iBase_EntitySetHandle)ent_set;
 	SUCCESS
@@ -3151,7 +3151,7 @@ void iMesh_getTagType(iMesh_Instance instance,
 iBase_EntityHandle entityOfPoint(POINT *p)
 {
 	FTEHANDLE *entity;
-	scalar(&entity,sizeof(FTEHANDLE));	
+	scalar_prdns(&entity,sizeof(FTEHANDLE));	
 	entity->obj.point = p;
 	entity->topo = iMesh_POINT;
 	return (iBase_EntityHandle)entity;
@@ -3160,7 +3160,7 @@ iBase_EntityHandle entityOfPoint(POINT *p)
 iBase_EntityHandle entityOfBond(BOND *b)
 {
 	FTEHANDLE *entity;
-	scalar(&entity,sizeof(FTEHANDLE));	
+	scalar_prdns(&entity,sizeof(FTEHANDLE));	
 	entity->obj.bond = b;
 	entity->topo = iMesh_LINE_SEGMENT;
 	return (iBase_EntityHandle)entity;
@@ -3169,7 +3169,7 @@ iBase_EntityHandle entityOfBond(BOND *b)
 iBase_EntityHandle entityOfTri(TRI *t)
 {
 	FTEHANDLE *entity;
-	scalar(&entity,sizeof(FTEHANDLE));	
+	scalar_prdns(&entity,sizeof(FTEHANDLE));	
 	entity->obj.tri = t;
 	entity->topo = iMesh_TRIANGLE;
 	return (iBase_EntityHandle)entity;

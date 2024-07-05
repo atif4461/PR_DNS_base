@@ -244,7 +244,7 @@ LOCAL WRITE_LIST *index_of_write_file(
 	if (wlist != NULL)
 	    return wlist;
 
-	scalar(&wlist,sizeof(WRITE_LIST));
+	scalar_prdns(&wlist,sizeof(WRITE_LIST));
 	if (wlist == NULL)
 	    return NULL;
 	wlist->next = NULL;
@@ -367,7 +367,7 @@ LOCAL IOUTPUT *index_of_read_file(
 	if (debugging("foutput"))
 	    (void) printf("Adding new entry\n");
 
-	scalar(&rlist,sizeof(READ_LIST));
+	scalar_prdns(&rlist,sizeof(READ_LIST));
 	if (rlist == NULL)
 	{
 	    if (debugging("foutput"))
@@ -738,7 +738,7 @@ EXPORT OUTPUT *save_read_file_variables(
 	}
 	soput = (IOUTPUT*)savoput;
 	if (soput == NULL)
-	  scalar(&soput,sizeof(IOUTPUT));
+	  scalar_prdns(&soput,sizeof(IOUTPUT));
 	*soput = *oput;
 	soput->save = ftell(file);
 	debug_print("foutput","Left save_read_file_variables()\n");

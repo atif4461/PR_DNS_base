@@ -38,7 +38,7 @@ void DUAL_ELLIPTIC_SOLVER::set_solver_domain(void)
 		array_size *= (ctop_gmax[i] + 1);
 		offset[i] = (lbuf[i] == 0) ? 1 : 0;
 	    }
-	    FT_VectorMemoryAlloc((POINTER*)&array,array_size,FLOAT);
+	    FT_VectorMemoryAlloc((POINTER*)&array,array_size,sizeof(double));
 	}
 }	/* end set_solver_domain */
 

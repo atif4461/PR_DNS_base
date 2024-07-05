@@ -696,13 +696,13 @@ LOCAL	POINTER_Q *new_pointer_queue(
 	switch (pq_alloc_type)
 	{
 	case USE_VMALLOC_FOR_ALLOC:
-	    scalar(&pq_header,sizeof(PQ_HEADER));
-	    scalar(&pq_header->pq_str,sizeof(POINTER_Q));
-	    scalar(&pq_header->pq_str->pointer,pq_block_size(n_pqs_in_blk));
+	    scalar_prdns(&pq_header,sizeof(PQ_HEADER));
+	    scalar_prdns(&pq_header->pq_str,sizeof(POINTER_Q));
+	    scalar_prdns(&pq_header->pq_str->pointer,pq_block_size(n_pqs_in_blk));
 	    if (p2sz != 0)
 	    {
-	    	scalar(&pq_header->p2str,sizeof(POINTER_Q));
-	    	scalar(&pq_header->p2str->pointer,p2sz*n_pqs_in_blk);
+	    	scalar_prdns(&pq_header->p2str,sizeof(POINTER_Q));
+	    	scalar_prdns(&pq_header->p2str->pointer,p2sz*n_pqs_in_blk);
 	    	pq_header->p2str->next = pq_header->p2str->prev = NULL;
 	    }
 	    else
@@ -747,8 +747,8 @@ LOCAL	void alloc_next_pointer_queue_storage_block(
 	switch (pq_header->alloc_type)
 	{
 	case USE_VMALLOC_FOR_ALLOC:
-	    scalar(&new_pq_str,sizeof(POINTER_Q));
-	    scalar(&new_pq_str->pointer,pq_block_size(pq_header->blk_len));
+	    scalar_prdns(&new_pq_str,sizeof(POINTER_Q));
+	    scalar_prdns(&new_pq_str->pointer,pq_block_size(pq_header->blk_len));
 	    break;
 	case USE_STORE_FOR_ALLOC:
 	    new_pq_str = (POINTER_Q *) store(sizeof(POINTER_Q));
@@ -776,8 +776,8 @@ LOCAL	void alloc_next_pointer_2_storage_block(
 	switch (pq_header->alloc_type)
 	{
 	case USE_VMALLOC_FOR_ALLOC:
-	    scalar(&new_p2str,sizeof(POINTER_Q));
-	    scalar(&new_p2str->pointer,pq_header->p2sz*n_pqs_in_blk);
+	    scalar_prdns(&new_p2str,sizeof(POINTER_Q));
+	    scalar_prdns(&new_p2str->pointer,pq_header->p2sz*n_pqs_in_blk);
 		break;
 	case USE_STORE_FOR_ALLOC:
 	    new_p2str = (POINTER_Q *) store(sizeof(POINTER_Q));

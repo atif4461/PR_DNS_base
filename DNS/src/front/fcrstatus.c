@@ -843,7 +843,7 @@ LOCAL void find_partial_time_cross_by_extension(
 
 	if (ptmp == NULL)
 	{
-		scalar(&newb,sizeof(BOND));
+		scalar_prdns(&newb,sizeof(BOND));
 		newb->start = Static_point(fr->interf);
 		newb->end = Static_point(fr->interf);
 		ptmp = Static_point(fr->interf);

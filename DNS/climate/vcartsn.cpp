@@ -1400,8 +1400,8 @@ void VCARTESIAN::makeGridIntfc()
 	case 1:
             if (first)
             {
-                FT_VectorMemoryAlloc((POINTER*)&array,top_gmax[0]+1,FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&vapor,top_gmax[0]+1,FLOAT);
+                FT_VectorMemoryAlloc((POINTER*)&array,top_gmax[0]+1,sizeof(double));
+                FT_VectorMemoryAlloc((POINTER*)&vapor,top_gmax[0]+1,sizeof(double));
                 first = NO;
             }	
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -1412,8 +1412,8 @@ void VCARTESIAN::makeGridIntfc()
 	case 2:
 	    if (first)
 	    {
-	    	FT_VectorMemoryAlloc((POINTER*)&array,(top_gmax[0]+1)*(top_gmax[1]+1),FLOAT);
-	    	FT_VectorMemoryAlloc((POINTER*)&vapor,(top_gmax[0]+1)*(top_gmax[1]+1),FLOAT);
+	    	FT_VectorMemoryAlloc((POINTER*)&array,(top_gmax[0]+1)*(top_gmax[1]+1),sizeof(double));
+	    	FT_VectorMemoryAlloc((POINTER*)&vapor,(top_gmax[0]+1)*(top_gmax[1]+1),sizeof(double));
 	    	first = NO;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -1426,9 +1426,9 @@ void VCARTESIAN::makeGridIntfc()
 	    if (first)
 	    {
 	    	FT_VectorMemoryAlloc((POINTER*)&array,
-			(top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1),FLOAT);
+			(top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1),sizeof(double));
 	    	FT_VectorMemoryAlloc((POINTER*)&vapor,
-			(top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1),FLOAT);
+			(top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1),sizeof(double));
 	    	first = NO;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -2496,7 +2496,7 @@ void VCARTESIAN::recordMixingLine()
         {
             max_array_size = eqn_params->num_drops;
             free_these(1,radius_array);
-            FT_VectorMemoryAlloc((POINTER*)&radius_array,max_array_size,FLOAT);
+            FT_VectorMemoryAlloc((POINTER*)&radius_array,max_array_size,sizeof(double));
         }
 
 	double a3 = 1.0;
@@ -3176,16 +3176,16 @@ void VCARTESIAN::setDomain()
             if (first == YES)
             {
 		comp_size = top_gmax[0]+1;
-                FT_VectorMemoryAlloc((POINTER*)&array,comp_size,FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,FLOAT);
+                FT_VectorMemoryAlloc((POINTER*)&array,comp_size,sizeof(double));
+                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->vapor,comp_size,
-			FLOAT);
+			sizeof(double));
 		FT_VectorMemoryAlloc((POINTER*)&field->supersat,comp_size,
-			FLOAT);
+			sizeof(double));
 		FT_VectorMemoryAlloc((POINTER*)&field->mrad,comp_size,
-			FLOAT);
+			sizeof(double));
 		FT_VectorMemoryAlloc((POINTER*)&field->temperature,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 first = NO;
             }	
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -3196,26 +3196,26 @@ void VCARTESIAN::setDomain()
 	    if (first == YES)
 	    {
 		comp_size = (top_gmax[0]+1)*(top_gmax[1]+1);
-	    	FT_VectorMemoryAlloc((POINTER*)&array,comp_size,FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,FLOAT);
+	    	FT_VectorMemoryAlloc((POINTER*)&array,comp_size,sizeof(double));
+                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,sizeof(double));
 	    	FT_VectorMemoryAlloc((POINTER*)&field->vapor,
-			comp_size,FLOAT);
+			comp_size,sizeof(double));
 	    	FT_VectorMemoryAlloc((POINTER*)&field->cloud,
-			comp_size,FLOAT);
+			comp_size,sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->supersat,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->mrad,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->drops,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->adv,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->adv_old,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_MatrixMemoryAlloc((POINTER*)&field->ext_accel,2,comp_size,
-                                        FLOAT);
+                                        sizeof(double));
 		FT_VectorMemoryAlloc((POINTER*)&field->temperature,
-                        comp_size,FLOAT);
+                        comp_size,sizeof(double));
 	    	first = NO;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -3228,26 +3228,26 @@ void VCARTESIAN::setDomain()
 	    if (first == YES)
 	    {
 		comp_size = (top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1);
-	    	FT_VectorMemoryAlloc((POINTER*)&array,comp_size,FLOAT);
-                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,FLOAT);
+	    	FT_VectorMemoryAlloc((POINTER*)&array,comp_size,sizeof(double));
+                FT_VectorMemoryAlloc((POINTER*)&source,comp_size,sizeof(double));
 	    	FT_VectorMemoryAlloc((POINTER*)&field->vapor,
-			comp_size,FLOAT);
+			comp_size,sizeof(double));
 	    	FT_VectorMemoryAlloc((POINTER*)&field->cloud,
-			comp_size,FLOAT);
+			comp_size,sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->supersat,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->mrad,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->drops,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->adv,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_VectorMemoryAlloc((POINTER*)&field->adv_old,comp_size,
-                        FLOAT);
+                        sizeof(double));
                 FT_MatrixMemoryAlloc((POINTER*)&field->ext_accel,3,comp_size,
-                                        FLOAT);
+                                        sizeof(double));
 		FT_VectorMemoryAlloc((POINTER*)&field->temperature,
-                        comp_size,FLOAT);
+                        comp_size,sizeof(double));
 	    	first = NO;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -3362,7 +3362,7 @@ void VCARTESIAN::recordLagrangSupersat(const char *out_name)
 	{
 	    max_array_size = eqn_params->num_drops;
 	    free_these(1,supersat_array);
-	    FT_VectorMemoryAlloc((POINTER*)&supersat_array,max_array_size,FLOAT);
+	    FT_VectorMemoryAlloc((POINTER*)&supersat_array,max_array_size,sizeof(double));
 	}
 	int count = 0;
 	for (i = 0; i < eqn_params->num_drops; i++)
@@ -3472,7 +3472,7 @@ void VCARTESIAN::recordRadius(char *out_name)
 	{
 	    max_array_size = eqn_params->num_drops;
 	    free_these(1,radius_array);
-	    FT_VectorMemoryAlloc((POINTER*)&radius_array,max_array_size,FLOAT);
+	    FT_VectorMemoryAlloc((POINTER*)&radius_array,max_array_size,sizeof(double));
 	}
 	for (i = 0; i < eqn_params->num_drops; i++)
 	    radius_array[i] = eqn_params->particle_array[i].radius;

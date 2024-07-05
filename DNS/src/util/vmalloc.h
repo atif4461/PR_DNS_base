@@ -33,12 +33,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #define	  CHAR	  sizeof(char)
 #define   INT	  sizeof(int)
-#define	  FLOAT   sizeof(double)
+//#define	  sizeof(double)   sizeof(double)
 #define   DOUBLE  sizeof(double)
 
 #define   free(x) f_ree((POINTER)(x),#x)/* Avoids clash with C library free() */
 
-#define	  scalar(a,b)			(void) array_T(#a,(POINTER*)a,1,1,b)
+#define	  scalar_prdns(a,b)			(void) array_T(#a,(POINTER*)a,1,1,b)
 
 #define CHECK_ALLOC_SIZE
 

@@ -526,13 +526,13 @@ EXPORT double SimpRule(
 
 	if (T == NULL)
 	{
-	    uni_array(&T,kmax,FLOAT);
-	    uni_array(&M,kmax,FLOAT);
-	    uni_array(&S,kmax,FLOAT);
+	    uni_array(&T,kmax,sizeof(double));
+	    uni_array(&M,kmax,sizeof(double));
+	    uni_array(&S,kmax,sizeof(double));
 
-	    uni_array(&aT,kmax,FLOAT);
-	    uni_array(&aM,kmax,FLOAT);
-	    uni_array(&aS,kmax,FLOAT);
+	    uni_array(&aT,kmax,sizeof(double));
+	    uni_array(&aM,kmax,sizeof(double));
+	    uni_array(&aS,kmax,sizeof(double));
 	}
 	result = -HUGE_VAL;
 	abserr = HUGE_VAL;

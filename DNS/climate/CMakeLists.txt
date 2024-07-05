@@ -41,3 +41,7 @@ target_include_directories(climate PUBLIC
 #link libraries
 target_link_libraries(climate frontier solver ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
 target_link_libraries(climate Heffte::Heffte)
+target_link_libraries(climate "${TORCH_LIBRARIES}")
+set_property(TARGET climate PROPERTY CXX_STANDARD 17)
+
+

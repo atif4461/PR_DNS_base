@@ -1902,7 +1902,7 @@ void  polyfit3d_walf_vertex(
  * It supports up to degree 6.
  * 
  * If interp is true, then the fitting is forced to pass through origin.
- * Note: the only difference from EVAL_VANDER_UNIVAR is ws is not 
+ * Note: the only difference_prdns from EVAL_VANDER_UNIVAR is ws is not 
  *       computed inside this function
  * See also EVAL_VANDER_BIVAR
  *************************************************************/

@@ -475,7 +475,7 @@ typedef double *point;
 /*   to be traversed.  pathitemsleft is the number of items that remain to   */
 /*   be traversed in pathblock.                                              */
 /*                                                                           */
-/* itemwordtype is set to POINTER or FLOATINGPOINT, and is used to suggest   */
+/* itemwordtype is set to POINTER or sizeof(double)INGPOINT, and is used to suggest   */
 /*   what sort of word the record is primarily made up of.  alignbytes       */
 /*   determines how new records should be aligned in memory.  itembytes and  */
 /*   itemwords are the length of a record in bytes (after rounding up) and   */
@@ -1187,7 +1187,7 @@ LOCAL void poolinit(
     firstblock_size = PoolBlockSize(pool);
     if (pool->firstblock == NULL)
     {
-	scalar(&pool->firstblock,firstblock_size);
+	scalar_prdns(&pool->firstblock,firstblock_size);
         if (pool->firstblock == NULL)
         {
 	    screen("ERROR in poolinit(),  Out of memory.\n");
@@ -1202,7 +1202,7 @@ LOCAL void poolinit(
 	next = pool->firstblock->next;
 	prev = pool->firstblock->prev;
 	free(pool->firstblock);
-	scalar(&pool->firstblock,firstblock_size);
+	scalar_prdns(&pool->firstblock,firstblock_size);
         if (pool->firstblock == NULL)
         {
 	    screen("ERROR in poolinit(),  Out of memory.\n");
@@ -1303,7 +1303,7 @@ LOCAL void *poolalloc(
 		 * Allocate a new block of items, pointed to by the
 		 * previous block.
 		 */
-	        scalar(&newblock,newblock_size);
+	        scalar_prdns(&newblock,newblock_size);
                 if (newblock == NULL)
                 {
 	            screen("ERROR in poolalloc(),  Out of memory.\n");
@@ -1318,7 +1318,7 @@ LOCAL void *poolalloc(
 	    {
 		PoolBlock *next = pool->nowblock->next->next;
 		free(pool->nowblock->next);
-	        scalar(&newblock,newblock_size);
+	        scalar_prdns(&newblock,newblock_size);
                 if (newblock == NULL)
                 {
 	            screen("ERROR in poolalloc(),  Out of memory.\n");
@@ -1535,7 +1535,7 @@ LOCAL void initializepointpool(void)
 
     /* The index within each point at which the boundary marker is found.  */
     /*   Ensure the point marker is aligned to a INT-byte address. */
-    pointmarkindex=((mesh_dim+nextras)*FLOAT+INT-1)/INT;
+    pointmarkindex=((mesh_dim+nextras)*sizeof(double)+INT-1)/INT;
     pointsize = (pointmarkindex + 1) * INT;
     if (TriOpts.poly)
     {
@@ -1545,7 +1545,7 @@ LOCAL void initializepointpool(void)
 	pointsize = (point2triindex + 1) * sizeof(triangle);
     }
     /* Initialize the pool of points. */
-    wordsize = (FLOAT > sizeof(void*)) ? FLOAT : sizeof(void*);
+    wordsize = (sizeof(double) > sizeof(void*)) ? sizeof(double) : sizeof(void*);
     poolinit(&points,pointsize,POINTPERBLOCK,wordsize);
 }		/*end initializepointpool*/
 
@@ -1573,7 +1573,7 @@ LOCAL void initializetrisegpools(void)
     trisize = ((order+1)*(order+2)/2 + (highorderindex - 3)) * sizeof(triangle);
     /* The index within each triangle at which its attributes are found, */
     /*   where the index is measured in floats.                           */
-    elemattribindex = (trisize + FLOAT - 1) / FLOAT;
+    elemattribindex = (trisize + sizeof(double) - 1) / sizeof(double);
     /* The index within each triangle at which the maximum area constraint  */
     /*   is found, where the index is measured in floats.  Note that if the  */
     /*   `regionattrib' flag is set, an additional attribute will be added. */
@@ -1582,11 +1582,11 @@ LOCAL void initializetrisegpools(void)
     /* the number of bytes occupied by a triangle.                  */
     if (TriOpts.vararea)
     {
-	trisize = (areaboundindex + 1) * FLOAT;
+	trisize = (areaboundindex + 1) * sizeof(double);
     }
     else if (eextras + TriOpts.regionattrib > 0)
     {
-	trisize = areaboundindex * FLOAT;
+	trisize = areaboundindex * sizeof(double);
     }
     /* If a Voronoi diagram or triangle neighbor graph is requested, make    */
     /*   sure there's room to store an integer index in each triangle.  This */
@@ -6852,7 +6852,7 @@ LOCAL void* allocate_storage(
 	if (storage != NULL)
 	    free(storage);
 	*storage_size = new_size;
-	scalar(&storage,new_size);
+	scalar_prdns(&storage,new_size);
 	if (storage == NULL)
 	{
 	    screen("ERROR in allocate_storage(),  Out of memory.\n");
@@ -6886,14 +6886,14 @@ LOCAL void writenodes(
     /* Allocate memory for output points if necessary. */
     out->pointlist = (double *) allocate_storage(out->pointlist,
 					       &out->size_pointlist,
-					       points.items*2*FLOAT);
+					       points.items*2*sizeof(double));
     /* Allocate memory for output point attributes if necessary. */
     if (nextras > 0)
     {
         out->pointattributelist =
 	    (double *) allocate_storage(out->pointattributelist,
 				      &out->size_pointattributelist,
-				      points.items * nextras * FLOAT);
+				      points.items * nextras * sizeof(double));
     }
     /* Allocate memory for output point markers if necessary. */
     if (!TriOpts.nobound)
@@ -6992,7 +6992,7 @@ LOCAL void writeelements(
         out->triangleattributelist =
 	    (double *) allocate_storage(out->triangleattributelist,
 				      &out->size_triangleattributelist,
-				      triangles.items*eextras*FLOAT);
+				      triangles.items*eextras*sizeof(double));
     }
     talist = out->triangleattributelist;
     pointindex = 0;
@@ -7220,12 +7220,12 @@ LOCAL void writevoronoi(
     /* Allocate memory for Voronoi vertices if necessary. */
     vorout->pointlist =
 	(double *) allocate_storage(vorout->pointlist,&vorout->size_pointlist,
-			          triangles.items*2*FLOAT);
+			          triangles.items*2*sizeof(double));
     /* Allocate memory for Voronoi vertex attributes if necessary. */
     vorout->pointattributelist =
 	    (double *) allocate_storage(vorout->pointattributelist,
 				      &vorout->size_pointattributelist,
-				      triangles.items*nextras*FLOAT);
+				      triangles.items*nextras*sizeof(double));
     vorout->pointmarkerlist = NULL;
     plist = vorout->pointlist;
     palist = vorout->pointattributelist;
@@ -7265,7 +7265,7 @@ LOCAL void writevoronoi(
     /* Allocate memory for output Voronoi norms if necessary. */
     vorout->normlist =
 	(double *) allocate_storage(vorout->normlist,&vorout->size_normlist,
-			          edges*2*FLOAT);
+			          edges*2*sizeof(double));
     elist = vorout->edgelist;
     normlist = vorout->normlist;
     coordindex = 0;

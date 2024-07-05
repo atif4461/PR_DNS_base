@@ -50,7 +50,7 @@ void ELLIPTIC_SOLVER::set_solver_domain(void)
 	    case 1:
 		imin = (lbuf[0] == 0) ? 1 : lbuf[0];
 		imax = (ubuf[0] == 0) ? top_gmax[0] - 1 : top_gmax[0] - ubuf[0];
-		FT_VectorMemoryAlloc((POINTER*)&array,top_gmax[0]+1,FLOAT);
+		FT_VectorMemoryAlloc((POINTER*)&array,top_gmax[0]+1,sizeof(double));
 		break;
 	    case 2:
 		imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -58,7 +58,7 @@ void ELLIPTIC_SOLVER::set_solver_domain(void)
 		imax = (ubuf[0] == 0) ? top_gmax[0] - 1 : top_gmax[0] - ubuf[0];
 	    	jmax = (ubuf[1] == 0) ? top_gmax[1] - 1 : top_gmax[1] - ubuf[1];
 		FT_VectorMemoryAlloc((POINTER*)&array,
-                                (top_gmax[0]+1)*(top_gmax[1]+1),FLOAT);
+                                (top_gmax[0]+1)*(top_gmax[1]+1),sizeof(double));
 		break;
 	    case 3:
 		imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -68,7 +68,7 @@ void ELLIPTIC_SOLVER::set_solver_domain(void)
 	    	jmax = (ubuf[1] == 0) ? top_gmax[1] - 1 : top_gmax[1] - ubuf[1];
 		kmax = (ubuf[2] == 0) ? top_gmax[2] - 1 : top_gmax[2] - ubuf[2];
 		FT_VectorMemoryAlloc((POINTER*)&array,
-                        (top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1),FLOAT);
+                        (top_gmax[0]+1)*(top_gmax[1]+1)*(top_gmax[2]+1),sizeof(double));
 		break;
 	    }
 	    array_size = 1;

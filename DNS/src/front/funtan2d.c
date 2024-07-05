@@ -1638,7 +1638,7 @@ LOCAL	void alloc_sn_list(
 	uni_array(&snlist->nc    ,snlist->num_c,sizeof(POINTER));
 	uni_array(&snlist->nopp  ,snlist->num_c,sizeof(POINTER));
 	uni_array(&snlist->pt    ,snlist->num_c,sizeof(POINTER));
-	uni_array(&snlist->ang   ,snlist->num_c,FLOAT);
+	uni_array(&snlist->ang   ,snlist->num_c,sizeof(double));
 	uni_array(&snlist->orient,snlist->num_c,INT);
 	snlist->nc_set = 0;	snlist->nopp_set = 0;
 	snlist->pt_set = 0;	snlist->ang_set = 0;
@@ -2377,7 +2377,7 @@ LOCAL	void set_2d_boxes(
 	    rect_in_which(Coords(cr->p),ip,gr);
 	    if (ip[0] < 2 || ip[0] >= gr->gmax[0] - 2) continue;
 	    if (ip[1] < 2 || ip[1] >= gr->gmax[1] - 2) continue;
-	    scalar(&box->next,sizeof(RECT_BOX));
+	    scalar_prdns(&box->next,sizeof(RECT_BOX));
 	    box->next->prev = box;
 	    box->next->next = NULL;
 	    box = box->next;

@@ -87,7 +87,7 @@ LOCAL	DUMMY_ARRAY	*alloc_dummy_array(
 
 	if (dpa == NULL)
 	{
-	    scalar(&dpa,sizeof(DUMMY_ARRAY));
+	    scalar_prdns(&dpa,sizeof(DUMMY_ARRAY));
 	}
 
 	if (len > dpa->len)
@@ -96,7 +96,7 @@ LOCAL	DUMMY_ARRAY	*alloc_dummy_array(
 	    dpa->rad = rad;
 	    if (dpa->store != NULL)
 	    	free(dpa->store);
-	    scalar(&dpa->store,len*size_data);
+	    scalar_prdns(&dpa->store,len*size_data);
 	    dpa->da.bytes = dpa->store + rad*size_data;
 	}
 	return dpa;
@@ -118,7 +118,7 @@ LOCAL	DUMMY_ARRAY	*alloc_dummy_state_array(
 	{
 	    if (dpa->ststore != NULL)
 	    	free(dpa->ststore);
-	    scalar(&dpa->ststore,len*sizest);
+	    scalar_prdns(&dpa->ststore,len*sizest);
 	}
 	for (i = 0; i < len; i++)
 	    st[i-rad] = dpa->ststore + i*sizest;

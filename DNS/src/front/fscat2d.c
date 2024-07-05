@@ -873,7 +873,7 @@ EXPORT	void	copy_interface_into(
 *	cases, the curves are moving down, and the points adjacent to the
 *	symmetry line cross in either direction.  In other words, p1 was
 *	originally on the right, and p2 on the left of the symmetry line.
-*	The difference between the two configurations is whether or not
+*	The difference_prdns between the two configurations is whether or not
 *	there was previously a point right on the symmetry line.  This
 *	configuration is really a cross node, even though only one curve
 *	is involved.  It is as if the piece of the curve on one side of the
@@ -899,7 +899,7 @@ EXPORT	void	copy_interface_into(
 *	is simply a tangle occuring across the cut line.  We allow the code
 *	above to operate anyway (deleting points and so on) on the assumption
 *	that the configuration is small and this  will not make a large
-*	difference.  The fix also may not resolve the problem for this case,
+*	difference_prdns.  The fix also may not resolve the problem for this case,
 *	so that the reconstruction fails, and the code gets to back up and
 *	try something else (hopefully an untangle).
 *
@@ -2398,7 +2398,7 @@ LOCAL OVERLAP *find_double_adj_bond_match(
 	    }
 
 /*     Before use amr_overture, != 0.0 arg. works fine, however, overture found
- *     the difference of two cuts is not strictly zero because of the machine,
+ *     the difference_prdns of two cuts is not strictly zero because of the machine,
  *     so the tolerance is used !!!!
  */
             if (fabs(Coords(ol1->cr1)[dir] - Coords(ol2->cr1)[dir]) != 0.0)

@@ -2191,7 +2191,7 @@ LOCAL	void	show_crossing_tris(
 	    }
 	}
 	n = (int) size_of_pointers(tlist);
-	color_tri = (double*)store(4*n*FLOAT);
+	color_tri = (double*)store(4*n*sizeof(double));
 	color_tri[0] = 1.0;
 	color_tri[1] = 0.0;
 	color_tri[2] = 0.0;

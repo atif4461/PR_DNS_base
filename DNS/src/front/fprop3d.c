@@ -215,7 +215,7 @@ LOCAL	boolean set_tangent_space_projection(
 	  {
 	    if (plane_side_intersection(plane[j],tris[i],iside,pc,&ivtx))
 	    {
-	      difference(pc,Coords(p),pdir,3);
+	      difference_prdns(pc,Coords(p),pdir,3);
 	      if (Dot3d(pdir,t[j]) < 0.0)
 	      {
 	        if (tp[j].tnl.tri != NULL)
@@ -302,13 +302,13 @@ LOCAL	boolean set_tangent_space_projection(
 		/* all tris are on one side of the plane */
 		popp = (side0 == iv0) ?  Point_of_tri(tris[0])[Next_m3(iv0)] :
 		                         Point_of_tri(tris[0])[Prev_m3(iv0)];
-	        difference(Coords(popp),Coords(p),pdir,3);
+	        difference_prdns(Coords(popp),Coords(p),pdir,3);
 		d0 = Dot3d(pdir,t[i]);
 		popp = (sidel == ivl) ?  Point_of_tri(tris[num_tris-1])
 			                              [Next_m3(ivl)] :
 		                         Point_of_tri(tris[num_tris-1])
 					              [Prev_m3(ivl)];
-	        difference(Coords(popp),Coords(p),pdir,3);
+	        difference_prdns(Coords(popp),Coords(p),pdir,3);
 		dl = Dot3d(pdir,t[i]);
 		if (d0 > dl)
 		{
@@ -530,9 +530,9 @@ EXPORT	void set_weight_for_tri_interpolation(
 	    return;
 	}
 
-	difference(p0,p,p0p,3);   /* Note: difference(a,b,c) is c=a-b*/
-	difference(p1,p,p1p,3);
-	difference(p2,p,p2p,3);
+	difference_prdns(p0,p,p0p,3);   /* Note: difference_prdns(a,b,c) is c=a-b*/
+	difference_prdns(p1,p,p1p,3);
+	difference_prdns(p2,p,p2p,3);
 
 	Cross3d(p0p,nor,x);     /* Note: Cross3d(a,b,c) is c=axb*/
 
@@ -644,7 +644,7 @@ EXPORT	void fill_stencil_in_direction(
 	    }
 
 	    l = distance_between_positions(po,pn,3);
-	    difference(pn,po,dir,3);
+	    difference_prdns(pn,po,dir,3);
             while (index != limit && l >= dist)
             {
 		posn[0] = po[0] + dist*dir[0]/l;
@@ -759,7 +759,7 @@ LOCAL	boolean is_forward_pn(
 {
 	double pdir[3];
 
-	difference(pn,po,pdir,3);
+	difference_prdns(pn,po,pdir,3);
 	return (Dot3d(pdir,t) > 0.0) ? YES : NO;
 }		/* end is_forward_pn */
 
@@ -1131,7 +1131,7 @@ LOCAL	boolean set_wall_tangent_space(
 		    printf("iv %d  iside  %d ivtx  %d\n",iv,  iside, ivtx);
 		    print_tri(tris[i], tp->hs->interface);
 		}
-	        difference(pc,p0,pdir,3);
+	        difference_prdns(pc,p0,pdir,3);
 	        if (Dot3d(pdir,t) < 0.0)
 	        {
 	            if (tp->tnl.tri != NULL)  /*two tris intersect with plane */
@@ -1201,7 +1201,7 @@ EXPORT  void   print_Tparams(
 	print_TN(&tp->tnl);
 	if(tp->tnl.tri != NULL)
 	{
-	    difference(tp->tnl.pc, Coords(tp->p), v, 3);
+	    difference_prdns(tp->tnl.pc, Coords(tp->p), v, 3);
 	    printf("#dot tan  %15.8e  dot plane %15.8e\n", 
 	          Dot3d(v, tp->tan), Dot3d(v, tp->plane));
 	}
@@ -1210,7 +1210,7 @@ EXPORT  void   print_Tparams(
 	print_TN(&tp->tnr);
 	if(tp->tnr.tri != NULL)
 	{
-	    difference(tp->tnr.pc, Coords(tp->p), v, 3);
+	    difference_prdns(tp->tnr.pc, Coords(tp->p), v, 3);
 	    printf("#dot tan  %15.8e  dot plane %15.8e\n", 
 	          Dot3d(v, tp->tan), Dot3d(v, tp->plane));
 	}
@@ -1264,9 +1264,9 @@ double		tol = 0.01;
 	    clean_up(ERROR);
 	}
 
-	ft_assign(p0, Coords(bp->start), 3*FLOAT);
-	ft_assign(p1, Coords(p), 3*FLOAT);
-	ft_assign(p2, Coords(b->end), 3*FLOAT);
+	ft_assign(p0, Coords(bp->start), 3*sizeof(double));
+	ft_assign(p1, Coords(p), 3*sizeof(double));
+	ft_assign(p2, Coords(b->end), 3*sizeof(double));
 	
 	d0 = distance_between_positions(p0, p1, 3);
 	d1 = distance_between_positions(p1, p2, 3);
@@ -1280,7 +1280,7 @@ double		tol = 0.01;
 	d0 = Mag3d(pc);
 	if(d0 < tol)
 	{
-	    difference(p2, p0, t2, 3);
+	    difference_prdns(p2, p0, t2, 3);
 	    Cross3d(nor, t2, t1);
 	    d0 = Mag3d(t1);
 	    for(i=0; i<3; i++)
@@ -1537,7 +1537,7 @@ EXPORT	void find_position_along_wall(
 	for(loop_index=0; loop_index<MAX_TAN_TRIS; loop_index++)
 	{
 	    l = distance_between_positions(po,pn,3);
-	    difference(pn,po,dir,3);
+	    difference_prdns(pn,po,dir,3);
             
 	    if(debugging("find_position_along_wall"))
 	    {

@@ -540,10 +540,10 @@ LOCAL	void	f_tangent(
 
 	if (bdir2 == NULL)
 	{
-	    scalar(&bdir1,sizeof(BOND));
+	    scalar_prdns(&bdir1,sizeof(BOND));
 	    bdir1->start = Static_point(front->interf);
 	    bdir1->end = Static_point(front->interf);
-	    scalar(&bdir2,sizeof(BOND));
+	    scalar_prdns(&bdir2,sizeof(BOND));
 	    bdir2->start = Static_point(front->interf);
 	    bdir2->end = Static_point(front->interf);
 	}
@@ -1020,7 +1020,7 @@ LOCAL	void	f_lagrangian_tangent(
 
 	if (tt == NULL)
 	{
-	    bi_array(&tt,MAXD,4,FLOAT);
+	    bi_array(&tt,MAXD,4,sizeof(double));
 	}
 	if (is_bdry(c)) /*Rectangular boundary*/
 	{

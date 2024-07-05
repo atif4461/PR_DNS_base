@@ -2697,8 +2697,8 @@ LOCAL SIDE convex_side(
 		    return side;
 	    }
 	}
-	difference(Coords(b1->start),Coords(b1->end),p1,2);
-	difference(Coords(b2->end),Coords(b2->start),p2,2);
+	difference_prdns(Coords(b1->start),Coords(b1->end),p1,2);
+	difference_prdns(Coords(b2->end),Coords(b2->start),p2,2);
 	dpt = scalar_product(p1,p2,2);
 	if(dpt <= 0) return side;
 

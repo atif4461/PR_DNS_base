@@ -212,7 +212,7 @@ EXPORT	INTERFACE *i_receive_interface(
 
 	DEBUG_ENTER(i_receive_interface)
 
-	scalar(&tmp_table,sizeof(struct Table));
+	scalar_prdns(&tmp_table,sizeof(struct Table));
 
 	add_time_start(350);
 	pp_recv(TABLE_ID+tag_shf,src_id,(POINTER)tmp_table,sizeof(struct Table)) ;

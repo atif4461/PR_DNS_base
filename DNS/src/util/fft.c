@@ -44,8 +44,8 @@ EXPORT boolean fft2d(
 
       	/* Transform the rows */
 
-	uni_array(&real,nx,FLOAT);
-	uni_array(&imag,nx,FLOAT);
+	uni_array(&real,nx,sizeof(double));
+	uni_array(&imag,nx,sizeof(double));
 	if (real == NULL || imag == NULL)
 	    return(NO);
        	if (!Powerof2(nx,&m,&twopm) || twopm != nx)
@@ -68,8 +68,8 @@ EXPORT boolean fft2d(
 
 	/* Transform the columns */
 
-	uni_array(&real,ny,FLOAT);
-	uni_array(&imag,ny,FLOAT);
+	uni_array(&real,ny,sizeof(double));
+	uni_array(&imag,ny,sizeof(double));
         if (real == NULL || imag == NULL)
      	    return(NO);
         if (!Powerof2(ny,&m,&twopm) || twopm != ny)

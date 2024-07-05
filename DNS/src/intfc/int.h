@@ -86,7 +86,7 @@ struct _POINT
 	    POINTER	 _opaque_pointer;
 	    struct _NODE *_node;
 	    int          _index;
-	} private_data;
+	} private_data_prdns;
 	double		_nor[3];
 	double		_nor0[3];	/* First order normal for WLSP */
 	double		curvature;
@@ -99,11 +99,11 @@ struct _POINT
 typedef struct _POINT POINT;
 
  /* Macros of accessing private fields of points */
-#define Private_data(p)	   (p)->private_data
-#define Index_of_point(p)  Private_data(p)._index
-#define node_at_point(p)   Private_data(p)._node
-#define sorted(p)          Private_data(p)._sorted
-#define opaque_pointer(p)  Private_data(p)._opaque_pointer
+//#define Private_data_prdns(p)	  (p)->private_data_prdns
+#define Index_of_point(p)  Private_data_prdns(p)._index
+#define node_at_point(p)   Private_data_prdns(p)._node
+#define sorted(p)          Private_data_prdns(p)._sorted
+#define opaque_pointer(p)  Private_data_prdns(p)._opaque_pointer
 
 #define Order_data(p)      (p)->order_data
 #define Point_order(p)     Order_data(p).order
@@ -260,7 +260,7 @@ struct _TRI
 	struct _TRI *next;
 	int boundary;		/* tri bonds on interface curves? */
 	int order;		/* used as an identification for a tri, avoid 
-				   the conflict with _index in private_data. */
+				   the conflict with _index in private_data_prdns. */
 	union
 	{
 	    int		   _index;
@@ -277,7 +277,7 @@ struct _TRI
                 char c2;
                 char c3;
             } c;
-	} private_data;
+	} private_data_prdns;
 };
 typedef struct _TRI TRI;
 
@@ -1086,7 +1086,7 @@ enum {
 
 #define QDet3d(a,b,c) ( a ## 0*b ##1*c ## 2 + a ## 1*b ## 2*c ## 0 + a ## 2*b ## 0*c ## 1 - a ## 0*b ## 2*c ## 1 - a ## 1*b ## 0*c ## 2 - a ## 2*b ## 1*c ## 0 )
 
-#define difference(B,C,ans,dim)						\
+#define difference_prdns(B,C,ans,dim)						\
 	{								\
 	    int i;							\
 	    for (i = 0; i < (dim); ++i)					\
@@ -1256,13 +1256,13 @@ enum {
 
 #define Tri_order(_tri_)                ((_tri_)->order)
 #define	Surface_of_tri(_tri_)		((_tri_)->surf)
-#define Tri_workspace(_tri_)		((_tri_)->private_data._workspace)
-#define Tri_index(_tri_)		((_tri_)->private_data._index)
-#define Tri_cross_list(_tri_)		((_tri_)->private_data._tri_cross_list)
-#define	Tri_icoords(_tri_)		((_tri_)->private_data._icoords)
-#define	Tri_modified(_tri_)		((_tri_)->private_data._modified)
+#define Tri_workspace(_tri_)		((_tri_)->private_data_prdns._workspace)
+#define Tri_index(_tri_)		((_tri_)->private_data_prdns._index)
+#define Tri_cross_list(_tri_)		((_tri_)->private_data_prdns._tri_cross_list)
+#define	Tri_icoords(_tri_)		((_tri_)->private_data_prdns._icoords)
+#define	Tri_modified(_tri_)		((_tri_)->private_data_prdns._modified)
 #define	Tri_projection_computed(_tri_)					\
-    ((_tri_)->private_data._projection_computed)
+    ((_tri_)->private_data_prdns._projection_computed)
 
 #define	Tri_neighbor(_tri_)	     (_tri_)->neighbor
 #define	Tri_on_side01(_tri_)	     (Tri_neighbor(_tri_)[0].tri)

@@ -949,7 +949,7 @@ EXPORT int H_extend_crossing_of_two_propagated_curves(
 	    p1_opp = Static_point(fr->interf);
 	    p2_opp = Static_point(fr->interf);
 	    oldp = Static_point(fr->interf);
-	    bi_array(&Q,MAXD,MAXD,FLOAT);
+	    bi_array(&Q,MAXD,MAXD,sizeof(double));
 	}
 
 	for (i = 0; i < dim; ++i)
@@ -1568,10 +1568,10 @@ EXPORT	int cross_or_extend_to_cross_two_propagated_curves(
 	    p1_opp = Static_point(fr->interf);
 	    p2_opp = Static_point(fr->interf);
 	    oldp = Static_point(fr->interf);
-	    scalar(&b1virtual,sizeof(BOND));
-	    scalar(&b2virtual,sizeof(BOND));
-	    scalar(&newb1dir,sizeof(BOND));
-	    scalar(&newb2dir,sizeof(BOND));
+	    scalar_prdns(&b1virtual,sizeof(BOND));
+	    scalar_prdns(&b2virtual,sizeof(BOND));
+	    scalar_prdns(&newb1dir,sizeof(BOND));
+	    scalar_prdns(&newb2dir,sizeof(BOND));
 	}
 	for (i = 0; i < dim; ++i)
 	{

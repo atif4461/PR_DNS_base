@@ -59,7 +59,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *	the source of the error.
 *
 *	Files using these routines should include the file  vmalloc.h
-*	which defines the quantities  CHAR, INT, FLOAT, DOUBLE and provides
+*	which defines the quantities  CHAR, INT, sizeof(double), DOUBLE and provides
 *	macro definitions for the convenient functions: 
 *				scalar_T(), 
 *				vector_T(),   
@@ -89,7 +89,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 *	Similiarly, to allocate an n dimensional vector V of floats, use:
 *			double *V;
-*			V = (double *) uni_array(&V,n,FLOAT);
+*			V = (double *) uni_array(&V,n,sizeof(double));
 *
 *	The vector can be freed by the call:
 *			free(V);

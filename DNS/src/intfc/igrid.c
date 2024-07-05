@@ -820,7 +820,7 @@ EXPORT	int set_grid_lines(
 	    tlen += 3*len[i]+1;
 	}
 
-	uni_array(&rgr->glstore,tlen,FLOAT);
+	uni_array(&rgr->glstore,tlen,sizeof(double));
 	if (rgr->glstore == NULL)
 	{
 	    return NO;
@@ -948,7 +948,7 @@ EXPORT void fprint_rectangular_grid(
 	if (b_oput == YES)
 	{
 	    (void) fprintf(file,"\f%c",0);
-	    (void) fprintf(file,"MAXD = %d FLOAT = %d\n",MAXD,(int)FLOAT);
+	    (void) fprintf(file,"MAXD = %d sizeof(double) = %d\n",MAXD,(int)sizeof(double));
 	}
 	/* Print grid widths */
 	for (i = 0; i < dim; ++i)
@@ -959,7 +959,7 @@ EXPORT void fprint_rectangular_grid(
 	}
 
 #define print_grid_float(x)						\
-	(b_oput == YES) ? (void) fwrite((const void *)&(x),FLOAT,1,file) :\
+	(b_oput == YES) ? (void) fwrite((const void *)&(x),sizeof(double),1,file) :\
 		   (void) fprintf(file,"%-"FFMT,(x))
 
 	/* Print grid endpoints */
@@ -1023,7 +1023,7 @@ EXPORT void read_rectangular_grid(
 	long offset;
 	int  i, c;
 	int  dim;
-	int  maxd = MAXD, size_float = FLOAT;
+	int  maxd = MAXD, size_float = sizeof(double);
 	boolean b_iput;
 	int status;
 	char *string;
