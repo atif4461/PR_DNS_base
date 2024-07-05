@@ -22,7 +22,7 @@
 
 - conda create -n pr-dns
 - conda activate pr-dns
-- conda install -c eumetsat fftw3
+- conda install -c eumetsat fftw
 - conda install -c conda-forge libgd
 - conda install -c conda-forge hdf4
 

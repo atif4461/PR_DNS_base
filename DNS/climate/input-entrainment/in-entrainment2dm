@@ -14,7 +14,7 @@ CFL factor: 0.75
 Redistribution interval: 5
 Type yes to turn off auto-redistribution: y
 
-Enter problem type: ENTRAINMENT 
+Enter problem type: RANDOM_FIELD
 Enter case type: 2 
 Enter yes to use big data: no 
 ******************Initial phase conditions***********
@@ -64,7 +64,7 @@ Type y to make xz cross section movie: n
 Type y to make xy cross section movie: n
 Type y to make movie of pressure: n 
 Type y to make movie of vorticity: y
-Type y to make movie of velocity: n
+Type y to make movie of velocity: y
 Type y to make movie of solute: n
 Type y to make movie of temperature: n 
 Type y to make movie of vapor mixing ratio: y

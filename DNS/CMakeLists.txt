@@ -18,7 +18,8 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__PRDNS_TIMER__") # uncomment to enab
 ##-gencode=arch=compute_80,code=sm_80 \
 ##-gencode=arch=compute_86,code=sm_86 \
 ##")
-set (CMAKE_CUDA_FLAGS "-I/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/include/ -L/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1/lib -lmpi")
+set (MPI_HOME "/home/atif/packages/spack/opt/spack/linux-ubuntu22.04-zen3/gcc-11.4.0/mpich-4.2.1-adou5vzody4nf4iagajbb7oxektbnczz/")
+set (CMAKE_CUDA_FLAGS "-I/{MPI_HOME}/include/ -L/{MPI_HOME}/lib -lmpi")
 ##set (CMAKE_CUDA_FLAGS "-I/global/homes/a/atif/packages/openmpi-4.1.1/include -L/global/homes/a/atif/packages/openmpi-4.1.1/lib -lmpi -O3")
 ##set (CMAKE_CUDA_FLAGS "-I/global/common/software/nersc/pe/mpich/4.1.1/gnu/include -L/global/common/software/nersc/pe/mpich/4.1.1/gnu/lib -lmpi")
 
@@ -35,7 +36,7 @@ find_package (HDF4 QUIET)
 
 find_package (GD QUIET)
 
-set (heFFTe_PATH "/global/homes/a/atif/packages/heffte-2.4.0/")
+set (heFFTe_PATH "/home/atif/packages/heffte-2.4.0/")
 find_package(Heffte 2.4.0 REQUIRED PATHS ${heFFTe_PATH})
 
 if (MPI_FOUND) 
