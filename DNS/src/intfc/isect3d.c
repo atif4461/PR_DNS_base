@@ -182,12 +182,12 @@ LIB_LOCAL  boolean  i_intersections3d(
 		 tri = tri->next)
 	{
 	    Tri_cross_list(tri) = NULL;
-	    node_at_point(Point_of_tri(tri)[0]) = NULL;
-	    node_at_point(Point_of_tri(tri)[1]) = NULL;
-	    node_at_point(Point_of_tri(tri)[2]) = NULL;
+	    //TODO node_at_point(Point_of_tri(tri)[0]) = NULL;
+	    //node_at_point(Point_of_tri(tri)[1]) = NULL;
+	    //node_at_point(Point_of_tri(tri)[2]) = NULL;
 	}
-	for (n = intfc->nodes; n && *n; ++n)
-	    node_at_point((*n)->posn) = *n;
+	//TODO for (n = intfc->nodes; n && *n; ++n)
+	    //node_at_point((*n)->posn) = *n;
 
 	xmax = topological_grid(intfc).gmax[0];
 	ymax = topological_grid(intfc).gmax[1];
@@ -1893,9 +1893,9 @@ LOCAL  void  substitute_a_point(
 	    return;
 	}
 
-	if ((n = node_at_point(old_p)) != NULL)
+	//TODO if ((n = node_at_point(old_p)) != NULL)
 	{
-	    node_at_point(old_p)->posn = p;
+	    // TODO node_at_point(old_p)->posn = p;
 	    for (i = 0; i < 2; ++i)
 	    {
 		for (c = (orient[i] == POSITIVE_ORIENTATION) ?

@@ -97,7 +97,7 @@ typedef struct _NCLIST NCLIST;
 #define physical_surf(ncl,i)	((ncl)->NS[(i)].physical)
 
 
-#define Point_vertex_pointer(_pnt_) ((Vertex*)opaque_pointer(_pnt_))
+//#define Point_vertex_pointer(_pnt_) ((Vertex*)opaque_pointer(_pnt_))
 #define Tri_side_of_cdt(_cdt_)      ((_cdt_)->side)
 #define Tri_color(tri) Tri_index(tri)
 
@@ -1453,8 +1453,8 @@ LOCAL 	boolean prepare_v_and_e_for_cdt(
 
 	for (cbp = cdt->c_bond_list;  cbp && *cbp;  ++cbp)
 	{
-	    opaque_pointer((*cbp)->start) =  NULL;
-	    opaque_pointer((*cbp)->end) = NULL;
+	    //TODO opaque_pointer((*cbp)->start) =  NULL;
+	    //opaque_pointer((*cbp)->end) = NULL;
 	}
 
 	for (cbp = cdt->c_bond_list;  cbp && *cbp;  ++cbp)
@@ -1482,7 +1482,7 @@ LOCAL 	boolean prepare_v_and_e_for_cdt(
 	    v->cdt_side_index[Next_m3(num_vs)] = -1;
 	    v->cdt_side_index[Prev_m3(num_vs)] = -1;
 	    v->d2 = -HUGE_VAL;
-	    opaque_pointer(v->point) = (POINTER)v;
+	    //TODO opaque_pointer(v->point) = (POINTER)v;
 	    v->index = num_vs;
 	    tri_side = Tri_side_of_cdt(cdt) + num_vs;
 	    tri_side->num_verts = 1;
@@ -1505,12 +1505,12 @@ LOCAL 	boolean prepare_v_and_e_for_cdt(
 	    }
 	    ps = (*cbp)->start;
 	    pe = (*cbp)->end;
-	    if ((v = Point_vertex_pointer(ps)) == NULL)
+	    //TODO if ((v = Point_vertex_pointer(ps)) == NULL)
 	    {
 	        C_SURF_FLAG flag_s;
 	        flag_s = cs_flag_start((*cbp)->s[itri]);
 		v = vts + num_vs;
-		opaque_pointer(ps) = (POINTER)v;
+		//TODO opaque_pointer(ps) = (POINTER)v;
 		v->point = ps;
 		v->index = num_vs++;
 	        v->cdt_side_index[0] = -1;
@@ -1536,12 +1536,12 @@ LOCAL 	boolean prepare_v_and_e_for_cdt(
 		}
 	    }
 	    edges[2*nedges] = v->index;
-	    if ((v = Point_vertex_pointer(pe)) == NULL)
+	    // TODO if ((v = Point_vertex_pointer(pe)) == NULL)
 	    {
 	        C_SURF_FLAG flag_e;
 	        flag_e = cs_flag_end((*cbp)->s[itri]);
 		v = vts + num_vs;
-		opaque_pointer(pe) = (POINTER)v;
+		//TODO opaque_pointer(pe) = (POINTER)v;
 		v->point = pe;
 		v->index = num_vs++;
 	        v->cdt_side_index[0] = -1;
@@ -1675,8 +1675,8 @@ LOCAL void install_tris_from_dtris(
 		{
 		    /* Indentify side of old tri containing the vertices */
 		    int i0, i1;
-		    v0 = Point_vertex_pointer(Point_of_tri(nt)[j]);
-		    v1 = Point_vertex_pointer(Point_of_tri(nt)[Next_m3(j)]);
+		    //TODO v0 = Point_vertex_pointer(Point_of_tri(nt)[j]);
+		    //v1 = Point_vertex_pointer(Point_of_tri(nt)[Next_m3(j)]);
 		    i0 = v0->tri_vertex_index;
 		    i1 = v1->tri_vertex_index;
 		    if ((i0 >= 0) && (i1 >= 0)) /* nt and tri share a side */

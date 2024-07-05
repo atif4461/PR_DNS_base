@@ -98,12 +98,17 @@ struct _POINT
 };
 typedef struct _POINT POINT;
 
+// Atif: these macros to access pivate data are
+// incompatible with torch headers. Commenting them
+// for now as they don't seem to be getting called
+// in PR-DNS but will later need to figure out a 
+// workaround
  /* Macros of accessing private fields of points */
-#define Private_data_prdns(p)	  (p)->private_data_prdns
-#define Index_of_point(p)  Private_data_prdns(p)._index
-#define node_at_point(p)   Private_data_prdns(p)._node
-#define sorted(p)          Private_data_prdns(p)._sorted
-#define opaque_pointer(p)  Private_data_prdns(p)._opaque_pointer
+//#define Private_data_prdns(p)	  (p)->private_data_prdns
+//#define Index_of_point(p)  Private_data_prdns(p)._index
+//#define node_at_point(p)   Private_data_prdns(p)._node
+//#define sorted(p)          Private_data_prdns(p)._sorted
+//#define opaque_pointer(p)  Private_data_prdns(p)._opaque_pointer
 
 #define Order_data(p)      (p)->order_data
 #define Point_order(p)     Order_data(p).order

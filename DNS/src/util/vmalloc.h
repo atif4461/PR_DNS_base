@@ -31,6 +31,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #include <cdecs.h>
 
+// Atif: these macros redefine torch marcos, thus 
+// incompatible with torch headers. Replacing them
+// with their actual definitions for now
 #define	  CHAR	  sizeof(char)
 //#define   INT	  sizeof(int)
 //#define	  sizeof(double)   sizeof(double)
