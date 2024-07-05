@@ -1639,7 +1639,7 @@ LOCAL	void alloc_sn_list(
 	uni_array(&snlist->nopp  ,snlist->num_c,sizeof(POINTER));
 	uni_array(&snlist->pt    ,snlist->num_c,sizeof(POINTER));
 	uni_array(&snlist->ang   ,snlist->num_c,sizeof(double));
-	uni_array(&snlist->orient,snlist->num_c,INT);
+	uni_array(&snlist->orient,snlist->num_c,sizeof(int));
 	snlist->nc_set = 0;	snlist->nopp_set = 0;
 	snlist->pt_set = 0;	snlist->ang_set = 0;
 	snlist->orient_set = 0;
@@ -2475,11 +2475,11 @@ LOCAL boolean box_untangle(
 	uni_array(&box_info.out_bonds,(gmax[0]+gmax[1])*4,sizeof(BOND*));
 	uni_array(&box_info.out_curves,(gmax[0]+gmax[1])*4,sizeof(CURVE*));
 	uni_array(&box_info.curves,10,sizeof(CURVE*));
-	uni_array(&box_info.is_entirely_inside,10,INT);
+	uni_array(&box_info.is_entirely_inside,10,sizeof(int));
 	bi_array(&box_info.x_crx,gmax[0],gmax[1]+1,sizeof(CRXING*));
 	bi_array(&box_info.y_crx,gmax[0]+1,gmax[1],sizeof(CRXING*));
-	bi_array(&box_info.num_x_crx,gmax[0],gmax[1]+1,INT);
-	bi_array(&box_info.num_y_crx,gmax[0]+1,gmax[1],INT);
+	bi_array(&box_info.num_x_crx,gmax[0],gmax[1]+1,sizeof(int));
+	bi_array(&box_info.num_y_crx,gmax[0]+1,gmax[1],sizeof(int));
 	bi_array(&box_info.comp,gmax[0]+1,gmax[1]+1,sizeof(COMPONENT));
 
 	if (debugging("lgb2d"))

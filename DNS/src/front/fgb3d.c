@@ -415,7 +415,7 @@ EXPORT	boolean	merge_near_interface(
 	DEBUG_ENTER(merge_near_interface)
 	
 	if(ips == NULL)
-	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,INT);
+	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,sizeof(int));
 
 	set_dual_grid(&Dual_grid,comp_grid);
 	set_size_of_intfc_state(sizest);
@@ -890,7 +890,7 @@ LOCAL	boolean track_comp_and_repair3d(
 	if (debugging("trace"))
 	    (void) printf("Entering track_comp_and_repair3d()\n");
 	if(ips == NULL)
-	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,INT);
+	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,sizeof(int));
 
 	adjust_crossings(smin,smax,intfc);
 	fill_comp_from_prev_intfc(intfc, smin, smax);
@@ -1006,7 +1006,7 @@ LOCAL	boolean track_comp_and_set_boxes(
 	DEBUG_ENTER(track_comp_and_set_boxes)
 
 	if(ips == NULL)
-	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,INT);
+	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,sizeof(int));
 
 	print_rectangular_grid(gr);
 
@@ -2833,10 +2833,10 @@ LOCAL	void	make_boxes_from_ips(
 	DEBUG_ENTER(rm_bad_crxs_in_box)
 	
 	if(ips == NULL)
-	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,INT);
+	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,sizeof(int));
 
 	for(i=0; i<num_ip; i++)
-	    ft_assign(ips[i], ips_in[i], 3*INT);
+	    ft_assign(ips[i], ips_in[i], 3*sizeof(int));
 
 	Box.prev = Box.next = NULL;
 	box = &Box;
@@ -2905,10 +2905,10 @@ LOCAL	void	copy_rect_boxes(
 	    box->next->next = NULL;
 	    box = box->next;
 	    
-	    ft_assign(box->bmin, box_in->bmin, 3*INT);
-	    ft_assign(box->bmax, box_in->bmax, 3*INT);
-	    ft_assign(box->smin, box_in->smin, 3*INT);
-	    ft_assign(box->smax, box_in->smax, 3*INT);
+	    ft_assign(box->bmin, box_in->bmin, 3*sizeof(int));
+	    ft_assign(box->bmax, box_in->bmax, 3*sizeof(int));
+	    ft_assign(box->smin, box_in->smin, 3*sizeof(int));
+	    ft_assign(box->smax, box_in->smax, 3*sizeof(int));
 	    box->grid = box_in->grid;
 	}
 
@@ -3766,7 +3766,7 @@ EXPORT	boolean	check_degenerated_loop(
 	{
 	    
 	    uni_array(&null_tris,MAX_NULL_SIDE_LOOP,sizeof(TRI*));
-	    uni_array(&null_sides,MAX_NULL_SIDE_LOOP,INT);
+	    uni_array(&null_sides,MAX_NULL_SIDE_LOOP,sizeof(int));
 	    uni_array(&pts,MAX_NULL_SIDE_LOOP,sizeof(POINT*));
 	}
 	for (i = 0; i < 3; ++i) normal[i] = 0.0;
@@ -5108,8 +5108,8 @@ LOCAL	boolean  set_reconstruction_boxes_prev(
 
 	    if(status)
 	    {
-		ft_assign(box->bmin, tmin, 3*INT);
-		ft_assign(box->bmax, tmax, 3*INT);
+		ft_assign(box->bmin, tmin, 3*sizeof(int));
+		ft_assign(box->bmax, tmax, 3*sizeof(int));
 	    }
 	    else
 	    {
@@ -5216,10 +5216,10 @@ LOCAL	boolean  rm_bad_crxs_in_box_prev(
 	DEBUG_ENTER(rm_bad_crxs_in_box)
 	
 	if(ips == NULL)
-	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,INT);
+	    stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,sizeof(int));
 
 	for(i=0; i<num_ip; i++)
-	    ft_assign(ips[i], ips_in[i], 3*INT);
+	    ft_assign(ips[i], ips_in[i], 3*sizeof(int));
 
 	make_boxes_from_ips(ips, num_ip, &box0);
 
@@ -5281,7 +5281,7 @@ void	make_ggrid(
 	ft_assign(ggr->h, Dgr.h, 3*sizeof(double));
 	ft_assign(ggr->GL, Dgr.L, 3*sizeof(double));
 	ft_assign(ggr->GU, Dgr.U, 3*sizeof(double));
-	ft_assign(ggr->gmax, Dgr.gmax, 3*INT);
+	ft_assign(ggr->gmax, Dgr.gmax, 3*sizeof(int));
 
 	rbox = &ggr->rbox;
 	for(i=0; i<3; i++)
@@ -5430,7 +5430,7 @@ int	rbox_add_one_proc(
 	for(k=rbox->np-1; k>=j; k--)
 	{
 	  rbox->procs[k+1] = rbox->procs[k];
-	  ft_assign(rbox->shift[k+1], rbox->shift[k], 3*INT);
+	  ft_assign(rbox->shift[k+1], rbox->shift[k], 3*sizeof(int));
 	  rbox->bd_sum[k+1] = rbox->bd_sum[k];
 	}
 	rbox->procs[j] = proc;
@@ -5535,7 +5535,7 @@ int	rbox_communication_in_dir(
 	  {
 	    dst_id = neighbor_id(him, me, dir, j, pp_grid);
 	      
-	    pp_send(2*j, &nbox, INT, dst_id);
+	    pp_send(2*j, &nbox, sizeof(int), dst_id);
 	    if(nbox != 0)
 	      pp_send(2*j+1, rbox, nbox*sizeof(RECON_BOX), dst_id);
 	  }
@@ -5545,7 +5545,7 @@ int	rbox_communication_in_dir(
 	  {
 	    dst_id = neighbor_id(him, me, dir, jp, pp_grid);
 	      
-	    pp_recv(2*j, dst_id, &nbr, INT);
+	    pp_recv(2*j, dst_id, &nbr, sizeof(int));
 	    if(nbr == 0)
 	      continue;
 	    if(bst + nbr >= MAX_RBOX)
@@ -5622,16 +5622,16 @@ void	rbox_copy(
 {
 	int	i, np;
 
-	ft_assign(b1->bmin, b2->bmin, 3*INT);
-	ft_assign(b1->bmax, b2->bmax, 3*INT);
+	ft_assign(b1->bmin, b2->bmin, 3*sizeof(int));
+	ft_assign(b1->bmax, b2->bmax, 3*sizeof(int));
 	ft_assign(b1->fmin, b2->fmin, 3*sizeof(double));
 	ft_assign(b1->fmax, b2->fmax, 3*sizeof(double));
 	
 	np = b2->np;
 	b1->np = np;
-	ft_assign(b1->procs, b2->procs, np*INT);
+	ft_assign(b1->procs, b2->procs, np*sizeof(int));
 	for(i=0; i<np; i++)
-	  ft_assign(b1->shift[i], b2->shift[i], 3*INT);
+	  ft_assign(b1->shift[i], b2->shift[i], 3*sizeof(int));
 	b1->flag = b2->flag;
 	b1->number = b2->flag;
 }
@@ -5921,7 +5921,7 @@ int	rbox_global_number(
         nproc = pp_numnodes();
         myid = pp_mynode();
 
-        uni_array(&procs, nproc, INT);
+        uni_array(&procs, nproc, sizeof(int));
         
 	procs[myid] = nbox;
         pp_global_isum(procs, nproc);

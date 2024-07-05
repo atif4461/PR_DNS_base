@@ -1401,7 +1401,7 @@ EXPORT 	void scatter_cell_index(
 		    him[i] = (me[i] + 2*j - 1 + G[i])%G[i];
 		    dst_id = domain_id(him,G,dim);
 		    pack_index_in_dir(fr,ijk_to_I,gmax,lbuf,ubuf,bfs,i,j);
-		    pp_send(index_tag,bfs,size*INT,dst_id);
+		    pp_send(index_tag,bfs,size*sizeof(int),dst_id);
 		}
 		else if (rect_boundary_type(intfc,i,j) == REFLECTION_BOUNDARY)
 		{
@@ -1424,7 +1424,7 @@ EXPORT 	void scatter_cell_index(
 		{
 		    him[i] = (me[i] - 2*j + 1 + G[i])%G[i];
 		    dst_id = domain_id(him,G,dim);
-		    pp_recv(index_tag,dst_id,bfr,size*INT);
+		    pp_recv(index_tag,dst_id,bfr,size*sizeof(int));
 		    unpack_index_in_dir(fr,ijk_to_I,gmax,lbuf,ubuf,bfr,i,(j+1)%2);
 		}
 	    }

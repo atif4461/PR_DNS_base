@@ -2384,7 +2384,7 @@ LIB_LOCAL boolean make_tri_lists(
 	ymax = top_grid->gmax[1];
 	zmax = top_grid->gmax[2];
 
-	tri_array(&T->num_of_tris,zmax,ymax,xmax,INT);
+	tri_array(&T->num_of_tris,zmax,ymax,xmax,sizeof(int));
 	if (T->num_of_tris == NULL)
 	{
 	    stop_clock("make_tri_lists");
@@ -2502,7 +2502,7 @@ LIB_LOCAL boolean make_tri_lists(
 
 	if (max_size != out_cnt)
 	{
-	    uni_array(&Tri_blocks,max_size,INT);
+	    uni_array(&Tri_blocks,max_size,sizeof(int));
 	    if (Tri_blocks == NULL)
 	    {
 	    	stop_clock("make_tri_lists");
@@ -2846,7 +2846,7 @@ LOCAL void fill_tri_and_surface_lists(
 		    num_on_blocks++;
 	    }
 	    surf_blocks[i].num_on_blocks = num_on_blocks;
-	    bi_array(&surf_blocks[i].blocks,num_on_blocks,MAXD,INT);
+	    bi_array(&surf_blocks[i].blocks,num_on_blocks,MAXD,sizeof(int));
 	    num_on_blocks = 0;
 	    for (ix = bmin[0]; ix <= bmax[0]; ++ix)
 	    for (iy = bmin[1]; iy <= bmax[1]; ++iy)
@@ -3026,7 +3026,7 @@ LOCAL void blocks_on_grid_based_tri(
 	static int MAX_BLS = 64; /* allocated number of rows in blocks */
 
 	if (blocks == NULL)
-	    bi_array(&blocks,MAX_BLS,3,INT);
+	    bi_array(&blocks,MAX_BLS,3,sizeof(int));
 
 	num_bls = 0;
 	for (i = 0; i < 3; ++i)
@@ -3221,7 +3221,7 @@ LOCAL int **add_to_bls_list(
 	    int i;
 
 	    *MAX_BLS *= 2;
-	    bi_array(&new_blocks,*MAX_BLS,3,INT);
+	    bi_array(&new_blocks,*MAX_BLS,3,sizeof(int));
 	    for (i = 0; i < *num_bls; ++i)
 	    {
 	    	new_blocks[i][0] = blocks[i][0];

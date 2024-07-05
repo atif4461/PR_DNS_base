@@ -1387,8 +1387,8 @@ EXPORT  int	rect_boxes_from_tangled_tris(
 	        box = box->next;
 	    }
 
-	    ft_assign(box->bmin, bmin, 3*INT);
-	    ft_assign(box->bmax, bmax, 3*INT);
+	    ft_assign(box->bmin, bmin, 3*sizeof(int));
+	    ft_assign(box->bmax, bmax, 3*sizeof(int));
 	    box->grid = grid;
 
 	    prev_box = box;
@@ -2346,7 +2346,7 @@ LOCAL	boolean null_side_tris_loop(
 	if (null_tris == NULL)
 	{
 	    uni_array(&null_tris,MAX_NULL_SIDE_LOOP,sizeof(TRI*));
-	    uni_array(&null_sides,MAX_NULL_SIDE_LOOP,INT);
+	    uni_array(&null_sides,MAX_NULL_SIDE_LOOP,sizeof(int));
 	    uni_array(&pts,MAX_NULL_SIDE_LOOP,sizeof(POINT*));
 	}
 

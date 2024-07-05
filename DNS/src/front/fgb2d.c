@@ -225,7 +225,7 @@ LOCAL   void set_crx_storage_for_reconstruction_on_grid2d(
         }
         T->n_c_node_points = T->n_c_reg_nodes = n_reg_nodes;
         T->n_c_segs = n_segs;
-        uni_array(&T->c_seg_crx_count,n_segs,INT);
+        uni_array(&T->c_seg_crx_count,n_segs,sizeof(int));
         for (i = 0; i < n_segs; i++)
             T->c_seg_crx_count[i] = 0;
         T->n_c_crx = n_crx = count_intfc_crossings_of_grid_lattice2d(grid_intfc,

@@ -1942,7 +1942,7 @@ LIB_LOCAL void read_print_tris_on_curve(
 	for (b = curve->first, i = 0; b != NULL; b = b->next, ++i)
 	{
 	    status = fscanf(file,"%llu",(long long unsigned int *)(bonds+i));
-	    uni_array(tris+i,iaddr->num_surfs[c_index],INT);
+	    uni_array(tris+i,iaddr->num_surfs[c_index],sizeof(int));
 	    for (k = 0; k < iaddr->num_surfs[c_index]; ++k)
 	    	status = fscanf(file,"%d",tris[i]+k);
 	}

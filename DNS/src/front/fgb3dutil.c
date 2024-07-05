@@ -1045,7 +1045,7 @@ EXPORT	void set_crx_storage_for_reconstruction(
 	}
 	T->n_segs = n_segs;
 
-	uni_array(&T->seg_crx_count,n_segs,INT);
+	uni_array(&T->seg_crx_count,n_segs,sizeof(int));
 	for (i = 0; i < n_segs; ++i)
 	    T->seg_crx_count[i] = 0;
 
@@ -1196,7 +1196,7 @@ EXPORT 	boolean track_comp_through_crxings3d(
 	DEBUG_ENTER(track_comp_through_crxings3d)
 
 	if(ips == NULL)
-            stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,INT);
+            stat_matrix(&ips,MAX_NUM_UNPHY_IP,3,sizeof(int));
 
 	/* eliminate duplicate crossings */
 	if (debugging("grid_line_comp"))
@@ -3261,8 +3261,8 @@ EXPORT	void fill_comps_in_box(
         boolean            end_fill_comps = NO, crx_is_physical = YES;
         boolean            end_min[3],end_max[3];
 
-	ft_assign(smin, smin_in, 3*INT);
-	ft_assign(smax, smax_in, 3*INT);
+	ft_assign(smin, smin_in, 3*sizeof(int));
+	ft_assign(smax, smax_in, 3*sizeof(int));
 	
 	for (ip[0] = smin[0]; ip[0] <= smax[0]; ++ip[0])
             for (ip[1] = smin[1]; ip[1] <= smax[1]; ++ip[1])

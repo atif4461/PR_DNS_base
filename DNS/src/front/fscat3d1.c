@@ -3471,7 +3471,7 @@ LOCAL   boolean find_null_side_loop(
         CURVE **c;
 
         uni_array(&null_tris,MAX_NULL_SIDE,sizeof(TRI*));
-        uni_array(&null_sides,MAX_NULL_SIDE,INT);
+        uni_array(&null_sides,MAX_NULL_SIDE,sizeof(int));
         uni_array(&recorded_pts,3*MAX_NULL_SIDE,sizeof(POINT*));
 
         num_sides = 0;
@@ -4067,7 +4067,7 @@ EXPORT	void communicate_default_comp(
 			comp_buf = buffer_component(intfc,i,j);
 			if (comp_buf != NO_COMP)
 	    		    intfc->default_comp = comp_buf;
-			pp_send(0,&comp_buf,INT,dst_id);
+			pp_send(0,&comp_buf,sizeof(int),dst_id);
 			
 			if (debugging("default_comp"))
 			{
@@ -4086,7 +4086,7 @@ EXPORT	void communicate_default_comp(
 		    {
 		    	him[i] = (me[i] - 2*j + 1 + G[i])%G[i];
 			dst_id = domain_id(him,G,dim);
-			pp_recv(0,dst_id,&comp_buf,INT);
+			pp_recv(0,dst_id,&comp_buf,sizeof(int));
 			if (comp_buf != NO_COMP)
 			    intfc->default_comp = comp_buf;
 			if (debugging("default_comp"))

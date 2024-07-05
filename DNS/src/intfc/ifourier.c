@@ -602,7 +602,7 @@ EXPORT	LEGENDRE_POLY	*get_legendre_multi_mode(
 	}
 
 	uni_array(&amplitude,num_modes,sizeof(double));
-	uni_array(&mode_degree,num_modes,INT);
+	uni_array(&mode_degree,num_modes,sizeof(int));
 	prompt_for_legendre_multi_modes(a0,0,num_modes,amplitude,mode_degree);
 
 	for (max_degree = 0, i = 0; i < num_modes; ++i)

@@ -209,10 +209,10 @@ EXPORT boolean f_intfc_communication2d(
 
 	if (refl_lbuf == NULL)
 	{
-	    bi_array(&refl_lbuf,MAXD,MAXD,INT);
-	    bi_array(&refl_ubuf,MAXD,MAXD,INT);
-	    bi_array(&subd_lbuf,MAXD,MAXD,INT);
-	    bi_array(&subd_ubuf,MAXD,MAXD,INT);
+	    bi_array(&refl_lbuf,MAXD,MAXD,sizeof(int));
+	    bi_array(&refl_ubuf,MAXD,MAXD,sizeof(int));
+	    bi_array(&subd_lbuf,MAXD,MAXD,sizeof(int));
+	    bi_array(&subd_ubuf,MAXD,MAXD,sizeof(int));
 
 	    for (dir = 0; dir < dim; ++dir)
 	    {

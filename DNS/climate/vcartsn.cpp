@@ -295,20 +295,20 @@ void VCARTESIAN::setIndexMap(COMPONENT sub_comp)
 	    {
 	    case 1:
 		count = (imax - imin + 1);
-	    	FT_VectorMemoryAlloc((POINTER*)&i_to_I,top_gmax[0]+1,INT);
-	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_i,count,1,INT);
+	    	FT_VectorMemoryAlloc((POINTER*)&i_to_I,top_gmax[0]+1,sizeof(int));
+	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_i,count,1,sizeof(int));
 	    	break;
 	    case 2:
 		count = (imax - imin + 1)*(jmax - jmin + 1);
 	    	FT_MatrixMemoryAlloc((POINTER*)&ij_to_I,top_gmax[0]+1,
-					top_gmax[1]+1,INT);
-	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_ij,count,2,INT);
+					top_gmax[1]+1,sizeof(int));
+	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_ij,count,2,sizeof(int));
 	    	break;
 	    case 3:
 		count = (imax - imin + 1)*(jmax - jmin + 1)*(kmax - kmin + 1);
 	    	FT_TriArrayMemoryAlloc((POINTER*)&ijk_to_I,top_gmax[0]+1,
-					top_gmax[1]+1,top_gmax[2]+1,INT);
-	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,count,3,INT);
+					top_gmax[1]+1,top_gmax[2]+1,sizeof(int));
+	    	FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,count,3,sizeof(int));
 	    	break;
 	    }
 	}

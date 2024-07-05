@@ -1153,8 +1153,8 @@ LOCAL boolean append_buffer_surface2(
 
 	uni_array(&tris_s,surf->num_tri,sizeof(TRI *));
 	uni_array(&tris_a,adj_surf->num_tri,sizeof(TRI *));
-	bi_array(&nbt_s,gmax[idir1],gmax[idir2],INT);
-        bi_array(&nbt_a,gmax[idir1],gmax[idir2],INT);
+	bi_array(&nbt_s,gmax[idir1],gmax[idir2],sizeof(int));
+        bi_array(&nbt_a,gmax[idir1],gmax[idir2],sizeof(int));
         bi_array(&blk_tri_s,gmax[idir1],gmax[idir2],sizeof(TRI**));
         bi_array(&blk_tri_a,gmax[idir1],gmax[idir2],sizeof(TRI**));
 
@@ -1740,8 +1740,8 @@ LOCAL	boolean append_reflected_surface(
 
 	uni_array(&tris_s,rfl_surf->num_tri,sizeof(TRI *));
 	uni_array(&tris_r,rfl_surf->num_tri,sizeof(TRI *));
-	bi_array(&nbt_s,gmax[idir1],gmax[idir2],INT);
-	bi_array(&nbt_r,gmax[idir1],gmax[idir2],INT);
+	bi_array(&nbt_s,gmax[idir1],gmax[idir2],sizeof(int));
+	bi_array(&nbt_r,gmax[idir1],gmax[idir2],sizeof(int));
 	bi_array(&blk_tri_s,gmax[idir1],gmax[idir2],sizeof(TRI**));
 	bi_array(&blk_tri_r,gmax[idir1],gmax[idir2],sizeof(TRI**));
 
@@ -2162,7 +2162,7 @@ LOCAL   boolean match_tris_in_block(
 		free_these(2,dist,rot);
 	    n_alloc = 2*nt;
 	    bi_array(&dist,n_alloc,n_alloc,sizeof(double));
-	    bi_array(&rot,n_alloc,n_alloc,INT);
+	    bi_array(&rot,n_alloc,n_alloc,sizeof(int));
 	}
 	for (i = 0; i < nt; ++i)
 	    for (j = 0; j < nt; ++j)

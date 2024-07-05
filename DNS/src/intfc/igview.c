@@ -1024,7 +1024,7 @@ LOCAL	void	tecplot_plot_surfaces(
 	    if (verts != NULL)
 		free(verts);
 	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,INT);
+	    uni_array(&verts,alloc_len_verts,sizeof(int));
 	}
 	for (i = 0; i < 3; i++)
 	{
@@ -1407,7 +1407,7 @@ LOCAL	void	gview_plot_surfaces(
 	    if (verts != NULL)
 		free(verts);
 	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,INT);
+	    uni_array(&verts,alloc_len_verts,sizeof(int));
 	}
 	for (i = 0; i < 3; i++)
 	{
@@ -1577,7 +1577,7 @@ LOCAL	void	gview_plot_color_scaled_surfaces(
 	    if (verts != NULL)
 		free(verts);
 	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,INT);
+	    uni_array(&verts,alloc_len_verts,sizeof(int));
 	}
 	if (alloc_len_color < num_tris)
 	{
@@ -3045,7 +3045,7 @@ LOCAL   void gview_plot_color_surfaces(
             if (verts != NULL)
                 free(verts);
                 alloc_len_verts = 4*num_tris;
-                uni_array(&verts,alloc_len_verts,INT);
+                uni_array(&verts,alloc_len_verts,sizeof(int));
         }
         for (i = 0; i < 3; i++)
         {
@@ -3746,7 +3746,7 @@ LOCAL	void	vtk_plot_surfaces(
 	    if (verts != NULL)
 		free(verts);
 	    alloc_len_verts = 4*num_tris;
-	    uni_array(&verts,alloc_len_verts,INT);
+	    uni_array(&verts,alloc_len_verts,sizeof(int));
 	}
 	for (i = 0; i < 3; i++)
 	{
@@ -4723,8 +4723,8 @@ EXPORT void gd_plotdata(
     	int *xl,*yl;
 	int i;
 	/*These are for the transformed coordinates */
-	uni_array(&xl,N,INT);
-	uni_array(&yl,N,INT);
+	uni_array(&xl,N,sizeof(int));
+	uni_array(&yl,N,sizeof(int));
 
 	/*make transformed coordinates */
     	for(i = 0; i < N; i++)
@@ -4930,7 +4930,7 @@ LOCAL void setcolors(gdImagePtr im, int N)
             return;
 	}
 
-	uni_array(&color_list,N,INT);
+	uni_array(&color_list,N,sizeof(int));
 	for (i = 0; i < N; i++)
 	{
             color_list[i] = gdImageColorAllocate(im, 
@@ -5062,7 +5062,7 @@ make_frame:
 #if defined __MPI__
 	if (pp_mynode() != 0)
 	{
-	    pp_send(10,(POINTER)&num_curves,INT,0);
+	    pp_send(10,(POINTER)&num_curves,sizeof(int),0);
 	}
 #endif /* defined __MPI__ */
 	for (c = intfc->curves; c && *c; ++c)
@@ -5081,7 +5081,7 @@ make_frame:
 #if defined __MPI__
 	    if (pp_mynode() != 0)
 	    {
-		pp_send(10,(POINTER)&num_points,INT,0);
+		pp_send(10,(POINTER)&num_points,sizeof(int),0);
 		pp_send(10,(POINTER)x,num_points*sizeof(double),0);
 		pp_send(10,(POINTER)y,num_points*sizeof(double),0);
 	    }
@@ -5094,10 +5094,10 @@ make_frame:
 	{
 	    for (i = 1; i < pp_numnodes(); ++i)
 	    {
-	    	pp_recv(10,i,(POINTER)&num_curves,INT);
+	    	pp_recv(10,i,(POINTER)&num_curves,sizeof(int));
 	    	for (j = 0; j < num_curves; ++j)
 	    	{
-	    	    pp_recv(10,i,(POINTER)&num_points,INT);
+	    	    pp_recv(10,i,(POINTER)&num_points,sizeof(int));
 	    	    pp_recv(10,i,(POINTER)x,num_points*sizeof(double));
 	    	    pp_recv(10,i,(POINTER)y,num_points*sizeof(double));
 	    	    gd_plotdata(num_points,x,y);

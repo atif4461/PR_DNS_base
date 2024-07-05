@@ -149,7 +149,7 @@ EXPORT boolean make_point_comp_lists(
 
 			/* Allocate new storage if necessary */
 
-	uni_array(&T->num_of_points,grid->gmax[0],INT);
+	uni_array(&T->num_of_points,grid->gmax[0],sizeof(int));
 	if (T->num_of_points == NULL)
 	{
 	    (void) printf("WARNING in make_point_complist(), "

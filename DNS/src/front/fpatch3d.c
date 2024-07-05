@@ -788,10 +788,10 @@ void	bucket_init(
 	
 	gmax = ggr->gmax;
 	
-	tri_array(&bpts->np, gmax[0], gmax[1], gmax[2], INT);
+	tri_array(&bpts->np, gmax[0], gmax[1], gmax[2], sizeof(int));
 	tri_array(&bpts->pt, gmax[0], gmax[1], gmax[2], sizeof(POINT**));
 	uni_array(&bpts->bpt, num, sizeof(POINT*));
-	bi_array(&ptcrds, num, 3, INT);
+	bi_array(&ptcrds, num, 3, sizeof(int));
 
 	/*pts[i] belongs to which bucket
 	  how many points in each bucket

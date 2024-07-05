@@ -186,13 +186,13 @@ void Incompress_Solver_Smooth_Basis::setIndexMap(void)
 	    {
 	    case 2:
 	    	FT_MatrixMemoryAlloc((POINTER*)&ij_to_I,top_gmax[0]+1,
-				top_gmax[1]+1,INT);
-		FT_MatrixMemoryAlloc((POINTER*)&I_to_ij,size,2,INT);
+				top_gmax[1]+1,sizeof(int));
+		FT_MatrixMemoryAlloc((POINTER*)&I_to_ij,size,2,sizeof(int));
 	    	break;
 	    case 3:
 	    	FT_TriArrayMemoryAlloc((POINTER*)&ijk_to_I,top_gmax[0]+1,
-				top_gmax[1]+1,top_gmax[2]+1,INT);
-		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,INT);
+				top_gmax[1]+1,top_gmax[2]+1,sizeof(int));
+		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,sizeof(int));
 	    	break;
 	    }
 	    old_size = size;
@@ -203,11 +203,11 @@ void Incompress_Solver_Smooth_Basis::setIndexMap(void)
 	    {
 	    case 2:
 		FT_FreeThese(1,I_to_ij);
-		FT_MatrixMemoryAlloc((POINTER*)&I_to_ij,size,2,INT);
+		FT_MatrixMemoryAlloc((POINTER*)&I_to_ij,size,2,sizeof(int));
 	    	break;
 	    case 3:
 		FT_FreeThese(1,I_to_ijk);
-		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,INT);
+		FT_MatrixMemoryAlloc((POINTER*)&I_to_ijk,size,3,sizeof(int));
 	    	break;
 	    }
 	    old_size = size;
@@ -527,7 +527,7 @@ void Incompress_Solver_Smooth_Basis::setDomain()
 					sizeof(double));
 	    	FT_MatrixMemoryAlloc((POINTER*)&field->f_surf,2,size,
 					sizeof(double));
-	    	FT_VectorMemoryAlloc((POINTER*)&domain_status,size,INT);
+	    	FT_VectorMemoryAlloc((POINTER*)&domain_status,size,sizeof(int));
 		current_size = size;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -568,7 +568,7 @@ void Incompress_Solver_Smooth_Basis::setDomain()
 					sizeof(double));
 	    	FT_MatrixMemoryAlloc((POINTER*)&field->f_surf,3,size,
 					sizeof(double));
-	    	FT_VectorMemoryAlloc((POINTER*)&domain_status,size,INT);
+	    	FT_VectorMemoryAlloc((POINTER*)&domain_status,size,sizeof(int));
 		current_size = size;
 	    }
 	    imin = (lbuf[0] == 0) ? 1 : lbuf[0];
@@ -2695,11 +2695,11 @@ void Incompress_Solver_Smooth_Basis::setDualIndexMap(void)
 	    {
 	    case 2:
 	    	FT_MatrixMemoryAlloc((POINTER*)&cij_to_I,ctop_gmax[0]+1,
-				ctop_gmax[1]+1,INT);
+				ctop_gmax[1]+1,sizeof(int));
 	    	break;
 	    case 3:
 	    	FT_TriArrayMemoryAlloc((POINTER*)&cijk_to_I,ctop_gmax[0]+1,
-				ctop_gmax[1]+1,ctop_gmax[2]+1,INT);
+				ctop_gmax[1]+1,ctop_gmax[2]+1,sizeof(int));
 	    	break;
 	    }
 	    old_size = size;

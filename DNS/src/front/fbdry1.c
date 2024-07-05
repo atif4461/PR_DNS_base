@@ -536,7 +536,7 @@ EXPORT int f_boundary_untangle(
 	    (void) printf("After is_passive_boundary test\n");
 	    print_cross_list(*cross);
 	}
-	uni_array(&is_irregular_bdry_cross,num_cr,INT);
+	uni_array(&is_irregular_bdry_cross,num_cr,sizeof(int));
 	classify_bdry_crosses(*cross,is_irregular_bdry_cross);
 	if (deb_fbu)
 	{

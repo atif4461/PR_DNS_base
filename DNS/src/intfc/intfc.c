@@ -873,13 +873,13 @@ EXPORT INTERFACE *read_print_interface(
 	    uni_array(&Iaddr.curves,Iaddr.num_curves,sizeof(uint64_t));
 	    uni_array(&Iaddr.ns,Iaddr.num_curves,sizeof(uint64_t));
 	    uni_array(&Iaddr.ne,Iaddr.num_curves,sizeof(uint64_t));
-	    uni_array(&Iaddr.num_psurfs,Iaddr.num_curves,INT);
+	    uni_array(&Iaddr.num_psurfs,Iaddr.num_curves,sizeof(int));
 	    uni_array(&Iaddr.psurfs,Iaddr.num_curves,sizeof(uint64_t *));
-	    uni_array(&Iaddr.num_nsurfs,Iaddr.num_curves,INT);
+	    uni_array(&Iaddr.num_nsurfs,Iaddr.num_curves,sizeof(int));
 	    uni_array(&Iaddr.nsurfs,Iaddr.num_curves,sizeof(uint64_t *));
-	    uni_array(&Iaddr.num_surfs,Iaddr.num_curves,INT);
+	    uni_array(&Iaddr.num_surfs,Iaddr.num_curves,sizeof(int));
 	    uni_array(&Iaddr.surfs,Iaddr.num_curves,sizeof(uint64_t *));
-	    uni_array(&Iaddr.num_bonds,Iaddr.num_curves,INT);
+	    uni_array(&Iaddr.num_bonds,Iaddr.num_curves,sizeof(int));
 	    uni_array(&Iaddr.bonds,Iaddr.num_curves,sizeof(uint64_t *));
 	    uni_array(&Iaddr.tris,Iaddr.num_curves,sizeof(int **));
 	    for (j = 0; j < Iaddr.num_curves; ++j)
@@ -898,8 +898,8 @@ EXPORT INTERFACE *read_print_interface(
 
 	    status = fscanf(file,"%d %*s",&Iaddr.num_surfaces);
 	    uni_array(&Iaddr.surfaces,Iaddr.num_surfaces,sizeof(uint64_t));
-	    uni_array(&Iaddr.num_pcurves,Iaddr.num_surfaces,INT);
-	    uni_array(&Iaddr.num_ncurves,Iaddr.num_surfaces,INT);
+	    uni_array(&Iaddr.num_pcurves,Iaddr.num_surfaces,sizeof(int));
+	    uni_array(&Iaddr.num_ncurves,Iaddr.num_surfaces,sizeof(int));
 	    uni_array(&Iaddr.pcurves,Iaddr.num_surfaces,sizeof(uint64_t *));
 	    uni_array(&Iaddr.ncurves,Iaddr.num_surfaces,sizeof(uint64_t *));
 	    for (j = 0; j < Iaddr.num_surfaces; ++j)
@@ -4471,7 +4471,7 @@ EXPORT	boolean	retriangulate_polygon(
 	    in.size_pointlist = (size_t)2*(max_n_v);
 	    uni_array(&in.pointlist,in.size_pointlist,sizeof(double));
 	    in.size_segmentlist = (size_t)2*(max_n_v);
-	    uni_array(&in.segmentlist,in.size_segmentlist,INT);
+	    uni_array(&in.segmentlist,in.size_segmentlist,sizeof(int));
 	}
 	/* End memory allocation and management */
 

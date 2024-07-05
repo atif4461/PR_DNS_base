@@ -1666,8 +1666,8 @@ LOCAL	void set_curve_crx_storage(
 	    break;
 	}
 
-	uni_array(&T->curve_crx_count,n_faces,INT);
-	uni_array(&T->curve_crx_type,n_faces,INT);
+	uni_array(&T->curve_crx_count,n_faces,sizeof(int));
+	uni_array(&T->curve_crx_type,n_faces,sizeof(int));
 	
 	for (i = 0; i < n_faces; ++i)
 	{
@@ -1841,7 +1841,7 @@ LOCAL	void  set_wall_flag_storage(INTERFACE *intfc)
 	      + gmax[1]*(gmax[2]+1)*(gmax[0]+1)
 	      + gmax[2]*(gmax[0]+1)*(gmax[1]+1);
 
-	uni_array(&T->edge_flag,n_segs,INT);
+	uni_array(&T->edge_flag,n_segs,sizeof(int));
 }
 
 LOCAL	void  free_wall_flag_storage(INTERFACE *intfc)

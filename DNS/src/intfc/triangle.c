@@ -1535,8 +1535,8 @@ LOCAL void initializepointpool(void)
 
     /* The index within each point at which the boundary marker is found.  */
     /*   Ensure the point marker is aligned to a INT-byte address. */
-    pointmarkindex=((mesh_dim+nextras)*sizeof(double)+INT-1)/INT;
-    pointsize = (pointmarkindex + 1) * INT;
+    pointmarkindex=((mesh_dim+nextras)*sizeof(double)+sizeof(int)-1)/sizeof(int);
+    pointsize = (pointmarkindex + 1) * sizeof(int);
     if (TriOpts.poly)
     {
 	/* The index within each point at which a triangle pointer is found.  */
@@ -1593,9 +1593,9 @@ LOCAL void initializetrisegpools(void)
     /*   integer index can occupy the same space as the shell edges or       */
     /*   attributes or area constraint or extra nodes.                       */
     if ((TriOpts.voronoi || TriOpts.neighbors) &&
-	(trisize < 6*sizeof(triangle) + INT))
+	(trisize < 6*sizeof(triangle) + sizeof(int)))
     {
-	trisize = 6 * sizeof(triangle) + INT;
+	trisize = 6 * sizeof(triangle) + sizeof(int);
     }
     /* Having determined the memory size of a triangle, initialize the pool. */
     poolinit(&triangles,trisize,TRIPERBLOCK,sizeof(void*));
@@ -1603,7 +1603,7 @@ LOCAL void initializetrisegpools(void)
     if (useshelles)
     {
 	/* Initialize the pool of shell edges. */
-	poolinit(&shelles,6*sizeof(triangle)+INT,SHELLEPERBLOCK,
+	poolinit(&shelles,6*sizeof(triangle)+sizeof(int),SHELLEPERBLOCK,
 	         sizeof(void*));
 
 	/* Initialize the "outer space" triangle and omnipresent shell edge. */
@@ -6901,7 +6901,7 @@ LOCAL void writenodes(
         out->pointmarkerlist =
 	    (int *) allocate_storage(out->pointmarkerlist,
 				     &out->size_pointmarkerlist,
-				     points.items*INT);
+				     points.items*sizeof(int));
     }
     plist = out->pointlist;
     palist = out->pointattributelist;
@@ -6984,7 +6984,7 @@ LOCAL void writeelements(
     /* Allocate memory for output triangles if necessary. */
     out->trianglelist =
 	(int *) allocate_storage(out->trianglelist,&out->size_trianglelist,
-				 triangles.items*((order+1)*(order+2)/2)*INT);
+				 triangles.items*((order+1)*(order+2)/2)*sizeof(int));
     tlist = out->trianglelist;
     /* Allocate memory for output triangle attributes if necessary. */
     if (eextras > 0)
@@ -7057,14 +7057,14 @@ LOCAL void writepoly(
     /* Allocate memory for output segments if necessary. */
     out->segmentlist = (int *) allocate_storage(out->segmentlist,
 	                                        &out->size_segmentlist,
-						shelles.items*2*INT);
+						shelles.items*2*sizeof(int));
     /* Allocate memory for output segment markers if necessary. */
     if (!TriOpts.nobound)
     {
         out->segmentmarkerlist =
 	    (int *) allocate_storage(out->segmentmarkerlist,
 				     &out->size_segmentmarkerlist,
-				     shelles.items*INT);
+				     shelles.items*sizeof(int));
     }
     slist = out->segmentlist;
     smlist = out->segmentmarkerlist;
@@ -7115,14 +7115,14 @@ LOCAL void writeedges(
 
     /* Allocate memory for edges if necessary. */
     out->edgelist = (int *) allocate_storage(out->edgelist,&out->size_edgelist,
-					     edges*2*INT);
+					     edges*2*sizeof(int));
     /* Allocate memory for edge markers if necessary. */
     if (!TriOpts.nobound)
     {
         out->edgemarkerlist =
 	    (int *) allocate_storage(out->edgemarkerlist,
 				     &out->size_edgemarkerlist,
-				     edges*INT);
+				     edges*sizeof(int));
     }
     elist = out->edgelist;
     emlist = out->edgemarkerlist;
@@ -7260,7 +7260,7 @@ LOCAL void writevoronoi(
     /* Allocate memory for output Voronoi edges if necessary. */
     vorout->edgelist =
 	(int *) allocate_storage(vorout->edgelist,&vorout->size_edgelist,
-			          edges*2*INT);
+			          edges*2*sizeof(int));
     vorout->edgemarkerlist = NULL;
     /* Allocate memory for output Voronoi norms if necessary. */
     vorout->normlist =
@@ -7330,7 +7330,7 @@ LOCAL void writeneighbors(
     /* Allocate memory for neighbors if necessary. */
     out->neighborlist = (int *) allocate_storage(out->neighborlist,
 						 &out->size_neighborlist,
-						 triangles.items*3*INT);
+						 triangles.items*3*sizeof(int));
     nlist = out->neighborlist;
     index = 0;
 

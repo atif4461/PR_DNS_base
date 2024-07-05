@@ -4106,7 +4106,7 @@ LOCAL	int	make_surfaces_from_crx(
 
 	DEBUG_ENTER(make_surfaces_from_crx);
 
-	bi_array(&mem_ind, num_crx, 5, INT);
+	bi_array(&mem_ind, num_crx, 5, sizeof(int));
 	/*#bjet ASSUME */
 	get_default_fluid_comp(&comp1,&comp2,intfc);
 	
@@ -4250,7 +4250,7 @@ LOCAL	int  make_curves_from_crx(
 	
 	if(sarr == NULL)
 	    bi_array(&sarr, MAX_CURVE, 3, sizeof(O_SURFACE));
-	bi_array(&mem_ind, num_curve_crx, 5, INT);
+	bi_array(&mem_ind, num_curve_crx, 5, sizeof(int));
 
 	set_wall_flag_for_surface(intfc);
 	
@@ -4572,7 +4572,7 @@ EXPORT boolean read_sdl_surface(
 	    num_vtx++;
 	printf("num_vtx = %d\n",num_vtx);
 	uni_array(&vertex,num_vtx,sizeof(double));
-	uni_array(&index,num_vtx,INT);
+	uni_array(&index,num_vtx,sizeof(int));
 	fflush(stdout);
 	fclose(sdl_file);
 	sdl_file = fopen(sdl_name,"r");
@@ -4744,7 +4744,7 @@ EXPORT boolean read_vtk_surface(
 	fgetstring(vtk_file,"POINTS");
 	status = fscanf(vtk_file,"%d\n",&num_vtx);
 	uni_array(&vertex,3*num_vtx,sizeof(double));
-	uni_array(&index,num_vtx,INT);
+	uni_array(&index,num_vtx,sizeof(int));
 	if (!fgetstring(vtk_file,"double"))
 	{
 	    (void) printf("VTK file %s cannot find \"double\"\n",vtk_name);

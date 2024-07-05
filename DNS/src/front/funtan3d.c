@@ -316,8 +316,8 @@ LOCAL	boolean split_surfaces_at_c_curves(
 	if (colors == NULL)
 	{
 	    max_ncolors = 100;
-	    uni_array(&colors,max_ncolors,INT);
-	    uni_array(&num_tris_of_color,max_ncolors,INT);
+	    uni_array(&colors,max_ncolors,sizeof(int));
+	    uni_array(&num_tris_of_color,max_ncolors,sizeof(int));
 	    uni_array(&news,max_ncolors,sizeof(SURFACE*));
 	    uni_array(&olds,max_ncolors,sizeof(SURFACE*));
 	}
@@ -337,8 +337,8 @@ LOCAL	boolean split_surfaces_at_c_curves(
 			int     *new_colors, *new_num_tris_of_color;
 			size_t  new_max_ncolors = 2*max_ncolors;
 
-	                uni_array(&new_colors,new_max_ncolors,INT);
-	                uni_array(&new_num_tris_of_color,new_max_ncolors,INT);
+	                uni_array(&new_colors,new_max_ncolors,sizeof(int));
+	                uni_array(&new_num_tris_of_color,new_max_ncolors,sizeof(int));
 	                uni_array(&new_olds,new_max_ncolors,sizeof(SURFACE*));
 			for (i = 0; i < ncolors; ++i)
 			{
@@ -1407,7 +1407,7 @@ LOCAL boolean cdt_triangulate_one_tri(
 	    if (in.segmentlist != NULL)
 		free(in.segmentlist);
 	    in.size_segmentlist = (size_t)2*nce;
-	    uni_array(&in.segmentlist,in.size_segmentlist,INT);
+	    uni_array(&in.segmentlist,in.size_segmentlist,sizeof(int));
 	}
 	for (i = 0; i < nce; ++i)
 	{

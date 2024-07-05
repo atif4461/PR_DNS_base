@@ -1947,7 +1947,7 @@ LOCAL boolean make_bond_lists(
 
 		/* Allocate New num_of_bonds[][], compon2d[][]: */
 	
-	bi_array(&T->num_of_bonds,grid->gmax[1],grid->gmax[0],INT);
+	bi_array(&T->num_of_bonds,grid->gmax[1],grid->gmax[0],sizeof(int));
 	if (T->num_of_bonds == NULL)
 	{
 	    (void) printf("WARNING in make_bond_lists(), "
@@ -1997,7 +1997,7 @@ LOCAL boolean make_bond_lists(
 #endif /* defined(OLD_BOND_BLOCKS) */
 
 							/* See Lemma 1 */
-	uni_array(&Bond_blocks,max_size,INT); 
+	uni_array(&Bond_blocks,max_size,sizeof(int)); 
 	if (Bond_blocks == NULL)  
 	{
 	    (void) printf("WARNING in make_bond_lists(), "
@@ -2371,7 +2371,7 @@ LOCAL void store_bond(
 	if (count >= max_size-2)
 	{
 	    int i,*Tmp_bond_blocks;
-	    uni_array(&Tmp_bond_blocks,max_size*2,INT); 
+	    uni_array(&Tmp_bond_blocks,max_size*2,sizeof(int)); 
 	    for (i = 0; i < max_size; ++i)
 		Tmp_bond_blocks[i] = Bond_blocks[i];
 	    max_size *= 2;
@@ -2409,7 +2409,7 @@ LOCAL void mark_end_of_bond(void)
 	if (count >= max_size-1)
 	{
 	    int i,*Tmp_bond_blocks;
-	    uni_array(&Tmp_bond_blocks,max_size*2,INT); 
+	    uni_array(&Tmp_bond_blocks,max_size*2,sizeof(int)); 
 	    for (i = 0; i < max_size; ++i)
 		Tmp_bond_blocks[i] = Bond_blocks[i];
 	    max_size *= 2;

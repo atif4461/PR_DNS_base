@@ -1645,7 +1645,7 @@ EXPORT  void    FT_StartUp(
         	/* Init front interface */
 
         	i_intfc(&Init) = front->interf = make_interface(dim);
-		bi_array(&rect_bdry_type,MAXD,2,INT);
+		bi_array(&rect_bdry_type,MAXD,2,sizeof(int));
         	init_rect_bdry_type(rect_bdry_type,front->rect_grid);
 
         	copy_rect_grid(computational_grid(front->interf),

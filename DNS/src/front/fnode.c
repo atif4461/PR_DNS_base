@@ -1002,7 +1002,7 @@ EXPORT	int pp_node_propagate(
 	    new_on->nopp   = (NODE **)  Store(num_c * sizeof(NODE *));
 	    new_on->pt     = (POINT **) Store(num_c * sizeof(POINT *));
 	    new_on->ang    = NULL;
-	    new_on->orient = (ORIENTATION *)    Store(num_c * INT);
+	    new_on->orient = (ORIENTATION *)    Store(num_c * sizeof(int));
 	    for (i = 0;  i < old_on->num_c;  ++i)
 	    {
 	    	oldc = old_on->nc[i];	oc_or = old_on->orient[i];
