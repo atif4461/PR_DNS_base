@@ -99,7 +99,7 @@ struct _POINT
 typedef struct _POINT POINT;
 
  /* Macros of accessing private fields of points */
-//#define Private_data_prdns(p)	  (p)->private_data_prdns
+#define Private_data_prdns(p)	  (p)->private_data_prdns
 #define Index_of_point(p)  Private_data_prdns(p)._index
 #define node_at_point(p)   Private_data_prdns(p)._node
 #define sorted(p)          Private_data_prdns(p)._sorted

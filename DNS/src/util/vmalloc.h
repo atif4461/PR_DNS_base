@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <cdecs.h>
 
 #define	  CHAR	  sizeof(char)
-#define   INT	  sizeof(int)
+//#define   INT	  sizeof(int)
 //#define	  sizeof(double)   sizeof(double)
 #define   DOUBLE  sizeof(double)
 

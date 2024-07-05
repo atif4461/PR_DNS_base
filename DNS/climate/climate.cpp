@@ -35,8 +35,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "../iFluid/ifluid_basic.h"
 #include "climate.h"
 #include <sys/time.h>
-#include <torch/torch.h>
-//#include <torch/script.h> // One-stop header.
+//#include <torch/torch.h>
+#include <torch/script.h> // One-stop header.
 #include <cuda.h>
 #include <iostream>
 #include <memory>
