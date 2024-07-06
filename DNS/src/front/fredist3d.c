@@ -420,66 +420,66 @@ boolean	connect_reflect_surface(
 	SURFACE		*os,
 	INTERFACE	*intfc)
 {
-	INTERFACE	*sav_intfc;
-	SURFACE		*rs;
-	TRI		*t;
-	POINT		*p;
-	TRI		*otris[MAX_SUBDOMAIN_TRIS], *rtris[MAX_SUBDOMAIN_TRIS];
-	int		osides[MAX_SUBDOMAIN_TRIS], rsides[MAX_SUBDOMAIN_TRIS];
-	int		i, nt;
-	double		*h, pm1;
-	boolean		sav_copy;
-	
-	DEBUG_ENTER(connect_reflect_surface)
-
-	sav_intfc = current_interface();
-	set_current_interface(intfc);
-	
-	sav_copy = copy_intfc_states();
-	set_copy_intfc_states(YES);
-	rs = copy_surface(os, NULL, NULL, YES);
-	set_copy_intfc_states(sav_copy);
-	
-	nt = collect_bdry_tris(&pm1, otris, osides, plane, dir, nor, os);
-	nt = collect_bdry_tris(&pm1, rtris, rsides, plane, dir, nor, rs);
-
-	printf("#reflect bf  %d %24.15e\n", nt, pm);
-
-	/* reflect rs wrt pm, do not reflect states */
-	for(t = first_tri(rs); !at_end_of_tri_list(t,rs); t = t->next)
-	{
-	    for(i=0; i<3; i++)
-	    {
-		p = Point_of_tri(t)[i];
-		sorted(p) = NO;
-	    }
-	}
-	for(t = first_tri(rs); !at_end_of_tri_list(t,rs); t = t->next)
-	{
-	    for(i=0; i<3; i++)
-	    {
-		p = Point_of_tri(t)[i];
-		if(!sorted(p))
-		{
-		    Coords(p)[dir] = 2*pm - Coords(p)[dir];
-		    sorted(p) = YES;
-		}
-	    }
-	}
-	invert_surface(rs);
-
-	/* adjoin the reflected surface. */
-	last_tri(os)->next = first_tri(rs);
-	first_tri(rs)->prev = last_tri(os);
-	link_tri_list_to_surface(first_tri(os),last_tri(rs),os);
-	(void) delete_surface(rs);
-
-	connect_tris(otris, osides, rtris, rsides, nt, intfc);
-
-	set_current_interface(sav_intfc);
-	DEBUG_LEAVE(connect_reflect_surface)
-	
-	return YES;
+//	INTERFACE	*sav_intfc;
+//	SURFACE		*rs;
+//	TRI		*t;
+//	POINT		*p;
+//	TRI		*otris[MAX_SUBDOMAIN_TRIS], *rtris[MAX_SUBDOMAIN_TRIS];
+//	int		osides[MAX_SUBDOMAIN_TRIS], rsides[MAX_SUBDOMAIN_TRIS];
+//	int		i, nt;
+//	double		*h, pm1;
+//	boolean		sav_copy;
+//	
+//	DEBUG_ENTER(connect_reflect_surface)
+//
+//	sav_intfc = current_interface();
+//	set_current_interface(intfc);
+//	
+//	sav_copy = copy_intfc_states();
+//	set_copy_intfc_states(YES);
+//	rs = copy_surface(os, NULL, NULL, YES);
+//	set_copy_intfc_states(sav_copy);
+//	
+//	nt = collect_bdry_tris(&pm1, otris, osides, plane, dir, nor, os);
+//	nt = collect_bdry_tris(&pm1, rtris, rsides, plane, dir, nor, rs);
+//
+//	printf("#reflect bf  %d %24.15e\n", nt, pm);
+//
+//	/* reflect rs wrt pm, do not reflect states */
+//	for(t = first_tri(rs); !at_end_of_tri_list(t,rs); t = t->next)
+//	{
+//	    for(i=0; i<3; i++)
+//	    {
+//		p = Point_of_tri(t)[i];
+//		sorted(p) = NO;
+//	    }
+//	}
+//	for(t = first_tri(rs); !at_end_of_tri_list(t,rs); t = t->next)
+//	{
+//	    for(i=0; i<3; i++)
+//	    {
+//		p = Point_of_tri(t)[i];
+//		if(!sorted(p))
+//		{
+//		    Coords(p)[dir] = 2*pm - Coords(p)[dir];
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
+//	invert_surface(rs);
+//
+//	/* adjoin the reflected surface. */
+//	last_tri(os)->next = first_tri(rs);
+//	first_tri(rs)->prev = last_tri(os);
+//	link_tri_list_to_surface(first_tri(os),last_tri(rs),os);
+//	(void) delete_surface(rs);
+//
+//	connect_tris(otris, osides, rtris, rsides, nt, intfc);
+//
+//	set_current_interface(sav_intfc);
+//	DEBUG_LEAVE(connect_reflect_surface)
+//	
+//	return YES;
 }
 
 double	intfc_bdry_coord(

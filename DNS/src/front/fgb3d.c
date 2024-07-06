@@ -4890,37 +4890,37 @@ LOCAL   void extend_boundary_side(
         int *smax,
         RECT_GRID *gr)
 {
-        SURFACE **s;
-        TRI *t;
-        POINT *p;
-        int i;
-        double L[MAXD],U[MAXD];
-
-        for (i = 0; i < 3; ++i)
-        {
-            L[i] = gr->L[i] + smin[i]*gr->h[i];
-            U[i] = gr->L[i] + smax[i]*gr->h[i];
-        }
-        next_point(intfc,NULL,NULL,NULL);
-        for (s = intfc->surfaces; s && *s; ++s)
-        {
-            for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
-            {
-                for (i = 0; i < 3; ++i)
-                {
-                    if (is_side_bdry(t,i))
-                    {
-                        p = Point_of_tri(t)[i];
-                        if (!sorted(p))
-                            check_and_extend_point(p,t,*s,L,U,gr->h);
-                        p = Point_of_tri(t)[(i+1)%3];
-                        if (!sorted(p))
-                            check_and_extend_point(p,t,*s,L,U,gr->h);
-                        check_and_extend_side(t,i,*s,L,U,gr->h);
-                    }
-                }
-            }
-        }
+//        SURFACE **s;
+//        TRI *t;
+//        POINT *p;
+//        int i;
+//        double L[MAXD],U[MAXD];
+//
+//        for (i = 0; i < 3; ++i)
+//        {
+//            L[i] = gr->L[i] + smin[i]*gr->h[i];
+//            U[i] = gr->L[i] + smax[i]*gr->h[i];
+//        }
+//        next_point(intfc,NULL,NULL,NULL);
+//        for (s = intfc->surfaces; s && *s; ++s)
+//        {
+//            for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
+//            {
+//                for (i = 0; i < 3; ++i)
+//                {
+//                    if (is_side_bdry(t,i))
+//                    {
+//                        p = Point_of_tri(t)[i];
+//                        if (!sorted(p))
+//                            check_and_extend_point(p,t,*s,L,U,gr->h);
+//                        p = Point_of_tri(t)[(i+1)%3];
+//                        if (!sorted(p))
+//                            check_and_extend_point(p,t,*s,L,U,gr->h);
+//                        check_and_extend_side(t,i,*s,L,U,gr->h);
+//                    }
+//                }
+//            }
+//        }
 }       /* end extend_boundary_side */
 
 LOCAL void check_and_extend_point(
@@ -4931,36 +4931,36 @@ LOCAL void check_and_extend_point(
         double *U,
         double *h)
 {
-        int i,num_tris;
-        TRI **tris;
-        int dir,nb;
-        double dmin = HUGE;
-        for (i = 0; i < 3; ++i)
-        {
-            if (Coords(p)[i] < L[i] || Coords(p)[i] > U[i])
-                return;
-            else
-            {
-                if (fabs(Coords(p)[i] - L[i]) < dmin)
-                {
-                    dmin = fabs(Coords(p)[i] - L[i]);
-                    dir = i;    nb = 0;
-                }
-                if (fabs(Coords(p)[i] - U[i]) < dmin)
-                {
-                    dmin = fabs(Coords(p)[i] - U[i]);
-                    dir = i;    nb = 1;
-                }
-            }
-        }
-
-        num_tris = set_tri_list_around_point(p,t,&tris,s->interface);
-        if (nb == 0)  Coords(p)[dir] = L[dir] - 0.001*h[dir];
-        else if (nb == 1)  Coords(p)[dir] = U[dir] + 0.001*h[dir];
-        s->interface->modified = YES;
-        sorted(p) = YES;
-        for (i = 0; i < num_tris; ++i)
-            set_normal_of_tri(tris[i]);
+//        int i,num_tris;
+//        TRI **tris;
+//        int dir,nb;
+//        double dmin = HUGE;
+//        for (i = 0; i < 3; ++i)
+//        {
+//            if (Coords(p)[i] < L[i] || Coords(p)[i] > U[i])
+//                return;
+//            else
+//            {
+//                if (fabs(Coords(p)[i] - L[i]) < dmin)
+//                {
+//                    dmin = fabs(Coords(p)[i] - L[i]);
+//                    dir = i;    nb = 0;
+//                }
+//                if (fabs(Coords(p)[i] - U[i]) < dmin)
+//                {
+//                    dmin = fabs(Coords(p)[i] - U[i]);
+//                    dir = i;    nb = 1;
+//                }
+//            }
+//        }
+//
+//        num_tris = set_tri_list_around_point(p,t,&tris,s->interface);
+//        if (nb == 0)  Coords(p)[dir] = L[dir] - 0.001*h[dir];
+//        else if (nb == 1)  Coords(p)[dir] = U[dir] + 0.001*h[dir];
+//        s->interface->modified = YES;
+//        sorted(p) = YES;
+//        for (i = 0; i < num_tris; ++i)
+//            set_normal_of_tri(tris[i]);
 }       /* end check_and_extend_point */
 
 
@@ -6180,11 +6180,11 @@ EXPORT	boolean  skip_tag_tri(TRI*);
 EXPORT	boolean  skip_tag_tri(
 	TRI	*tri)
 {
-	int	i;
-
-	for(i=0; i<3; i++)
-	    if(sorted(Point_of_tri(tri)[i]))
-	        return YES;
+//	int	i;
+//
+//	for(i=0; i<3; i++)
+//	    if(sorted(Point_of_tri(tri)[i]))
+//	        return YES;
 	return NO;
 }
 
@@ -6194,27 +6194,27 @@ void	rbox_tag_recon_tris(
 	INTERFACE	*intfc,
 	BBOX		*bbox)
 {
-	SURFACE		**s;
-	TRI		*tri;
-	POINT		**p;
-	int		i;
-
-	next_point(intfc, NULL, NULL, NULL);
-	for(s = intfc->surfaces; s && *s; ++s)
-	{
-	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
-	    {
-		if(bboxes_tri_outside(bbox, tri))
-		{
-		  Tri_index(tri) = -1;
-		  p = Point_of_tri(tri);
-		  for(i=0; i<3; i++)
-		    sorted(p[i]) = YES;
-		}
-		else
-		  Tri_index(tri) = 0;
-	    }
-	}
+//	SURFACE		**s;
+//	TRI		*tri;
+//	POINT		**p;
+//	int		i;
+//
+//	next_point(intfc, NULL, NULL, NULL);
+//	for(s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    for (tri=first_tri(*s); !at_end_of_tri_list(tri,*s); tri=tri->next)
+//	    {
+//		if(bboxes_tri_outside(bbox, tri))
+//		{
+//		  Tri_index(tri) = -1;
+//		  p = Point_of_tri(tri);
+//		  for(i=0; i<3; i++)
+//		    sorted(p[i]) = YES;
+//		}
+//		else
+//		  Tri_index(tri) = 0;
+//	    }
+//	}
 }
 
 void	rbox_copy_tris_index(

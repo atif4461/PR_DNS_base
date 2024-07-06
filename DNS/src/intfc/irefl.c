@@ -146,37 +146,37 @@ EXPORT	void	i_reflect_surface(
 	double*		p,	/* point on reflection plane */
 	double*		nor)	/* plane normal */
 {
-	INTERFACE *intfc = s->interface;
-        TRI *tri;
-        POINT *p_tmp;
-        POINTER t_tmp;
-        int i, bdry12, bdry20;
-
-        for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-        {
-            /* Reflect unreflected points on tri */
-
-            for (i = 0; i < 3; ++i)
-            {
-                if (sorted(Point_of_tri(tri)[i]) == NO)
-                {
-                    reflect_point(Point_of_tri(tri)[i],p,nor,intfc);
-                    sorted(Point_of_tri(tri)[i]) = YES;
-                }
-            }
-            /* Reverse topological orientation */
-            p_tmp = Point_of_tri(tri)[0];
-            Point_of_tri(tri)[0] = Point_of_tri(tri)[1];
-            Point_of_tri(tri)[1] = p_tmp;
-            t_tmp = Neighbor_on_side12(tri);
-            Neighbor_on_side12(tri) = Neighbor_on_side20(tri);
-            Neighbor_on_side20(tri) = t_tmp;
-            bdry12 = is_side12_a_bond(tri) ? YES : NO;
-            bdry20 = is_side20_a_bond(tri) ? YES : NO;
-            set_12_bdry(Boundary_tri(tri),bdry20);
-            set_20_bdry(Boundary_tri(tri),bdry12);
-
-        }
+//	INTERFACE *intfc = s->interface;
+//        TRI *tri;
+//        POINT *p_tmp;
+//        POINTER t_tmp;
+//        int i, bdry12, bdry20;
+//
+//        for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//        {
+//            /* Reflect unreflected points on tri */
+//
+//            for (i = 0; i < 3; ++i)
+//            {
+//                if (sorted(Point_of_tri(tri)[i]) == NO)
+//                {
+//                    reflect_point(Point_of_tri(tri)[i],p,nor,intfc);
+//                    sorted(Point_of_tri(tri)[i]) = YES;
+//                }
+//            }
+//            /* Reverse topological orientation */
+//            p_tmp = Point_of_tri(tri)[0];
+//            Point_of_tri(tri)[0] = Point_of_tri(tri)[1];
+//            Point_of_tri(tri)[1] = p_tmp;
+//            t_tmp = Neighbor_on_side12(tri);
+//            Neighbor_on_side12(tri) = Neighbor_on_side20(tri);
+//            Neighbor_on_side20(tri) = t_tmp;
+//            bdry12 = is_side12_a_bond(tri) ? YES : NO;
+//            bdry20 = is_side20_a_bond(tri) ? YES : NO;
+//            set_12_bdry(Boundary_tri(tri),bdry20);
+//            set_20_bdry(Boundary_tri(tri),bdry12);
+//
+//        }
 }		/*end i_reflect_surface*/
 
 EXPORT	void	i_reflect_point(

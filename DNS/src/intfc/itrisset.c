@@ -1479,175 +1479,175 @@ EXPORT	boolean sep_common_point_from_loop(
 	int		*num_nbtris,
 	INTERFACE	*intfc)
 {
-	int	i,j,k,kt,nt, n_nbtris;
-	int	num_tri_lists;
-	double	tcen[3], cen[3];
-	POINT	*p, *newp;
-	TRI	*tri, *tri_in, **tri_lists[MAX_TRI_LISTS], **ptris;
+//	int	i,j,k,kt,nt, n_nbtris;
+//	int	num_tri_lists;
+//	double	tcen[3], cen[3];
+//	POINT	*p, *newp;
+//	TRI	*tri, *tri_in, **tri_lists[MAX_TRI_LISTS], **ptris;
 	boolean	sep_comm_flag; 
-	/* if there are seperated tri_lists, sep_comm_flag will be YES; */
-
-	DEBUG_ENTER(sep_common_point_from_loop)
-
-	sort_tris_set(tris, num_tris, NULL);
-
-	n_nbtris = num_nbtris == NULL ? 0 : *num_nbtris;
-	
-	for(i=0; i<num_tris; i++)
-	{
-	    tri = tris[i];
-	    for(j=0; j<3; j++)
-		sorted(Point_of_tri(tri)[j]) = NO;
-	}
-
-	sep_comm_flag = NO;
-	for(i=0; i<num_tris; i++)
-	{
-	    tri_in = tris[i];
-	    for(j=0; j<3; j++)
-	    {
-		p = Point_of_tri(tri_in)[j];
-		
-		if(sorted(p))
-		    continue;
-		
-		/* only when the point is starting or ending point of a tri, 
-		   we test it */
-	        if(!(Tri_on_side(tri_in,j) == NULL || 
-		     Tri_on_side(tri_in,Prev_m3(j)) == NULL))
-		    continue;
-		
-		sorted(p) = YES;
-	
-		num_tri_lists = 0;
-		/* find all the tri lists related to point p */
-		for(k=0; k<num_tris; k++)
-		{
-		    tri = tris[k];
-
-		    /* make sure p is a point of tri. */
-		    kt = Vertex_of_point(tri, p);
-		    if(kt == ERROR)
-			continue;
-
-		    /* make sure tri is not in the known tri lists. */
-		    for(kt=0; kt<num_tri_lists; kt++)
-		    {
-			if(pointer_is_in_array(tri, tri_lists[kt]))
-			    break;
-		    }
-		    /* it is in the known tri lists, try next tri. */
-		    if(kt < num_tri_lists)
-			continue;
-		    if(num_tri_lists == MAX_TRI_LISTS)
-		    {
-			printf("ERROR sep_common_point_from_loop, "
-			       "num_tri_lists is too large.\n");
-			clean_up(ERROR);
-		    }
-
-		    /* a new tri_list is found, add it to tri_lists. */
-		    nt = set_tri_list_around_point(p, tri, &ptris, intfc);
-		    tri_lists[num_tri_lists] = NULL;
-		    for(kt=0; kt<nt; kt++)
-		    {
-			if(the_point(p))
-			{
-			    printf("#common the point list.\n");
-			    print_tri(ptris[kt],intfc);
-			}
-			/*storage issue: each point for an ending points of 
-			  a null side. there is a tri list the total number 
-			  of this kind of loop is not large. The storage is 
-			  not a problem. 
-			*/
-			if(!add_to_pointers(ptris[kt], 
-			   &tri_lists[num_tri_lists]))
-			{
-			    printf("ERROR sep_common_point_from_loop, "
-			    	   "can not add into tri_lists.\n");
-			    clean_up(ERROR);
-			}
-		    }
-		    num_tri_lists++;
-		}
-		if(num_tri_lists <= 1)
-		    continue;
-
-		/*num_tri_lists > 1 means there are more than 1 tri list 
-		  on one point. They will be seperated.
-		*/
-
-		sep_comm_flag = YES;
-		
-		/*just ignore the boundary point, 
-		  it will be updated by another proc.
-		*/
-		if(Boundary_point(p))
-		{
-		    printf("#sep_common_point, a boundary point "
-		    	   "needs to be seperated, ignored.\n");
-		    continue;
-		}
-	
-		/* remove neighbor tris from neighbor tri list. */
-		if(nbtris != NULL && n_nbtris > 0)
-		{
-		    for(k=0; k<n_nbtris; k++)
-			if(nbtris[k] != NULL && 
-			   Vertex_of_point(nbtris[k],p) != ERROR)
-			    nbtris[k] = NULL;
-		}
-
-		/* seperate the common point. */
-		for(k=0; k<num_tri_lists; k++)
-		{
-		    /* make a new point for all tri lists. */
-		    newp = copy_point(p);
-		    sorted(newp) = YES;
-		    for(ptris=tri_lists[k]; ptris && *ptris; ptris++)
-		    {
-			kt = Vertex_of_point(*ptris, p);
-			Point_of_tri(*ptris)[kt] = newp;
-		    }
-		    
-		    /* move the point towards the centroid of all tris. */
-		    for(kt=0; kt<3; kt++)
-			tcen[kt] = 0.0;
-		    
-		    for(nt=0, ptris=tri_lists[k]; ptris && *ptris; 
-		    	nt++, ptris++)
-		    {
-			centroid_of_tri(cen, *ptris);
-			for(kt=0; kt<3; kt++)
-			    tcen[kt] += cen[kt];
-		    }
-		    for(kt=0; kt<3; kt++)
-			Coords(newp)[kt] = 
-			    (Coords(newp)[kt] - tcen[kt]/nt)*comm_pt_fac
-			    + tcen[kt]/nt;
-		    
-		    for(ptris=tri_lists[k]; ptris && *ptris; ptris++)
-			set_normal_of_tri(*ptris);
-		}
-	    } /* for j, 3 points of a tri. */
-	}  /* for all tris */
-
-	/* remove deleted neighbor tris */
-	if(nbtris != NULL && n_nbtris > 0)
-	{
-	    k = 0;
-	    for(i=0; i<n_nbtris; i++)
-	    {
-		if(nbtris[i] == NULL)
-		    continue;
-		nbtris[k] = nbtris[i];
-		k++;
-	    }
-	    *num_nbtris = k;
-	}
-
-	DEBUG_LEAVE(sep_common_point_from_loop)
+//	/* if there are seperated tri_lists, sep_comm_flag will be YES; */
+//
+//	DEBUG_ENTER(sep_common_point_from_loop)
+//
+//	sort_tris_set(tris, num_tris, NULL);
+//
+//	n_nbtris = num_nbtris == NULL ? 0 : *num_nbtris;
+//	
+//	for(i=0; i<num_tris; i++)
+//	{
+//	    tri = tris[i];
+//	    for(j=0; j<3; j++)
+//		sorted(Point_of_tri(tri)[j]) = NO;
+//	}
+//
+//	sep_comm_flag = NO;
+//	for(i=0; i<num_tris; i++)
+//	{
+//	    tri_in = tris[i];
+//	    for(j=0; j<3; j++)
+//	    {
+//		p = Point_of_tri(tri_in)[j];
+//		
+//		if(sorted(p))
+//		    continue;
+//		
+//		/* only when the point is starting or ending point of a tri, 
+//		   we test it */
+//	        if(!(Tri_on_side(tri_in,j) == NULL || 
+//		     Tri_on_side(tri_in,Prev_m3(j)) == NULL))
+//		    continue;
+//		
+//		sorted(p) = YES;
+//	
+//		num_tri_lists = 0;
+//		/* find all the tri lists related to point p */
+//		for(k=0; k<num_tris; k++)
+//		{
+//		    tri = tris[k];
+//
+//		    /* make sure p is a point of tri. */
+//		    kt = Vertex_of_point(tri, p);
+//		    if(kt == ERROR)
+//			continue;
+//
+//		    /* make sure tri is not in the known tri lists. */
+//		    for(kt=0; kt<num_tri_lists; kt++)
+//		    {
+//			if(pointer_is_in_array(tri, tri_lists[kt]))
+//			    break;
+//		    }
+//		    /* it is in the known tri lists, try next tri. */
+//		    if(kt < num_tri_lists)
+//			continue;
+//		    if(num_tri_lists == MAX_TRI_LISTS)
+//		    {
+//			printf("ERROR sep_common_point_from_loop, "
+//			       "num_tri_lists is too large.\n");
+//			clean_up(ERROR);
+//		    }
+//
+//		    /* a new tri_list is found, add it to tri_lists. */
+//		    nt = set_tri_list_around_point(p, tri, &ptris, intfc);
+//		    tri_lists[num_tri_lists] = NULL;
+//		    for(kt=0; kt<nt; kt++)
+//		    {
+//			if(the_point(p))
+//			{
+//			    printf("#common the point list.\n");
+//			    print_tri(ptris[kt],intfc);
+//			}
+//			/*storage issue: each point for an ending points of 
+//			  a null side. there is a tri list the total number 
+//			  of this kind of loop is not large. The storage is 
+//			  not a problem. 
+//			*/
+//			if(!add_to_pointers(ptris[kt], 
+//			   &tri_lists[num_tri_lists]))
+//			{
+//			    printf("ERROR sep_common_point_from_loop, "
+//			    	   "can not add into tri_lists.\n");
+//			    clean_up(ERROR);
+//			}
+//		    }
+//		    num_tri_lists++;
+//		}
+//		if(num_tri_lists <= 1)
+//		    continue;
+//
+//		/*num_tri_lists > 1 means there are more than 1 tri list 
+//		  on one point. They will be seperated.
+//		*/
+//
+//		sep_comm_flag = YES;
+//		
+//		/*just ignore the boundary point, 
+//		  it will be updated by another proc.
+//		*/
+//		if(Boundary_point(p))
+//		{
+//		    printf("#sep_common_point, a boundary point "
+//		    	   "needs to be seperated, ignored.\n");
+//		    continue;
+//		}
+//	
+//		/* remove neighbor tris from neighbor tri list. */
+//		if(nbtris != NULL && n_nbtris > 0)
+//		{
+//		    for(k=0; k<n_nbtris; k++)
+//			if(nbtris[k] != NULL && 
+//			   Vertex_of_point(nbtris[k],p) != ERROR)
+//			    nbtris[k] = NULL;
+//		}
+//
+//		/* seperate the common point. */
+//		for(k=0; k<num_tri_lists; k++)
+//		{
+//		    /* make a new point for all tri lists. */
+//		    newp = copy_point(p);
+//		    sorted(newp) = YES;
+//		    for(ptris=tri_lists[k]; ptris && *ptris; ptris++)
+//		    {
+//			kt = Vertex_of_point(*ptris, p);
+//			Point_of_tri(*ptris)[kt] = newp;
+//		    }
+//		    
+//		    /* move the point towards the centroid of all tris. */
+//		    for(kt=0; kt<3; kt++)
+//			tcen[kt] = 0.0;
+//		    
+//		    for(nt=0, ptris=tri_lists[k]; ptris && *ptris; 
+//		    	nt++, ptris++)
+//		    {
+//			centroid_of_tri(cen, *ptris);
+//			for(kt=0; kt<3; kt++)
+//			    tcen[kt] += cen[kt];
+//		    }
+//		    for(kt=0; kt<3; kt++)
+//			Coords(newp)[kt] = 
+//			    (Coords(newp)[kt] - tcen[kt]/nt)*comm_pt_fac
+//			    + tcen[kt]/nt;
+//		    
+//		    for(ptris=tri_lists[k]; ptris && *ptris; ptris++)
+//			set_normal_of_tri(*ptris);
+//		}
+//	    } /* for j, 3 points of a tri. */
+//	}  /* for all tris */
+//
+//	/* remove deleted neighbor tris */
+//	if(nbtris != NULL && n_nbtris > 0)
+//	{
+//	    k = 0;
+//	    for(i=0; i<n_nbtris; i++)
+//	    {
+//		if(nbtris[i] == NULL)
+//		    continue;
+//		nbtris[k] = nbtris[i];
+//		k++;
+//	    }
+//	    *num_nbtris = k;
+//	}
+//
+//	DEBUG_LEAVE(sep_common_point_from_loop)
 
 	return sep_comm_flag;
 }
@@ -3233,31 +3233,31 @@ EXPORT	boolean	check_valid_tris(
 	int		nt,
 	INTERFACE	*intfc)
 {
-	int	i, j;
-	POINT	*p;
+//	int	i, j;
+//	POINT	*p;
 	boolean	status;
-
-	status = YES;
-	for(i=0; i<nt; i++)
-	    for(j=0; j<3; j++)
-	    {
-		p = Point_of_tri(tris[i])[j];
-		sorted(p) = NO;
-	    }
-	for(i=0; i<nt; i++)
-	    for(j=0; j<3; j++)
-	    {
-		p = Point_of_tri(tris[i])[j];
-		if(sorted(p) || Boundary_point(p))
-		    continue;
-		sorted(p) = YES;
-		
-		if(!check_valid_point(p, tris[i], tris, nt, intfc))
-		{
-		    printf("check_valid_tris invalid points are found.\n");
-		    status = NO;
-		}
-	    }
+//
+//	status = YES;
+//	for(i=0; i<nt; i++)
+//	    for(j=0; j<3; j++)
+//	    {
+//		p = Point_of_tri(tris[i])[j];
+//		sorted(p) = NO;
+//	    }
+//	for(i=0; i<nt; i++)
+//	    for(j=0; j<3; j++)
+//	    {
+//		p = Point_of_tri(tris[i])[j];
+//		if(sorted(p) || Boundary_point(p))
+//		    continue;
+//		sorted(p) = YES;
+//		
+//		if(!check_valid_point(p, tris[i], tris, nt, intfc))
+//		{
+//		    printf("check_valid_tris invalid points are found.\n");
+//		    status = NO;
+//		}
+//	    }
 
 	return status;
 }

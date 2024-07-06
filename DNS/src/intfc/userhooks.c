@@ -1006,13 +1006,13 @@ EXPORT	void reconstruct_point_pointers(
 	POINTER		*ncad,
 	int		nchks)
 {
-	if (nintfc == NULL)
-	    return;
-	(*i_user_interface(nintfc)._reconstruct_point_pointers)(p,nintfc,
-								ointfc,ocad,
-								ncad,nchks);
-	if (nintfc->dim == 3)
-	    sorted(p) = YES;	/* This flag should be set here, XLL 8/7/08 */
+//	if (nintfc == NULL)
+//	    return;
+//	(*i_user_interface(nintfc)._reconstruct_point_pointers)(p,nintfc,
+//								ointfc,ocad,
+//								ncad,nchks);
+//	if (nintfc->dim == 3)
+//	    sorted(p) = YES;	/* This flag should be set here, XLL 8/7/08 */
 }		/*end reconstruct_point_pointers*/
 
 EXPORT	void reconstruct_node_pointers(

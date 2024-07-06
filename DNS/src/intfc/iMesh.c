@@ -1803,255 +1803,255 @@ void iMesh_getEntities(iMesh_Instance instance,
                          /*out*/ int* entity_handles_size,
                          /*out*/ int *err)
 {
-	FT_ESET_HANDLE *ent_set = (FT_ESET_HANDLE*)entity_set_handle;
-	FTEHANDLE *entities;
-	int i,j,num_ent;
-	switch (ent_set->type)
-	{
-	case POINT_SET:
-	    if (entity_type == iBase_VERTEX || 
-		entity_topology == iMesh_POINT)
-	    {
-		POINT **pts;
-		num_ent = size_of_pointers(ent_set->ent_set_data);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		pts = (POINT**)ent_set->ent_set_data;
-		for (i = 0; i < num_ent; ++i)
-		{
-		    entities[i].topo = iMesh_POINT;
-		    entities[i].obj.point = pts[i];
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else
-	    {
-	    }
-	    break;
-	case BOND_SET:
-	    if (entity_type == iBase_EDGE || 
-		entity_topology == iMesh_LINE_SEGMENT)
-	    {
-		BOND **bonds;
-		num_ent = size_of_pointers(ent_set->ent_set_data);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		bonds = (BOND**)ent_set->ent_set_data;
-		for (i = 0; i < num_ent; ++i)
-		{
-		    entities[i].topo = iMesh_LINE_SEGMENT;
-		    entities[i].obj.bond = bonds[i];
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else
-	    {
-	    }
-	    break;
-	case TRI_SET:
-	    if (entity_type == iBase_FACE || 
-		entity_topology == iMesh_TRIANGLE)
-	    {
-		TRI **tris;
-		num_ent = size_of_pointers(ent_set->ent_set_data);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		tris = (TRI**)ent_set->ent_set_data;
-		for (i = 0; i < num_ent; ++i)
-		{
-		    entities[i].topo = iMesh_TRIANGLE;
-		    entities[i].obj.tri = tris[i];
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else
-	    {
-		FAILURE(iBase_NOT_SUPPORTED,
-			"Entity set type does not match entity topo\n")
-	    }
-	    break;
-	case CURVE_SET:
-	    if (entity_type == iBase_VERTEX || 
-		entity_topology == iMesh_POINT)
-	    {
-		CURVE **c;
-		BOND *b;
-		POINT **pts;
-		num_ent = 0;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		    num_ent += NumOfCurvePoints(*c);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		i = 0;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		{
-		    for (b = (*c)->first; b != NULL; b = b->next)
-		    {
-		    	entities[i].topo = iMesh_POINT;
-		    	entities[i].obj.point = b->start;
-			i++;
-		    }
-		    entities[i].topo = iMesh_POINT;
-		    entities[i].obj.point = (*c)->last->end;
-		    i++;
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else if (entity_type == iBase_EDGE || 
-		entity_topology == iMesh_LINE_SEGMENT)
-	    {
-		CURVE **c;
-		BOND *b;
-		num_ent = 0;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		    num_ent += NumOfCurveBonds(*c);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		i = 0;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		{
-		    for (b = (*c)->first; b != NULL; b = b->next)
-		    {
-		    	entities[i].topo = iMesh_LINE_SEGMENT;
-		    	entities[i].obj.bond = b;
-			i++;
-		    }
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else
-	    {
-		FAILURE(iBase_NOT_SUPPORTED,
-			"Entity set type does not match entity topo\n")
-	    }
-	    break;
-	case SURFACE_SET:
-	    if (entity_type == iBase_VERTEX || 
-		entity_topology == iMesh_POINT)
-	    {
-		SURFACE **s;
-		POINT *p;
-		TRI *t;
-		num_ent = 0;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		    num_ent += NumOfSurfPoints(*s);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		    reset_surface_points(*s);
-		i = 0;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		{
-		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); 
-					t = t->next)
-		    {
-			for (j = 0; j < 3; ++j)
-			{
-			    p = Point_of_tri(t)[j];
-			    if (sorted(p) == NO)
-			    {
-		    		entities[i].topo = iMesh_POINT;
-		    		entities[i].obj.point = p;
-				sorted(p) = YES;
-			    }
-			}
-			i++;
-		    }
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else if (entity_type == iBase_FACE || 
-		entity_topology == iMesh_TRIANGLE)
-	    {
-		SURFACE **s;
-		TRI *t;
-		num_ent = 0;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		    num_ent += NumOfSurfTris(*s);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		i = 0;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		{
-		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); 
-					t = t->next)
-		    {
-		    	entities[i].topo = iMesh_TRIANGLE;
-		    	entities[i].obj.tri = t;
-			i++;
-		    }
-		}
-		*entity_handles_allocated = YES;
-		*entity_handles_size = num_ent;
-	    }
-	    else
-	    {
-		FAILURE(iBase_NOT_SUPPORTED,
-			"Entity set type does not match entity topo\n")
-	    }
-	    break;
-	case INTERFACE_SET:
-	    if (entity_type == iBase_VERTEX || 
-		entity_topology == iMesh_POINT)
-	    {
-		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
-		POINT              *p;
-        	HYPER_SURF_ELEMENT *hse;
-        	HYPER_SURF         *hs;
-		num_ent = NumOfIntfcPoints(intfc);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		i = 0;
-		next_point(intfc,NULL,NULL,NULL);
-		while (next_point(intfc,&p,&hse,&hs))
-		{
-		    entities[i].topo = iMesh_POINT;
-		    entities[i].obj.point = p;
-		    i++;
-		}
-	    }
-	    else if (entity_type == iBase_EDGE || 
-		entity_topology == iMesh_LINE_SEGMENT)
-	    {
-		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
-		BOND *b;
-		CURVE *c;
-		num_ent = NumOfIntfcBonds(intfc);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		i = 0;
-		next_bond(intfc,NULL,NULL);
-		while (next_bond(intfc,&b,&c))
-		{
-		    entities[i].topo = iMesh_LINE_SEGMENT;
-		    entities[i].obj.bond = b;
-		    i++;
-		}
-	    }
-	    else if (entity_type == iBase_FACE || 
-		entity_topology == iMesh_TRIANGLE)
-	    {
-		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
-		TRI *t;
-		SURFACE *s;
-		num_ent = NumOfIntfcTris(intfc);
-		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
-		i = 0;
-		next_tri(intfc,NULL,NULL);
-		while (next_tri(intfc,&t,&s))
-		{
-		    entities[i].topo = iMesh_TRIANGLE;
-		    entities[i].obj.tri = t;
-		    i++;
-		}
-	    }
-	    else
-	    {
-		FAILURE(iBase_NOT_SUPPORTED,
-			"Entity set type does not match entity topo\n")
-	    }
-	    break;
-	default:
-	    FAILURE(iBase_NOT_SUPPORTED,
-		    "Entity set type does not match entity topo\n")
-	}
+//	FT_ESET_HANDLE *ent_set = (FT_ESET_HANDLE*)entity_set_handle;
+//	FTEHANDLE *entities;
+//	int i,j,num_ent;
+//	switch (ent_set->type)
+//	{
+//	case POINT_SET:
+//	    if (entity_type == iBase_VERTEX || 
+//		entity_topology == iMesh_POINT)
+//	    {
+//		POINT **pts;
+//		num_ent = size_of_pointers(ent_set->ent_set_data);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		pts = (POINT**)ent_set->ent_set_data;
+//		for (i = 0; i < num_ent; ++i)
+//		{
+//		    entities[i].topo = iMesh_POINT;
+//		    entities[i].obj.point = pts[i];
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else
+//	    {
+//	    }
+//	    break;
+//	case BOND_SET:
+//	    if (entity_type == iBase_EDGE || 
+//		entity_topology == iMesh_LINE_SEGMENT)
+//	    {
+//		BOND **bonds;
+//		num_ent = size_of_pointers(ent_set->ent_set_data);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		bonds = (BOND**)ent_set->ent_set_data;
+//		for (i = 0; i < num_ent; ++i)
+//		{
+//		    entities[i].topo = iMesh_LINE_SEGMENT;
+//		    entities[i].obj.bond = bonds[i];
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else
+//	    {
+//	    }
+//	    break;
+//	case TRI_SET:
+//	    if (entity_type == iBase_FACE || 
+//		entity_topology == iMesh_TRIANGLE)
+//	    {
+//		TRI **tris;
+//		num_ent = size_of_pointers(ent_set->ent_set_data);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		tris = (TRI**)ent_set->ent_set_data;
+//		for (i = 0; i < num_ent; ++i)
+//		{
+//		    entities[i].topo = iMesh_TRIANGLE;
+//		    entities[i].obj.tri = tris[i];
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else
+//	    {
+//		FAILURE(iBase_NOT_SUPPORTED,
+//			"Entity set type does not match entity topo\n")
+//	    }
+//	    break;
+//	case CURVE_SET:
+//	    if (entity_type == iBase_VERTEX || 
+//		entity_topology == iMesh_POINT)
+//	    {
+//		CURVE **c;
+//		BOND *b;
+//		POINT **pts;
+//		num_ent = 0;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		    num_ent += NumOfCurvePoints(*c);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		i = 0;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		{
+//		    for (b = (*c)->first; b != NULL; b = b->next)
+//		    {
+//		    	entities[i].topo = iMesh_POINT;
+//		    	entities[i].obj.point = b->start;
+//			i++;
+//		    }
+//		    entities[i].topo = iMesh_POINT;
+//		    entities[i].obj.point = (*c)->last->end;
+//		    i++;
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else if (entity_type == iBase_EDGE || 
+//		entity_topology == iMesh_LINE_SEGMENT)
+//	    {
+//		CURVE **c;
+//		BOND *b;
+//		num_ent = 0;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		    num_ent += NumOfCurveBonds(*c);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		i = 0;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		{
+//		    for (b = (*c)->first; b != NULL; b = b->next)
+//		    {
+//		    	entities[i].topo = iMesh_LINE_SEGMENT;
+//		    	entities[i].obj.bond = b;
+//			i++;
+//		    }
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else
+//	    {
+//		FAILURE(iBase_NOT_SUPPORTED,
+//			"Entity set type does not match entity topo\n")
+//	    }
+//	    break;
+//	case SURFACE_SET:
+//	    if (entity_type == iBase_VERTEX || 
+//		entity_topology == iMesh_POINT)
+//	    {
+//		SURFACE **s;
+//		POINT *p;
+//		TRI *t;
+//		num_ent = 0;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		    num_ent += NumOfSurfPoints(*s);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		    reset_surface_points(*s);
+//		i = 0;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		{
+//		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); 
+//					t = t->next)
+//		    {
+//			for (j = 0; j < 3; ++j)
+//			{
+//			    p = Point_of_tri(t)[j];
+//			    if (sorted(p) == NO)
+//			    {
+//		    		entities[i].topo = iMesh_POINT;
+//		    		entities[i].obj.point = p;
+//				sorted(p) = YES;
+//			    }
+//			}
+//			i++;
+//		    }
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else if (entity_type == iBase_FACE || 
+//		entity_topology == iMesh_TRIANGLE)
+//	    {
+//		SURFACE **s;
+//		TRI *t;
+//		num_ent = 0;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		    num_ent += NumOfSurfTris(*s);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		i = 0;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		{
+//		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); 
+//					t = t->next)
+//		    {
+//		    	entities[i].topo = iMesh_TRIANGLE;
+//		    	entities[i].obj.tri = t;
+//			i++;
+//		    }
+//		}
+//		*entity_handles_allocated = YES;
+//		*entity_handles_size = num_ent;
+//	    }
+//	    else
+//	    {
+//		FAILURE(iBase_NOT_SUPPORTED,
+//			"Entity set type does not match entity topo\n")
+//	    }
+//	    break;
+//	case INTERFACE_SET:
+//	    if (entity_type == iBase_VERTEX || 
+//		entity_topology == iMesh_POINT)
+//	    {
+//		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
+//		POINT              *p;
+//        	HYPER_SURF_ELEMENT *hse;
+//        	HYPER_SURF         *hs;
+//		num_ent = NumOfIntfcPoints(intfc);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		i = 0;
+//		next_point(intfc,NULL,NULL,NULL);
+//		while (next_point(intfc,&p,&hse,&hs))
+//		{
+//		    entities[i].topo = iMesh_POINT;
+//		    entities[i].obj.point = p;
+//		    i++;
+//		}
+//	    }
+//	    else if (entity_type == iBase_EDGE || 
+//		entity_topology == iMesh_LINE_SEGMENT)
+//	    {
+//		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
+//		BOND *b;
+//		CURVE *c;
+//		num_ent = NumOfIntfcBonds(intfc);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		i = 0;
+//		next_bond(intfc,NULL,NULL);
+//		while (next_bond(intfc,&b,&c))
+//		{
+//		    entities[i].topo = iMesh_LINE_SEGMENT;
+//		    entities[i].obj.bond = b;
+//		    i++;
+//		}
+//	    }
+//	    else if (entity_type == iBase_FACE || 
+//		entity_topology == iMesh_TRIANGLE)
+//	    {
+//		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
+//		TRI *t;
+//		SURFACE *s;
+//		num_ent = NumOfIntfcTris(intfc);
+//		uni_array(&entities,num_ent,sizeof(FTEHANDLE));
+//		i = 0;
+//		next_tri(intfc,NULL,NULL);
+//		while (next_tri(intfc,&t,&s))
+//		{
+//		    entities[i].topo = iMesh_TRIANGLE;
+//		    entities[i].obj.tri = t;
+//		    i++;
+//		}
+//	    }
+//	    else
+//	    {
+//		FAILURE(iBase_NOT_SUPPORTED,
+//			"Entity set type does not match entity topo\n")
+//	    }
+//	    break;
+//	default:
+//	    FAILURE(iBase_NOT_SUPPORTED,
+//		    "Entity set type does not match entity topo\n")
+//	}
 }	/* end iMesh_getEntities */
 
 void iMesh_initEntArrIter(iMesh_Instance instance,
@@ -2062,202 +2062,202 @@ void iMesh_initEntArrIter(iMesh_Instance instance,
                             /*out*/ iMesh_EntityArrIterator* entArr_iterator,
                             /*out*/ int *err)
 {
-	FTMESH *mesh = (FTMESH*)instance;
-	INTERFACE *intfc = mesh->intfc;
-        IterData  *IT;
-        int dim = Dimension(intfc);
-	FT_ESET_HANDLE *ent_set = (FT_ESET_HANDLE*)entity_set_handle;
-	int i,total_num_ents;
-
-	scalar_prdns(&IT,sizeof(IterData));
-	zero_scalar(IT,sizeof(IterData));
-
-        IT->topo = requested_entity_topology;
-        IT->array_size = requested_array_size;
-	uni_array(&IT->ents,requested_array_size,sizeof(FTEHANDLE));
-	switch (requested_entity_topology)
-	{
-	case iMesh_POINT:
-	    if (ent_set->type == POINT_SET)
-	    {
-	    	IT->cur_ptr = ent_set->ent_set_data;
-		IT->storage_allocated = NO;
-		IT->storage = ent_set->ent_set_data;
-	    }
-	    else if (ent_set->type == CURVE_SET)
-	    {
-		CURVE **c;
-		BOND *b;
-		POINT **ptr;
-		total_num_ents = 0;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		    total_num_ents += NumOfCurvePoints(*c);
-		uni_array(&IT->storage,total_num_ents,sizeof(POINT*));
-		IT->storage_allocated = YES;
-		ptr = (POINT**)IT->storage;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		{
-		    for (b = (*c)->first; b != NULL; b = b->next)
-			*(ptr++) = (POINT*)b->start;
-		    *(ptr++) = (POINT*)(*c)->last->end;
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else if (ent_set->type == SURFACE_SET)
-	    {
-		SURFACE **s;
-		TRI *t;
-		POINT *p;
-		POINT **ptr;
-		total_num_ents = 0;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		    total_num_ents += NumOfSurfPoints(*s);
-		uni_array(&IT->storage,total_num_ents,sizeof(POINT*));
-		IT->storage_allocated = YES;
-		ptr = (POINT**)IT->storage;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		{
-		    reset_surface_points(*s);
-		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s);
-				t = t->next)
-		    {
-			for (i = 0; i < 3; ++i)
-			{
-			    p = Point_of_tri(t)[i];
-			    if (sorted(p) == NO)
-			    {
-				*(ptr++) = (POINT*)p;
-				sorted(p) = YES;
-			    }
-			}
-		    }
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else if (ent_set->type == INTERFACE_SET)
-	    {
-		POINT *p;
-		HYPER_SURF_ELEMENT *hse;
-		HYPER_SURF *hs;
-		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
-		POINT **ptr;
-		total_num_ents = NumOfIntfcPoints(intfc);
-		uni_array(&IT->storage,total_num_ents,sizeof(POINT*));
-		IT->storage_allocated = YES;
-		ptr = (POINT**)IT->storage;
-		next_point(intfc,NULL,NULL,NULL);
-		while (next_point(intfc,&p,&hse,&hs))
-		{
-		    *(ptr++) = (POINTER)p;
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else
-	    {
-	    	FAILURE(iBase_NOT_SUPPORTED,
-		    "Entity set type does not match requested topology\n")
-	    }
-	case iMesh_LINE_SEGMENT:
-	    if (ent_set->type == BOND_SET)
-	    {
-	    	IT->cur_ptr = ent_set->ent_set_data;
-		IT->storage_allocated = NO;
-	    }
-	    else if (ent_set->type == CURVE_SET)
-	    {
-		CURVE **c;
-		BOND *b;
-		BOND **ptr;
-		total_num_ents = 0;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		    total_num_ents += NumOfCurveBonds(*c);
-		uni_array(&IT->storage,total_num_ents,sizeof(BOND*));
-		IT->storage_allocated = YES;
-		ptr = (BOND**)IT->storage;
-		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
-		{
-		    for (b = (*c)->first; b != NULL; b = b->next)
-			*(ptr++) = (BOND*)b;
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else if (ent_set->type == INTERFACE_SET)
-	    {
-		BOND *b;
-		CURVE *c;
-		BOND **ptr;
-		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
-		total_num_ents = NumOfIntfcBonds(intfc);
-		uni_array(&IT->storage,total_num_ents,sizeof(BOND*));
-		IT->storage_allocated = YES;
-		ptr = (BOND**)IT->storage;
-		next_bond(intfc,NULL,NULL);
-		while (next_bond(intfc,&b,&c))
-		{
-		    *(ptr++) = (BOND*)b;
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else
-	    {
-	    	FAILURE(iBase_NOT_SUPPORTED,
-		    "Entity set type does not match requested topology\n")
-	    }
-	case iMesh_TRIANGLE:
-	    if (ent_set->type == TRI_SET)
-	    {
-	    	IT->cur_ptr = ent_set->ent_set_data;
-		IT->storage_allocated = NO;
-	    }
-	    else if (ent_set->type == SURFACE_SET)
-	    {
-		SURFACE **s;
-		TRI *t;
-		TRI **ptr;
-		total_num_ents = 0;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		    total_num_ents += NumOfSurfTris(*s);
-		uni_array(&IT->storage,total_num_ents,sizeof(TRI*));
-		IT->storage_allocated = YES;
-		ptr = (TRI**)IT->storage;
-		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
-		{
-		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s);
-				t = t->next)
-		    {
-			*(ptr++) = (TRI*)t;
-		    }
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else if (ent_set->type == INTERFACE_SET)
-	    {
-		TRI *t;
-		SURFACE *s;
-		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
-		TRI **ptr;
-		total_num_ents = NumOfIntfcTris(intfc);
-		uni_array(&IT->storage,total_num_ents,sizeof(TRI*));
-		IT->storage_allocated = YES;
-		ptr = (TRI**)IT->storage;
-		next_tri(intfc,NULL,NULL);
-		while (next_tri(intfc,&t,&s))
-		{
-		    *(ptr++) = (TRI*)t;
-		}
-		IT->cur_ptr = IT->storage;
-	    }
-	    else
-	    {
-	    	FAILURE(iBase_NOT_SUPPORTED,
-		    "Entity set type does not match requested topology\n")
-	    }
-	default:
-	    FAILURE(iBase_NOT_SUPPORTED,
-		    "Requested iterator topology not supported by FronTier\n")
-	}
-        *entArr_iterator = (iMesh_EntityArrIterator)IT;
-	SUCCESS
+//	FTMESH *mesh = (FTMESH*)instance;
+//	INTERFACE *intfc = mesh->intfc;
+//        IterData  *IT;
+//        int dim = Dimension(intfc);
+//	FT_ESET_HANDLE *ent_set = (FT_ESET_HANDLE*)entity_set_handle;
+//	int i,total_num_ents;
+//
+//	scalar_prdns(&IT,sizeof(IterData));
+//	zero_scalar(IT,sizeof(IterData));
+//
+//        IT->topo = requested_entity_topology;
+//        IT->array_size = requested_array_size;
+//	uni_array(&IT->ents,requested_array_size,sizeof(FTEHANDLE));
+//	switch (requested_entity_topology)
+//	{
+//	case iMesh_POINT:
+//	    if (ent_set->type == POINT_SET)
+//	    {
+//	    	IT->cur_ptr = ent_set->ent_set_data;
+//		IT->storage_allocated = NO;
+//		IT->storage = ent_set->ent_set_data;
+//	    }
+//	    else if (ent_set->type == CURVE_SET)
+//	    {
+//		CURVE **c;
+//		BOND *b;
+//		POINT **ptr;
+//		total_num_ents = 0;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		    total_num_ents += NumOfCurvePoints(*c);
+//		uni_array(&IT->storage,total_num_ents,sizeof(POINT*));
+//		IT->storage_allocated = YES;
+//		ptr = (POINT**)IT->storage;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		{
+//		    for (b = (*c)->first; b != NULL; b = b->next)
+//			*(ptr++) = (POINT*)b->start;
+//		    *(ptr++) = (POINT*)(*c)->last->end;
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else if (ent_set->type == SURFACE_SET)
+//	    {
+//		SURFACE **s;
+//		TRI *t;
+//		POINT *p;
+//		POINT **ptr;
+//		total_num_ents = 0;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		    total_num_ents += NumOfSurfPoints(*s);
+//		uni_array(&IT->storage,total_num_ents,sizeof(POINT*));
+//		IT->storage_allocated = YES;
+//		ptr = (POINT**)IT->storage;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		{
+//		    reset_surface_points(*s);
+//		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s);
+//				t = t->next)
+//		    {
+//			for (i = 0; i < 3; ++i)
+//			{
+//			    p = Point_of_tri(t)[i];
+//			    if (sorted(p) == NO)
+//			    {
+//				*(ptr++) = (POINT*)p;
+//				sorted(p) = YES;
+//			    }
+//			}
+//		    }
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else if (ent_set->type == INTERFACE_SET)
+//	    {
+//		POINT *p;
+//		HYPER_SURF_ELEMENT *hse;
+//		HYPER_SURF *hs;
+//		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
+//		POINT **ptr;
+//		total_num_ents = NumOfIntfcPoints(intfc);
+//		uni_array(&IT->storage,total_num_ents,sizeof(POINT*));
+//		IT->storage_allocated = YES;
+//		ptr = (POINT**)IT->storage;
+//		next_point(intfc,NULL,NULL,NULL);
+//		while (next_point(intfc,&p,&hse,&hs))
+//		{
+//		    *(ptr++) = (POINTER)p;
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else
+//	    {
+//	    	FAILURE(iBase_NOT_SUPPORTED,
+//		    "Entity set type does not match requested topology\n")
+//	    }
+//	case iMesh_LINE_SEGMENT:
+//	    if (ent_set->type == BOND_SET)
+//	    {
+//	    	IT->cur_ptr = ent_set->ent_set_data;
+//		IT->storage_allocated = NO;
+//	    }
+//	    else if (ent_set->type == CURVE_SET)
+//	    {
+//		CURVE **c;
+//		BOND *b;
+//		BOND **ptr;
+//		total_num_ents = 0;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		    total_num_ents += NumOfCurveBonds(*c);
+//		uni_array(&IT->storage,total_num_ents,sizeof(BOND*));
+//		IT->storage_allocated = YES;
+//		ptr = (BOND**)IT->storage;
+//		for (c = (CURVE**)ent_set->ent_set_data; c && *c; ++c)
+//		{
+//		    for (b = (*c)->first; b != NULL; b = b->next)
+//			*(ptr++) = (BOND*)b;
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else if (ent_set->type == INTERFACE_SET)
+//	    {
+//		BOND *b;
+//		CURVE *c;
+//		BOND **ptr;
+//		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
+//		total_num_ents = NumOfIntfcBonds(intfc);
+//		uni_array(&IT->storage,total_num_ents,sizeof(BOND*));
+//		IT->storage_allocated = YES;
+//		ptr = (BOND**)IT->storage;
+//		next_bond(intfc,NULL,NULL);
+//		while (next_bond(intfc,&b,&c))
+//		{
+//		    *(ptr++) = (BOND*)b;
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else
+//	    {
+//	    	FAILURE(iBase_NOT_SUPPORTED,
+//		    "Entity set type does not match requested topology\n")
+//	    }
+//	case iMesh_TRIANGLE:
+//	    if (ent_set->type == TRI_SET)
+//	    {
+//	    	IT->cur_ptr = ent_set->ent_set_data;
+//		IT->storage_allocated = NO;
+//	    }
+//	    else if (ent_set->type == SURFACE_SET)
+//	    {
+//		SURFACE **s;
+//		TRI *t;
+//		TRI **ptr;
+//		total_num_ents = 0;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		    total_num_ents += NumOfSurfTris(*s);
+//		uni_array(&IT->storage,total_num_ents,sizeof(TRI*));
+//		IT->storage_allocated = YES;
+//		ptr = (TRI**)IT->storage;
+//		for (s = (SURFACE**)ent_set->ent_set_data; s && *s; ++s)
+//		{
+//		    for (t = first_tri(*s); !at_end_of_tri_list(t,*s);
+//				t = t->next)
+//		    {
+//			*(ptr++) = (TRI*)t;
+//		    }
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else if (ent_set->type == INTERFACE_SET)
+//	    {
+//		TRI *t;
+//		SURFACE *s;
+//		INTERFACE *intfc = (INTERFACE*)ent_set->ent_set_data;
+//		TRI **ptr;
+//		total_num_ents = NumOfIntfcTris(intfc);
+//		uni_array(&IT->storage,total_num_ents,sizeof(TRI*));
+//		IT->storage_allocated = YES;
+//		ptr = (TRI**)IT->storage;
+//		next_tri(intfc,NULL,NULL);
+//		while (next_tri(intfc,&t,&s))
+//		{
+//		    *(ptr++) = (TRI*)t;
+//		}
+//		IT->cur_ptr = IT->storage;
+//	    }
+//	    else
+//	    {
+//	    	FAILURE(iBase_NOT_SUPPORTED,
+//		    "Entity set type does not match requested topology\n")
+//	    }
+//	default:
+//	    FAILURE(iBase_NOT_SUPPORTED,
+//		    "Requested iterator topology not supported by FronTier\n")
+//	}
+//        *entArr_iterator = (iMesh_EntityArrIterator)IT;
+//	SUCCESS
 }	/* end iMesh_initEntArrIter */
 
 void iMesh_getNextEntArrIter(iMesh_Instance instance,

@@ -1157,13 +1157,13 @@ EXPORT	void tecplot_show_box_tri(
 //
 //	tecplot_box(NULL, file, lc, rc);
 //	tecplot_show_tris(tname, tris, num_tris, file);
-//}	/* end tecplot_show_box_tri */
-//
-//EXPORT void geomview_interface_plot(
-//	const char *dname,
-//	INTERFACE  *intfc,
-//	RECT_GRID  *gr)
-//{
+}	/* end tecplot_show_box_tri */
+
+EXPORT void geomview_interface_plot(
+	const char *dname,
+	INTERFACE  *intfc,
+	RECT_GRID  *gr)
+{
 //	double *BBL = topological_grid(intfc).GL;
 //	double *BBU = topological_grid(intfc).GU;
 //

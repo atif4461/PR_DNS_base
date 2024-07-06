@@ -2200,202 +2200,202 @@ LIB_LOCAL boolean next_point3d(
 	HYPER_SURF_ELEMENT **HSE,
 	HYPER_SURF	   **HS)
 {
-	struct Table	*T;
-	int		flag;
-
-	if ((T = table_of_interface(intfc)) == NULL)
-	    return NO;
-
-					/* Reinitialize to start: */
-	if (P == NULL)  /*initialize all variables */
-	{
-	    reset_sort_status(intfc);
-	    T->cur_surface = (intfc->surfaces!=NULL) ? intfc->surfaces-1 : NULL;
-	    T->cur_tri = NULL;
-	    T->cur_curve = NULL;
-	    T->cur_bond = NULL;
-	    T->np_do_p_curs = NO;
-	    T->np_do_n_curs = NO;
-	    return YES;
-	}
-
-	if ((T->cur_surface != (intfc->surfaces-1)) &&
-	    ((T->cur_surface==NULL) || (*(T->cur_surface) == NULL)))
-	{
-	    *P = NULL;
-	    *HSE = NULL;
-	    *HS = NULL;
-	    return NO;
-	}
-
-	if (T->cur_tri==NULL && T->np_do_p_curs==NO && T->np_do_n_curs==NO)
-	{
-	    if (*++(T->cur_surface) == NULL)  
-		/*already go over all surfaces, return */
-	    {
-	    	*P = NULL;
-	    	*HSE = NULL;
-	    	*HS = NULL;
-	    	return NO;
-	    }
-	    if (no_tris_on_surface(*T->cur_surface))
-	    {
-	    	T->cur_tri = NULL;
-	    	*P = NULL;
-	    	*HSE = NULL;
-	    	*HS = NULL;
-	    	screen("ERROR in next_point3d(), no triangles on surface\n");
-		clean_up(ERROR);
-		return NO;
-	    }
-	    if ((*T->cur_surface)->pos_curves != NULL)  
-		/*begin to loop over pos_curves */
-	    {
-	    	T->np_do_p_curs = YES;
-	    	T->cur_curve = (*T->cur_surface)->pos_curves - 1;
-	    }
-	    else if ((*T->cur_surface)->neg_curves != NULL)
-	    {  /*if no positive curve, begin to loop over neg_curves */
-	    	T->np_do_p_curs = NO;
-	    	T->np_do_n_curs = YES;
-	    	T->cur_curve = (*T->cur_surface)->neg_curves - 1;
-	    }
-	    else
-	    {   /*no curves on surfaces */
-	    	T->np_do_p_curs = NO;
-	    	T->np_do_n_curs = NO;
-	    }
-	    T->cur_bond = NULL;
-	}
-
-	/*loop over all points on pos_curves */
-	if (T->np_do_p_curs == YES)
-	{
-	    if (T->cur_bond==NULL)
-	    {
-	    	if (*++(T->cur_curve) == NULL)
-	    	{
-	    	    T->np_do_p_curs = NO;
-	    	    if ((*T->cur_surface)->neg_curves != NULL)
-	    	    {
-	    	    	T->np_do_n_curs = YES;
-	    	    	T->cur_curve = (*T->cur_surface)->neg_curves - 1;
-	    	    }
-	    	}
-	    	else
-		    T->cur_bond = (*T->cur_curve)->first;
-	    }
-	    else
-	    	T->cur_bond = T->cur_bond->next;
-
-	    if (T->np_do_p_curs == YES)
-	    {
-	        *HS = Hyper_surf(*T->cur_surface);
-	        if (T->cur_bond==NULL) /* P at End of Curve */
-	        {
-	    	    *P = (*T->cur_curve)->last->end;
-	    	    *HSE = Hyper_surf_element(
-			tri_at_bond((*(T->cur_curve))->last,*T->cur_surface,
-			POSITIVE_ORIENTATION));
-	    	    sorted(*P) = YES;
-	        }
-	        else
-		{
-		    *P = T->cur_bond->start;
-		    *HSE = Hyper_surf_element(
-			tri_at_bond(T->cur_bond,*T->cur_surface,
-			POSITIVE_ORIENTATION));
-		    sorted(*P) = YES;
-	        }
-		return YES;
-	    }
-	}
-
-	/*loop over all points on neg_curves */
-	if (T->np_do_n_curs == YES)
-	{
-	    if (T->cur_bond==NULL)
-	    {
-	    	if (*++(T->cur_curve) == NULL)  
-	    	{
-		    /*After here, np_do_n_curs==NO and np_do_p_curs==NO */
-		    /*will begin to loop over tris */
-	    	    T->np_do_n_curs = NO;
-	    	    T->cur_curve = NULL;
-	    	}
-	    	else
-	    	    T->cur_bond = (*T->cur_curve)->first;
-	    }
-	    else
-	    	T->cur_bond = T->cur_bond->next;
-
-	    if (T->np_do_n_curs == YES)
-	    {
-	        *HS = Hyper_surf(*T->cur_surface);
-	        if (T->cur_bond==NULL) /* P at End of Curve */
-	        {
-	    	    *P = (*(T->cur_curve))->last->end;
-	    	    *HSE = Hyper_surf_element(
-			tri_at_bond((*T->cur_curve)->last,*T->cur_surface,
-			NEGATIVE_ORIENTATION));
-	    	    sorted(*P) = YES;
-	        }
-	        else
-	        {
-	    	    *P = T->cur_bond->start;
-	    	    *HSE = Hyper_surf_element(
-			tri_at_bond(T->cur_bond,*T->cur_surface,
-			NEGATIVE_ORIENTATION));
-	    	    sorted(*P) = YES;
-	        }
-	        return YES;
-	    }
-	}
-
-	/*loop over points on tris */
-	if (T->cur_tri == NULL)
-	    T->cur_tri = first_tri(*T->cur_surface);
-
-	do
-	{
-	    flag = 0;
-	    if (sorted(Point_of_tri(T->cur_tri)[0]) == YES)
-		flag += 1;
-	    if (sorted(Point_of_tri(T->cur_tri)[1]) == YES)
-		flag += 2;
-	    if (sorted(Point_of_tri(T->cur_tri)[2]) == YES)
-		flag += 4;
-	    switch (flag)
-	    {
-	    case 0:
-	    case 2:
-	    case 4:
-	    case 6:
-	    	*P = Point_of_tri(T->cur_tri)[0];
-	    	break;
-	    case 1:
-	    case 5:
-	    	*P = Point_of_tri(T->cur_tri)[1];
-	    	break;
-	    case 3:
-	    	*P = Point_of_tri(T->cur_tri)[2];
-	    	break;
-	    case 7:
-	    	if (T->cur_tri == last_tri(*T->cur_surface))
-	    	{   /*go to the next surface */
-	    	    T->cur_tri = NULL;
-	    	    return next_point3d(intfc,P,HSE,HS);
-	    	}
-		T->cur_tri = T->cur_tri->next;
-		break;
-	    }
-	}
-	while (flag == 7);
-
-	*HSE = Hyper_surf_element(T->cur_tri);
-	*HS = Hyper_surf(*(T->cur_surface));
-
-	sorted(*P) = YES;
+//	struct Table	*T;
+//	int		flag;
+//
+//	if ((T = table_of_interface(intfc)) == NULL)
+//	    return NO;
+//
+//					/* Reinitialize to start: */
+//	if (P == NULL)  /*initialize all variables */
+//	{
+//	    reset_sort_status(intfc);
+//	    T->cur_surface = (intfc->surfaces!=NULL) ? intfc->surfaces-1 : NULL;
+//	    T->cur_tri = NULL;
+//	    T->cur_curve = NULL;
+//	    T->cur_bond = NULL;
+//	    T->np_do_p_curs = NO;
+//	    T->np_do_n_curs = NO;
+//	    return YES;
+//	}
+//
+//	if ((T->cur_surface != (intfc->surfaces-1)) &&
+//	    ((T->cur_surface==NULL) || (*(T->cur_surface) == NULL)))
+//	{
+//	    *P = NULL;
+//	    *HSE = NULL;
+//	    *HS = NULL;
+//	    return NO;
+//	}
+//
+//	if (T->cur_tri==NULL && T->np_do_p_curs==NO && T->np_do_n_curs==NO)
+//	{
+//	    if (*++(T->cur_surface) == NULL)  
+//		/*already go over all surfaces, return */
+//	    {
+//	    	*P = NULL;
+//	    	*HSE = NULL;
+//	    	*HS = NULL;
+//	    	return NO;
+//	    }
+//	    if (no_tris_on_surface(*T->cur_surface))
+//	    {
+//	    	T->cur_tri = NULL;
+//	    	*P = NULL;
+//	    	*HSE = NULL;
+//	    	*HS = NULL;
+//	    	screen("ERROR in next_point3d(), no triangles on surface\n");
+//		clean_up(ERROR);
+//		return NO;
+//	    }
+//	    if ((*T->cur_surface)->pos_curves != NULL)  
+//		/*begin to loop over pos_curves */
+//	    {
+//	    	T->np_do_p_curs = YES;
+//	    	T->cur_curve = (*T->cur_surface)->pos_curves - 1;
+//	    }
+//	    else if ((*T->cur_surface)->neg_curves != NULL)
+//	    {  /*if no positive curve, begin to loop over neg_curves */
+//	    	T->np_do_p_curs = NO;
+//	    	T->np_do_n_curs = YES;
+//	    	T->cur_curve = (*T->cur_surface)->neg_curves - 1;
+//	    }
+//	    else
+//	    {   /*no curves on surfaces */
+//	    	T->np_do_p_curs = NO;
+//	    	T->np_do_n_curs = NO;
+//	    }
+//	    T->cur_bond = NULL;
+//	}
+//
+//	/*loop over all points on pos_curves */
+//	if (T->np_do_p_curs == YES)
+//	{
+//	    if (T->cur_bond==NULL)
+//	    {
+//	    	if (*++(T->cur_curve) == NULL)
+//	    	{
+//	    	    T->np_do_p_curs = NO;
+//	    	    if ((*T->cur_surface)->neg_curves != NULL)
+//	    	    {
+//	    	    	T->np_do_n_curs = YES;
+//	    	    	T->cur_curve = (*T->cur_surface)->neg_curves - 1;
+//	    	    }
+//	    	}
+//	    	else
+//		    T->cur_bond = (*T->cur_curve)->first;
+//	    }
+//	    else
+//	    	T->cur_bond = T->cur_bond->next;
+//
+//	    if (T->np_do_p_curs == YES)
+//	    {
+//	        *HS = Hyper_surf(*T->cur_surface);
+//	        if (T->cur_bond==NULL) /* P at End of Curve */
+//	        {
+//	    	    *P = (*T->cur_curve)->last->end;
+//	    	    *HSE = Hyper_surf_element(
+//			tri_at_bond((*(T->cur_curve))->last,*T->cur_surface,
+//			POSITIVE_ORIENTATION));
+//	    	    sorted(*P) = YES;
+//	        }
+//	        else
+//		{
+//		    *P = T->cur_bond->start;
+//		    *HSE = Hyper_surf_element(
+//			tri_at_bond(T->cur_bond,*T->cur_surface,
+//			POSITIVE_ORIENTATION));
+//		    sorted(*P) = YES;
+//	        }
+//		return YES;
+//	    }
+//	}
+//
+//	/*loop over all points on neg_curves */
+//	if (T->np_do_n_curs == YES)
+//	{
+//	    if (T->cur_bond==NULL)
+//	    {
+//	    	if (*++(T->cur_curve) == NULL)  
+//	    	{
+//		    /*After here, np_do_n_curs==NO and np_do_p_curs==NO */
+//		    /*will begin to loop over tris */
+//	    	    T->np_do_n_curs = NO;
+//	    	    T->cur_curve = NULL;
+//	    	}
+//	    	else
+//	    	    T->cur_bond = (*T->cur_curve)->first;
+//	    }
+//	    else
+//	    	T->cur_bond = T->cur_bond->next;
+//
+//	    if (T->np_do_n_curs == YES)
+//	    {
+//	        *HS = Hyper_surf(*T->cur_surface);
+//	        if (T->cur_bond==NULL) /* P at End of Curve */
+//	        {
+//	    	    *P = (*(T->cur_curve))->last->end;
+//	    	    *HSE = Hyper_surf_element(
+//			tri_at_bond((*T->cur_curve)->last,*T->cur_surface,
+//			NEGATIVE_ORIENTATION));
+//	    	    sorted(*P) = YES;
+//	        }
+//	        else
+//	        {
+//	    	    *P = T->cur_bond->start;
+//	    	    *HSE = Hyper_surf_element(
+//			tri_at_bond(T->cur_bond,*T->cur_surface,
+//			NEGATIVE_ORIENTATION));
+//	    	    sorted(*P) = YES;
+//	        }
+//	        return YES;
+//	    }
+//	}
+//
+//	/*loop over points on tris */
+//	if (T->cur_tri == NULL)
+//	    T->cur_tri = first_tri(*T->cur_surface);
+//
+//	do
+//	{
+//	    flag = 0;
+//	    if (sorted(Point_of_tri(T->cur_tri)[0]) == YES)
+//		flag += 1;
+//	    if (sorted(Point_of_tri(T->cur_tri)[1]) == YES)
+//		flag += 2;
+//	    if (sorted(Point_of_tri(T->cur_tri)[2]) == YES)
+//		flag += 4;
+//	    switch (flag)
+//	    {
+//	    case 0:
+//	    case 2:
+//	    case 4:
+//	    case 6:
+//	    	*P = Point_of_tri(T->cur_tri)[0];
+//	    	break;
+//	    case 1:
+//	    case 5:
+//	    	*P = Point_of_tri(T->cur_tri)[1];
+//	    	break;
+//	    case 3:
+//	    	*P = Point_of_tri(T->cur_tri)[2];
+//	    	break;
+//	    case 7:
+//	    	if (T->cur_tri == last_tri(*T->cur_surface))
+//	    	{   /*go to the next surface */
+//	    	    T->cur_tri = NULL;
+//	    	    return next_point3d(intfc,P,HSE,HS);
+//	    	}
+//		T->cur_tri = T->cur_tri->next;
+//		break;
+//	    }
+//	}
+//	while (flag == 7);
+//
+//	*HSE = Hyper_surf_element(T->cur_tri);
+//	*HS = Hyper_surf(*(T->cur_surface));
+//
+//	sorted(*P) = YES;
 	return YES;
 }		/*end next_point3d*/
 
@@ -3014,18 +3014,18 @@ EXPORT	boolean tris_on_side_of_bond_for_join(
 EXPORT void reset_sort_status(
 	INTERFACE	*intfc)
 {
-	SURFACE		**s;
-	TRI		*t;
-
-	for (s = intfc->surfaces; s && *s; ++s)
-	{
-	    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
-	    {
-		sorted(Point_of_tri(t)[0]) = NO;
-		sorted(Point_of_tri(t)[1]) = NO;
-		sorted(Point_of_tri(t)[2]) = NO;
-	    }
-	}
+//	SURFACE		**s;
+//	TRI		*t;
+//
+//	for (s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
+//	    {
+//		sorted(Point_of_tri(t)[0]) = NO;
+//		sorted(Point_of_tri(t)[1]) = NO;
+//		sorted(Point_of_tri(t)[2]) = NO;
+//	    }
+//	}
 }		/*end reset_sort_status*/
 
 LOCAL void add_bdry_curve_to_hash_table(

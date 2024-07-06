@@ -749,143 +749,143 @@ LOCAL int propagate_points_tangentially(
 	double		*dt_frac,
 	int		dir)
 {
-	INTERFACE               *intfc_tmp, *intfc_new;
-	HYPER_SURF		*tmphs;
-	HYPER_SURF_ELEMENT 	*tmphse;
-	SURFACE                 **s_tmp, **s_new;
-	POINT			*tmpp, *newp;
-	TRI                     *tri_tmp, *tri_new;
-	int                     i;
-	boolean                    modified;
-	DEBUG_ENTER(propagate_points_tangentially)
-
-	start_clock("copy_interface");
-	intfc_tmp = newfront->interf;
-	set_size_of_intfc_state(size_of_state(front->interf));
-	if ((intfc_new = pp_copy_interface(intfc_tmp)) == NULL)
-	{
-	    screen("ERROR in propagate_points_tangentially(), "
-		   "unable to copy interface\n");
-	    clean_up(ERROR);
-	}
-	stop_clock("copy_interface");
-	if (debugging("consistency") && !consistent_interface(intfc_new))
-	{
-	    screen("ERROR in propagate_points_tangentially(), "
-		   "intfc_new is inconsistent\n");
-	    clean_up(ERROR);
-	}
-	
-	start_clock("tan_propagate");
-
-	modified = NO;
-	/* Reset sort status for points on intfc_tmp and intfc_new */
-	(void) next_point(intfc_tmp,NULL,NULL,NULL);
-	(void) next_point(intfc_new,NULL,NULL,NULL);
-	for (s_tmp = intfc_tmp->surfaces, s_new = intfc_new->surfaces;
-		s_tmp && *s_tmp && s_new && *s_new; ++s_tmp, ++s_new)
-	{
-	  tmphs = Hyper_surf(*s_tmp);
-	  for (tri_tmp = first_tri(*s_tmp), tri_new = first_tri(*s_new);
-	       !at_end_of_tri_list(tri_tmp,*s_tmp) &&
-	       !at_end_of_tri_list(tri_new,*s_new);
-	       tri_tmp = tri_tmp->next, tri_new = tri_new->next)
-	  {
-	    tmphse = Hyper_surf_element(tri_tmp);
-	    for (i = 0; i < 3; ++i)
-	    {
-	      tmpp = Point_of_tri(tri_tmp)[i];
-	      newp = Point_of_tri(tri_new)[i];
-	      if (!sorted(tmpp) && !sorted(newp))
-	      {
-	        if (tan_point_propagate(front,tmpp,newp,tmphse,tmphs,dt,dir))
-		  sorted(tmpp) = sorted(newp) = YES;
-		else
-		{
-		  sorted(tmpp) = sorted(newp) = YES;
-		}
-	      }
-	      else if (!sorted(tmpp) || !sorted(newp))
-	      {
-	        screen("ERROR in propagate_points_tangentially(), "
-		       "point lists in intfc_tmp and intfc_new "
-		       "inconsistent\n");
-	        clean_up(ERROR);
-	      }
-	    }
-	  }
-	}
-	stop_clock("tan_propagate");
-
-	(void) delete_interface(intfc_tmp);
-	newfront->interf = intfc_new;
-	debug_front("tp_front","after tangential propagation",newfront);
-
-	start_clock("scatter_front");
-	start_clock("copy_interface");
-	set_size_of_intfc_state(size_of_state(front->interf));
-	if ((intfc_new = pp_copy_interface(newfront->interf)) == NULL)
-	{
-	    screen("ERROR in propagate_points_tangentially(), "
-		   "unable to copy interface\n");
-	    clean_up(ERROR);
-	}
-	stop_clock("copy_interface");
-
-        init_intfc_curvature3d(newfront,newfront->interf);
-	
-	if(NO)
-	{
-	    char    s[50], sn[50];
-
-	    sprintf(sn, "%s", right_flush(pp_mynode(),PP_NODE_FIELD_WIDTH));
-	    sprintf(s, "curvature%s_%s", right_flush(newfront->step, 
-	    			TSTEP_FIELD_WIDTH), sn);
-	    /*tecplot_interface_states(s, newfront->interf);*/
-	}
-	
-	for (i = 0; i < 2; ++i)
-	{
-	  if (scatter_front(newfront))
-	      break;
-	  else
-	  {
-	    printf("\n entered else part!");
-	    delete_interface(newfront->interf);
-	    newfront->interf = intfc_new;
-	    start_clock("copy_interface");
-	    set_size_of_intfc_state(size_of_state(front->interf));
-	    if ((intfc_new = pp_copy_interface(newfront->interf)) == NULL)
-	    {
-	      screen("ERROR in propagate_points_tangentially(), "
-		     "unable to copy interface\n");
-	      clean_up(ERROR);
-	    }
-	    stop_clock("copy_interface");
-	    interface_reconstructed(newfront->interf) = NO;
-	    if (i == 1)
-	    {
-	      if (redistribute(newfront,YES,NO) != GOOD_REDISTRIBUTION) 
-	      {
-		  i = 2;
-		  break;
-	      }
-	    }
-	  }
-	}
-	if (intfc_new != NULL)
-	    delete_interface(intfc_new);
-	if (i == 2)
-	{
-	  (void) printf("WARNING in propagate_points_tangentially(), "
-			"2nd scatter_front() failed\n"
-			"MODIFY_TIME_STEP_NODE\n");
-	  *dt_frac *= TIME_STEP_REDUCTION_FACTOR(front->interf);
-	  DEBUG_LEAVE(propagate_points_tangentially)
-	  return MODIFY_TIME_STEP; 
-	}
-	stop_clock("scatter_front");
-	DEBUG_LEAVE(propagate_points_tangentially)
+//	INTERFACE               *intfc_tmp, *intfc_new;
+//	HYPER_SURF		*tmphs;
+//	HYPER_SURF_ELEMENT 	*tmphse;
+//	SURFACE                 **s_tmp, **s_new;
+//	POINT			*tmpp, *newp;
+//	TRI                     *tri_tmp, *tri_new;
+//	int                     i;
+//	boolean                    modified;
+//	DEBUG_ENTER(propagate_points_tangentially)
+//
+//	start_clock("copy_interface");
+//	intfc_tmp = newfront->interf;
+//	set_size_of_intfc_state(size_of_state(front->interf));
+//	if ((intfc_new = pp_copy_interface(intfc_tmp)) == NULL)
+//	{
+//	    screen("ERROR in propagate_points_tangentially(), "
+//		   "unable to copy interface\n");
+//	    clean_up(ERROR);
+//	}
+//	stop_clock("copy_interface");
+//	if (debugging("consistency") && !consistent_interface(intfc_new))
+//	{
+//	    screen("ERROR in propagate_points_tangentially(), "
+//		   "intfc_new is inconsistent\n");
+//	    clean_up(ERROR);
+//	}
+//	
+//	start_clock("tan_propagate");
+//
+//	modified = NO;
+//	/* Reset sort status for points on intfc_tmp and intfc_new */
+//	(void) next_point(intfc_tmp,NULL,NULL,NULL);
+//	(void) next_point(intfc_new,NULL,NULL,NULL);
+//	for (s_tmp = intfc_tmp->surfaces, s_new = intfc_new->surfaces;
+//		s_tmp && *s_tmp && s_new && *s_new; ++s_tmp, ++s_new)
+//	{
+//	  tmphs = Hyper_surf(*s_tmp);
+//	  for (tri_tmp = first_tri(*s_tmp), tri_new = first_tri(*s_new);
+//	       !at_end_of_tri_list(tri_tmp,*s_tmp) &&
+//	       !at_end_of_tri_list(tri_new,*s_new);
+//	       tri_tmp = tri_tmp->next, tri_new = tri_new->next)
+//	  {
+//	    tmphse = Hyper_surf_element(tri_tmp);
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//	      tmpp = Point_of_tri(tri_tmp)[i];
+//	      newp = Point_of_tri(tri_new)[i];
+//	      if (!sorted(tmpp) && !sorted(newp))
+//	      {
+//	        if (tan_point_propagate(front,tmpp,newp,tmphse,tmphs,dt,dir))
+//		  sorted(tmpp) = sorted(newp) = YES;
+//		else
+//		{
+//		  sorted(tmpp) = sorted(newp) = YES;
+//		}
+//	      }
+//	      else if (!sorted(tmpp) || !sorted(newp))
+//	      {
+//	        screen("ERROR in propagate_points_tangentially(), "
+//		       "point lists in intfc_tmp and intfc_new "
+//		       "inconsistent\n");
+//	        clean_up(ERROR);
+//	      }
+//	    }
+//	  }
+//	}
+//	stop_clock("tan_propagate");
+//
+//	(void) delete_interface(intfc_tmp);
+//	newfront->interf = intfc_new;
+//	debug_front("tp_front","after tangential propagation",newfront);
+//
+//	start_clock("scatter_front");
+//	start_clock("copy_interface");
+//	set_size_of_intfc_state(size_of_state(front->interf));
+//	if ((intfc_new = pp_copy_interface(newfront->interf)) == NULL)
+//	{
+//	    screen("ERROR in propagate_points_tangentially(), "
+//		   "unable to copy interface\n");
+//	    clean_up(ERROR);
+//	}
+//	stop_clock("copy_interface");
+//
+//        init_intfc_curvature3d(newfront,newfront->interf);
+//	
+//	if(NO)
+//	{
+//	    char    s[50], sn[50];
+//
+//	    sprintf(sn, "%s", right_flush(pp_mynode(),PP_NODE_FIELD_WIDTH));
+//	    sprintf(s, "curvature%s_%s", right_flush(newfront->step, 
+//	    			TSTEP_FIELD_WIDTH), sn);
+//	    /*tecplot_interface_states(s, newfront->interf);*/
+//	}
+//	
+//	for (i = 0; i < 2; ++i)
+//	{
+//	  if (scatter_front(newfront))
+//	      break;
+//	  else
+//	  {
+//	    printf("\n entered else part!");
+//	    delete_interface(newfront->interf);
+//	    newfront->interf = intfc_new;
+//	    start_clock("copy_interface");
+//	    set_size_of_intfc_state(size_of_state(front->interf));
+//	    if ((intfc_new = pp_copy_interface(newfront->interf)) == NULL)
+//	    {
+//	      screen("ERROR in propagate_points_tangentially(), "
+//		     "unable to copy interface\n");
+//	      clean_up(ERROR);
+//	    }
+//	    stop_clock("copy_interface");
+//	    interface_reconstructed(newfront->interf) = NO;
+//	    if (i == 1)
+//	    {
+//	      if (redistribute(newfront,YES,NO) != GOOD_REDISTRIBUTION) 
+//	      {
+//		  i = 2;
+//		  break;
+//	      }
+//	    }
+//	  }
+//	}
+//	if (intfc_new != NULL)
+//	    delete_interface(intfc_new);
+//	if (i == 2)
+//	{
+//	  (void) printf("WARNING in propagate_points_tangentially(), "
+//			"2nd scatter_front() failed\n"
+//			"MODIFY_TIME_STEP_NODE\n");
+//	  *dt_frac *= TIME_STEP_REDUCTION_FACTOR(front->interf);
+//	  DEBUG_LEAVE(propagate_points_tangentially)
+//	  return MODIFY_TIME_STEP; 
+//	}
+//	stop_clock("scatter_front");
+//	DEBUG_LEAVE(propagate_points_tangentially)
 	return GOOD_STEP;
 }		/*end propagate_points_tangentially*/
 

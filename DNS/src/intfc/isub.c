@@ -4671,14 +4671,14 @@ EXPORT	void	BondAndNeighbors(
 EXPORT   void   reset_surface_points(
         SURFACE         *s)
 {
-        TRI *t;
-
-        for (t = first_tri(s); !at_end_of_tri_list(t,s); t = t->next)
-        {
-            sorted(Point_of_tri(t)[0]) = NO;
-            sorted(Point_of_tri(t)[1]) = NO;
-            sorted(Point_of_tri(t)[2]) = NO;
-        }
+//        TRI *t;
+//
+//        for (t = first_tri(s); !at_end_of_tri_list(t,s); t = t->next)
+//        {
+//            sorted(Point_of_tri(t)[0]) = NO;
+//            sorted(Point_of_tri(t)[1]) = NO;
+//            sorted(Point_of_tri(t)[2]) = NO;
+//        }
 }               /*end reset_surface_points*/
 
 LOCAL	void sort_ring_pts(

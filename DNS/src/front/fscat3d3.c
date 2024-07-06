@@ -915,53 +915,53 @@ LOCAL	POINT_LIST	*set_point_list(
 	HYPER_SURF       *hs,
 	POINT_LIST_STORE *plist_store)
 {
-	POINT      **p;
+//	POINT      **p;
 	POINT_LIST *plist, *pl, Plist;
-	TRI        *tri;
-	int        i, j, max_np, tstnum;
-
-	tstnum = 0;
-	if (nt == 0)
-	    return NULL;
-	max_np = 3*nt + 1;
-	if (max_np > plist_store->len)
-	{
-	    if (plist_store->pl != NULL)
-		free(plist_store->pl);
-	    plist_store->len = max_np;
-	    uni_array(&plist_store->pl,sizeof(POINT_LIST),plist_store->len);
-	}
-	zero_scalar(plist_store->pl,sizeof(POINT_LIST)*plist_store->len);
-	for (i = 0; i < nt; ++i)
-	{
-	    p = Point_of_tri(tris[i]);
-	    for (j = 0; j < 3; ++j)
-	        sorted(p[j]) = NO;
-	}
-
-	plist = plist_store->pl;
-	pl = &Plist;
-	for (i = 0; i < nt; ++i)
-	{
-	    tri = tris[i];
-	    
-	    p = Point_of_tri(tri);
-	    for (j = 0; j < 3; ++j)
-	    {
-		if (!sorted(p[j]))
-		{
-		    pl->next = plist++;
-		    pl->next->prev = pl;
-		    pl = pl->next;
-	            pl->p = p[j];
-	            pl->hs = hs;
-	            pl->hse = Hyper_surf_element(tri);
-	            sorted(pl->p) = YES;
-		    tstnum++; 
-		}
-	    }
-	}
-	Plist.next->prev = NULL;
+//	TRI        *tri;
+//	int        i, j, max_np, tstnum;
+//
+//	tstnum = 0;
+//	if (nt == 0)
+//	    return NULL;
+//	max_np = 3*nt + 1;
+//	if (max_np > plist_store->len)
+//	{
+//	    if (plist_store->pl != NULL)
+//		free(plist_store->pl);
+//	    plist_store->len = max_np;
+//	    uni_array(&plist_store->pl,sizeof(POINT_LIST),plist_store->len);
+//	}
+//	zero_scalar(plist_store->pl,sizeof(POINT_LIST)*plist_store->len);
+//	for (i = 0; i < nt; ++i)
+//	{
+//	    p = Point_of_tri(tris[i]);
+//	    for (j = 0; j < 3; ++j)
+//	        sorted(p[j]) = NO;
+//	}
+//
+//	plist = plist_store->pl;
+//	pl = &Plist;
+//	for (i = 0; i < nt; ++i)
+//	{
+//	    tri = tris[i];
+//	    
+//	    p = Point_of_tri(tri);
+//	    for (j = 0; j < 3; ++j)
+//	    {
+//		if (!sorted(p[j]))
+//		{
+//		    pl->next = plist++;
+//		    pl->next->prev = pl;
+//		    pl = pl->next;
+//	            pl->p = p[j];
+//	            pl->hs = hs;
+//	            pl->hse = Hyper_surf_element(tri);
+//	            sorted(pl->p) = YES;
+//		    tstnum++; 
+//		}
+//	    }
+//	}
+//	Plist.next->prev = NULL;
 
 	return Plist.next;
 }		/*end set_point_list*/
@@ -1068,35 +1068,35 @@ LOCAL void merge_point_pointers_at_subdomain_bdry(
 	P_LINK		*p_table,
 	int		p_size)
 {
-	POINT		*p, *ap;
-	int		i, j;
-
-        for (i = 0; i < nt; ++i)
-	{
-	    sorted(Point_of_tri(tris_s[i])[0]) = NO; 
-	    sorted(Point_of_tri(tris_s[i])[1]) = NO;
-	    sorted(Point_of_tri(tris_s[i])[2]) = NO;
-	    sorted(Point_of_tri(tris_a[i])[0]) = NO; 
-	    sorted(Point_of_tri(tris_a[i])[1]) = NO;
-	    sorted(Point_of_tri(tris_a[i])[2]) = NO;
-	}
-	for (i = 0; i < nt; ++i)
-	{
-	    for (j = 0; j < 3; ++j)
-	    {
-		ap = Point_of_tri(tris_a[i])[j];
-		if (sorted(ap) == NO)
-		{
-	            p = (POINT*)find_from_hash_table((POINTER)ap,
-						     p_table,p_size);
-		    if(p != Point_of_tri(tris_a[i])[j])
-		        printf("#merge_point  \n");
-		    
-		    Point_of_tri(tris_a[i])[j] = p;
-		    sorted(p) = YES;
-		}
-	    }
-	}
+//	POINT		*p, *ap;
+//	int		i, j;
+//
+//        for (i = 0; i < nt; ++i)
+//	{
+//	    sorted(Point_of_tri(tris_s[i])[0]) = NO; 
+//	    sorted(Point_of_tri(tris_s[i])[1]) = NO;
+//	    sorted(Point_of_tri(tris_s[i])[2]) = NO;
+//	    sorted(Point_of_tri(tris_a[i])[0]) = NO; 
+//	    sorted(Point_of_tri(tris_a[i])[1]) = NO;
+//	    sorted(Point_of_tri(tris_a[i])[2]) = NO;
+//	}
+//	for (i = 0; i < nt; ++i)
+//	{
+//	    for (j = 0; j < 3; ++j)
+//	    {
+//		ap = Point_of_tri(tris_a[i])[j];
+//		if (sorted(ap) == NO)
+//		{
+//	            p = (POINT*)find_from_hash_table((POINTER)ap,
+//						     p_table,p_size);
+//		    if(p != Point_of_tri(tris_a[i])[j])
+//		        printf("#merge_point  \n");
+//		    
+//		    Point_of_tri(tris_a[i])[j] = p;
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
 }	/*end merge_point_pointers_at_subdomain_bdry*/
 
 

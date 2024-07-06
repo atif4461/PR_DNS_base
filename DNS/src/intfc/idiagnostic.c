@@ -129,11 +129,11 @@ LOCAL 	void 	data_of_point(
 	POINT	 		*p,	
 	int			i)
 {
-	(void) printf("%6d %llu %3d %g %g %g %5d %5s    \n",
-		      i,(long long unsigned int)point_number(p),Boundary(p),
-		      Coords(p)[0],Coords(p)[1],Coords(p)[2],
-		      Boundary_point(p),
-		      y_or_n(sorted(p)));
+//	(void) printf("%6d %llu %3d %g %g %g %5d %5s    \n",
+//		      i,(long long unsigned int)point_number(p),Boundary(p),
+//		      Coords(p)[0],Coords(p)[1],Coords(p)[2],
+//		      Boundary_point(p),
+//		      y_or_n(sorted(p)));
 }	       /*end data_of_point*/
 
 EXPORT 	void 	find_blk_tri(

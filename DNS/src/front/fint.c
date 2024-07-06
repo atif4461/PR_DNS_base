@@ -647,23 +647,23 @@ EXPORT	void f_reconstruct_point_pointers(
 	POINTER		*ncad,
 	int		nchks)
 {
-	boolean    recon_states = (size_of_state(nintfc) != 0) ? YES : NO;
-
-	debug_print("pp_mode","Entered f_reconstruct_point_pointers()\n");
-	i_reconstruct_point_pointers(p,nintfc,ointfc,ocad,ncad,nchks);
-	if (nintfc->dim == 3)
-	{
-	    if (sorted(p) == YES)
-	        recon_states = NO;
-	}
-	if (recon_states == YES)
-	{
-	    left_state(p) = (Locstate) new_address(nintfc,left_state(p),
-					           ocad,ncad,nchks);
-	    right_state(p) = (Locstate) new_address(nintfc,right_state(p),
-					            ocad,ncad,nchks);
-	}
-	debug_print("pp_mode","Left f_reconstruct_point_pointers()\n");
+//	boolean    recon_states = (size_of_state(nintfc) != 0) ? YES : NO;
+//
+//	debug_print("pp_mode","Entered f_reconstruct_point_pointers()\n");
+//	i_reconstruct_point_pointers(p,nintfc,ointfc,ocad,ncad,nchks);
+//	if (nintfc->dim == 3)
+//	{
+//	    if (sorted(p) == YES)
+//	        recon_states = NO;
+//	}
+//	if (recon_states == YES)
+//	{
+//	    left_state(p) = (Locstate) new_address(nintfc,left_state(p),
+//					           ocad,ncad,nchks);
+//	    right_state(p) = (Locstate) new_address(nintfc,right_state(p),
+//					            ocad,ncad,nchks);
+//	}
+//	debug_print("pp_mode","Left f_reconstruct_point_pointers()\n");
 }		/*end f_reconstruct_point_pointers*/
 
 LOCAL	void copy_excluded_comps_lists(

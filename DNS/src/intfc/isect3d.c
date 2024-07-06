@@ -1873,109 +1873,109 @@ LOCAL  void  substitute_a_point(
 	int       index,
 	INTERFACE *intfc)
 {
-	POINT  		*old_p;
-	BOND_TRI 	**bt;
-	TRI 		*t_begin, *t, **tri_list = NULL, **tl;
-	boolean		break_bt;
-	int		i;
-	NODE 		*n;
-	CURVE 		**c;
-	BOND  		*b;
-	static ORIENTATION  	orient[2] = {POSITIVE_ORIENTATION,
-					     NEGATIVE_ORIENTATION};
-
-	DEBUG_ENTER(substitute_a_point)
-
-	old_p = Point_of_tri(tri)[index];
-	if (old_p == p) 		/* No need to substitute */
-	{
-	    DEBUG_LEAVE(substitute_a_point)
-	    return;
-	}
-
-	//TODO if ((n = node_at_point(old_p)) != NULL)
-	{
-	    // TODO node_at_point(old_p)->posn = p;
-	    for (i = 0; i < 2; ++i)
-	    {
-		for (c = (orient[i] == POSITIVE_ORIENTATION) ?
-			n->out_curves : n->in_curves; c && *c; ++c)
-		{
-		    b = Bond_at_node(*c,orient[i]);
-		    b->start = b->start == old_p ? p : b->start;
-		    b->end = b->end == old_p ? p : b->end;
-
-		    for (bt=Btris(b); bt && *bt; ++bt)
-		    {
-			break_bt = NO;
-			for (tl=tri_list; tl && *tl; ++tl)
-			{
-			    if ((*bt)->tri == *tl)
-			    {
-				break_bt = YES;
-				break;
-			    }
-			}
-			if (break_bt == YES)
-				break;
-			substitute_a_point_on_surface(p,old_p,
-				(*bt)->tri,&tri_list,intfc);
-		    }
-		}
-	    }
-	}
-	else
-	{
-	    if (is_interior_vertex(tri,old_p, &t_begin,intfc))
-	    {
-		t = tri;
-		do
-		{
-		    if (old_p == Point_of_tri(t)[0])
-		    {
-			Point_of_tri(t)[0] = p;
-			t = Tri_on_side20(t);
-		    }
-		    else if (old_p == Point_of_tri(t)[1])
-		    {
-			Point_of_tri(t)[1] = p;
-			t = Tri_on_side01(t);
-		    }
-		    else if (old_p == Point_of_tri(t)[2])
-		    {
-			Point_of_tri(t)[2] = p;
-			t = Tri_on_side12(t);
-		    }
-		    else
-		    {
-			screen("ERROR in substitute_a_point(), "
-			       "oldp not on interior tri\n");
-			clean_up(ERROR);
-		    }
-	        }
-		while (t != tri);
-	    }
-	    else  /* old_p is on one curve and one curve only */
-	    {
-		if (old_p == Point_of_tri(t_begin)[0])
-		    b = Bond_on_side01(t_begin);
-		else if (old_p == Point_of_tri(t_begin)[1])
-		    b = Bond_on_side12(t_begin);
-		else if (old_p == Point_of_tri(t_begin)[2])
-		    b = Bond_on_side20(t_begin);
-		else
-		{
-		    screen("ERROR in substitute_a_point(), "
-		           "oldp not on boundary tri\n");
-		    clean_up(ERROR);
-		}
-
-		for (bt=Btris(b); bt && *bt; ++bt)
-		    substitute_a_point_on_surface(p,old_p,(*bt)->tri,
-			                          &tri_list,intfc);
-	    }
-	}
-	DEBUG_LEAVE(substitute_a_point)
+//	POINT  		*old_p;
+//	BOND_TRI 	**bt;
+//	TRI 		*t_begin, *t, **tri_list = NULL, **tl;
+//	boolean		break_bt;
+//	int		i;
+//	NODE 		*n;
+//	CURVE 		**c;
+//	BOND  		*b;
+//	static ORIENTATION  	orient[2] = {POSITIVE_ORIENTATION,
+//					     NEGATIVE_ORIENTATION};
+//
+//	DEBUG_ENTER(substitute_a_point)
+//
+//	old_p = Point_of_tri(tri)[index];
+//	if (old_p == p) 		/* No need to substitute */
+//	{
+//	    DEBUG_LEAVE(substitute_a_point)
+//	    return;
+//	}
+//
+//	if ((n = node_at_point(old_p)) != NULL)
+//	{
+//	    node_at_point(old_p)->posn = p;
+//	    for (i = 0; i < 2; ++i)
+//	    {
+//		for (c = (orient[i] == POSITIVE_ORIENTATION) ?
+//			n->out_curves : n->in_curves; c && *c; ++c)
+//		{
+//		    b = Bond_at_node(*c,orient[i]);
+//		    b->start = b->start == old_p ? p : b->start;
+//		    b->end = b->end == old_p ? p : b->end;
+//
+//		    for (bt=Btris(b); bt && *bt; ++bt)
+//		    {
+//			break_bt = NO;
+//			for (tl=tri_list; tl && *tl; ++tl)
+//			{
+//			    if ((*bt)->tri == *tl)
+//			    {
+//				break_bt = YES;
+//				break;
+//			    }
+//			}
+//			if (break_bt == YES)
+//				break;
+//			substitute_a_point_on_surface(p,old_p,
+//				(*bt)->tri,&tri_list,intfc);
+//		    }
+//		}
+//	    }
+//	}
+//	else
+//	{
+//	    if (is_interior_vertex(tri,old_p, &t_begin,intfc))
+//	    {
+//		t = tri;
+//		do
+//		{
+//		    if (old_p == Point_of_tri(t)[0])
+//		    {
+//			Point_of_tri(t)[0] = p;
+//			t = Tri_on_side20(t);
+//		    }
+//		    else if (old_p == Point_of_tri(t)[1])
+//		    {
+//			Point_of_tri(t)[1] = p;
+//			t = Tri_on_side01(t);
+//		    }
+//		    else if (old_p == Point_of_tri(t)[2])
+//		    {
+//			Point_of_tri(t)[2] = p;
+//			t = Tri_on_side12(t);
+//		    }
+//		    else
+//		    {
+//			screen("ERROR in substitute_a_point(), "
+//			       "oldp not on interior tri\n");
+//			clean_up(ERROR);
+//		    }
+//	        }
+//		while (t != tri);
+//	    }
+//	    else  /* old_p is on one curve and one curve only */
+//	    {
+//		if (old_p == Point_of_tri(t_begin)[0])
+//		    b = Bond_on_side01(t_begin);
+//		else if (old_p == Point_of_tri(t_begin)[1])
+//		    b = Bond_on_side12(t_begin);
+//		else if (old_p == Point_of_tri(t_begin)[2])
+//		    b = Bond_on_side20(t_begin);
+//		else
+//		{
+//		    screen("ERROR in substitute_a_point(), "
+//		           "oldp not on boundary tri\n");
+//		    clean_up(ERROR);
+//		}
+//
+//		for (bt=Btris(b); bt && *bt; ++bt)
+//		    substitute_a_point_on_surface(p,old_p,(*bt)->tri,
+//			                          &tri_list,intfc);
+//	    }
+//	}
+//	DEBUG_LEAVE(substitute_a_point)
 }		/*end substitute_a_point*/
 
 

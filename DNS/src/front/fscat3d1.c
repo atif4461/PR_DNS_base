@@ -2141,56 +2141,56 @@ EXPORT	void	shift_interface(
 	double     T,
 	int       dir)
 {
-	POINT   *p;
-	SURFACE **s;
-	TRI     *t;
-	int     i;
-
-	DEBUG_ENTER(shift_interface)
-
-	if (DEBUG)
-	{
-	    char dname[1024];
-	    static int ntimes[3];
-	    (void) printf("Shifting interface %llu by %g in direction %d\n",
-			  (long long unsigned int)interface_number(intfc),T,dir);
-	    print_interface(intfc);
-	    (void) sprintf(dname,"fscatter/shift_interface/Into%d.%d.%s%g",
-			   ntimes[dir],dir,(T>0.0) ? "+" : "",T);
-	    ++ntimes[dir];
-	    gview_plot_interface(dname,intfc);
-	}
-
-		/* Shift points on interface */
-	(void) next_point(intfc,NULL,NULL,NULL);/*reset sort status*/
-	for (s = intfc->surfaces; s && *s; ++s)
-	{
-	    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
-	    {
-		for (i = 0; i < 3; ++i)
-		{
-		    p = Point_of_tri(t)[i];
-		    if (sorted(p) == NO)
-	                Coords(p)[dir] += T;
-		    sorted(p) = YES;
-		}
-	    }
-	}
-
-	if (DEBUG)
-	{
-	    char dname[1024];
-	    static int ntimes[3];
-	    (void) printf("Interface %llu after shift by %g in direction %d\n",
-			  (long long unsigned int)interface_number(intfc),T,dir);
-	    print_interface(intfc);
-	    (void) sprintf(dname,"fscatter/shift_interface/Outof%d.%d.%s%g",
-			   ntimes[dir],dir,(T>0.0)?"+":"",T);
-	    ++ntimes[dir];
-	    gview_plot_interface(dname,intfc);
-	}
-
-	DEBUG_LEAVE(shift_interface)
+//	POINT   *p;
+//	SURFACE **s;
+//	TRI     *t;
+//	int     i;
+//
+//	DEBUG_ENTER(shift_interface)
+//
+//	if (DEBUG)
+//	{
+//	    char dname[1024];
+//	    static int ntimes[3];
+//	    (void) printf("Shifting interface %llu by %g in direction %d\n",
+//			  (long long unsigned int)interface_number(intfc),T,dir);
+//	    print_interface(intfc);
+//	    (void) sprintf(dname,"fscatter/shift_interface/Into%d.%d.%s%g",
+//			   ntimes[dir],dir,(T>0.0) ? "+" : "",T);
+//	    ++ntimes[dir];
+//	    gview_plot_interface(dname,intfc);
+//	}
+//
+//		/* Shift points on interface */
+//	(void) next_point(intfc,NULL,NULL,NULL);/*reset sort status*/
+//	for (s = intfc->surfaces; s && *s; ++s)
+//	{
+//	    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
+//	    {
+//		for (i = 0; i < 3; ++i)
+//		{
+//		    p = Point_of_tri(t)[i];
+//		    if (sorted(p) == NO)
+//	                Coords(p)[dir] += T;
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
+//
+//	if (DEBUG)
+//	{
+//	    char dname[1024];
+//	    static int ntimes[3];
+//	    (void) printf("Interface %llu after shift by %g in direction %d\n",
+//			  (long long unsigned int)interface_number(intfc),T,dir);
+//	    print_interface(intfc);
+//	    (void) sprintf(dname,"fscatter/shift_interface/Outof%d.%d.%s%g",
+//			   ntimes[dir],dir,(T>0.0)?"+":"",T);
+//	    ++ntimes[dir];
+//	    gview_plot_interface(dname,intfc);
+//	}
+//
+//	DEBUG_LEAVE(shift_interface)
 }		/*end periodic_shift_interface*/
 
 
@@ -2942,54 +2942,54 @@ LOCAL	POINT_LIST	*set_point_list(
 	HYPER_SURF       *hs,
 	POINT_LIST_STORE *plist_store)
 {
-	POINT      **p;
+//	POINT      **p;
 	POINT_LIST *plist, *pl, Plist;
-	TRI        *tri;
-	int        i, j, max_np, tstnum;
-
-	tstnum = 0;
-	if (nt == 0)
-	    return NULL;
-	max_np = 3*nt + 1;
-	if (max_np > plist_store->len)
-	{
-	    if (plist_store->pl != NULL)
-		free(plist_store->pl);
-	    plist_store->len = max_np;
-	    uni_array(&plist_store->pl,sizeof(POINT_LIST),plist_store->len);
-	}
-	zero_scalar(plist_store->pl,sizeof(POINT_LIST)*plist_store->len);
-	for (i = 0; i < nt; ++i)
-	{
-	    p = Point_of_tri(tris[i]);
-	    for (j = 0; j < 3; ++j)
-	        sorted(p[j]) = NO;
-	}
-
-	plist = plist_store->pl;
-	pl = &Plist;
-	for (i = 0; i < nt; ++i)
-	{
-	    tri = tris[i];
-	    
-	    p = Point_of_tri(tri);
-	    for (j = 0; j < 3; ++j)
-	    {
-		if (!sorted(p[j]))
-		{
-		    pl->next = plist++;
-		    pl->next->prev = pl;
-		    pl = pl->next;
-	            pl->p = p[j];
-	            pl->hs = hs;
-	            pl->hse = Hyper_surf_element(tri);
-	            sorted(pl->p) = YES;
-		    tstnum++; 
-		}
-	    }
-	}
-	Plist.next->prev = NULL;
-
+//	TRI        *tri;
+//	int        i, j, max_np, tstnum;
+//
+//	tstnum = 0;
+//	if (nt == 0)
+//	    return NULL;
+//	max_np = 3*nt + 1;
+//	if (max_np > plist_store->len)
+//	{
+//	    if (plist_store->pl != NULL)
+//		free(plist_store->pl);
+//	    plist_store->len = max_np;
+//	    uni_array(&plist_store->pl,sizeof(POINT_LIST),plist_store->len);
+//	}
+//	zero_scalar(plist_store->pl,sizeof(POINT_LIST)*plist_store->len);
+//	for (i = 0; i < nt; ++i)
+//	{
+//	    p = Point_of_tri(tris[i]);
+//	    for (j = 0; j < 3; ++j)
+//	        sorted(p[j]) = NO;
+//	}
+//
+//	plist = plist_store->pl;
+//	pl = &Plist;
+//	for (i = 0; i < nt; ++i)
+//	{
+//	    tri = tris[i];
+//	    
+//	    p = Point_of_tri(tri);
+//	    for (j = 0; j < 3; ++j)
+//	    {
+//		if (!sorted(p[j]))
+//		{
+//		    pl->next = plist++;
+//		    pl->next->prev = pl;
+//		    pl = pl->next;
+//	            pl->p = p[j];
+//	            pl->hs = hs;
+//	            pl->hse = Hyper_surf_element(tri);
+//	            sorted(pl->p) = YES;
+//		    tstnum++; 
+//		}
+//	    }
+//	}
+//	Plist.next->prev = NULL;
+//
 	return Plist.next;
 }		/*end set_point_list*/
 
@@ -3002,81 +3002,81 @@ EXPORT	SURFACE *copy_buffer_surface(
 	int		p_size)
 {
 	SURFACE		*s;
-	POINT		*p, *np, *ap;
-	TRI		*tri, *atri;
-	CURVE		**c, **pos_curves = NULL, **neg_curves = NULL;
-	int		i;
-
-	DEBUG_ENTER(copy_buffer_surface)
-
-	/* First identify and copy nodes on as */
-
-	for (c = as->pos_curves; c && *c; ++c)
-	{
-	    if (!add_to_pointers(matching_curve(*c,p_table,p_size),
-				    &pos_curves))
-	    {
-	        screen("ERROR in copy_buffer_surface(), "
-	               "add_to_pointers() failed\n");
-	        clean_up(ERROR);
-	    }
-	}
-	for (c = as->neg_curves; c && *c; ++c)
-	{
-	    if (!add_to_pointers(matching_curve(*c,p_table,p_size),
-				    &neg_curves))
-	    {
-	        screen("ERROR in copy_buffer_surface(), "
-	               "add_to_pointers() failed\n");
-	        clean_up(ERROR);
-	    }
-	}
-
-	/* set tri_array_numbers */
-	for(i=0, tri=first_tri(as); !at_end_of_tri_list(tri,as); tri=tri->next)
-	    Tri_index(tri) = i++;
-
-	s = copy_surface(as,pos_curves,neg_curves,YES);
-
-	/* null_tri_array_numbers */
-	for(i=0, tri=first_tri(as); !at_end_of_tri_list(tri,as); tri=tri->next)
-	    Tri_index(tri) = 0;
-
-	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
-	{
-	    sorted(Point_of_tri(tri)[0]) = NO;
-	    sorted(Point_of_tri(tri)[1]) = NO;
-	    sorted(Point_of_tri(tri)[2]) = NO;
-	}
-	for (tri = first_tri(s), atri = first_tri(as);
-	     !at_end_of_tri_list(tri,s); tri = tri->next, atri = atri->next)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-	    	p = Point_of_tri(tri)[i];
-	    	if (sorted(p) == NO)
-	    	{
-	    	    if (!vertex_on_bond(tri,i))  /* the if is useless */
-		    {
-			ap = Point_of_tri(atri)[i];
-			np = (POINT*)find_from_hash_table((POINTER)ap,
-					                  p_table,p_size);
-			if (np == NULL)
-			{
-			    (void) add_to_hash_table((POINTER)ap,(POINTER)p,
-						     p_table,p_size);
-			}
-			else if (p != np)
-			{
-			    p = np;
-			    Point_of_tri(tri)[i] = p;
-			}
-		    }
-		    sorted(p) = YES;
-		}
-	    }
-	}
-	DEBUG_LEAVE(copy_buffer_surface)
+//	POINT		*p, *np, *ap;
+//	TRI		*tri, *atri;
+//	CURVE		**c, **pos_curves = NULL, **neg_curves = NULL;
+//	int		i;
+//
+//	DEBUG_ENTER(copy_buffer_surface)
+//
+//	/* First identify and copy nodes on as */
+//
+//	for (c = as->pos_curves; c && *c; ++c)
+//	{
+//	    if (!add_to_pointers(matching_curve(*c,p_table,p_size),
+//				    &pos_curves))
+//	    {
+//	        screen("ERROR in copy_buffer_surface(), "
+//	               "add_to_pointers() failed\n");
+//	        clean_up(ERROR);
+//	    }
+//	}
+//	for (c = as->neg_curves; c && *c; ++c)
+//	{
+//	    if (!add_to_pointers(matching_curve(*c,p_table,p_size),
+//				    &neg_curves))
+//	    {
+//	        screen("ERROR in copy_buffer_surface(), "
+//	               "add_to_pointers() failed\n");
+//	        clean_up(ERROR);
+//	    }
+//	}
+//
+//	/* set tri_array_numbers */
+//	for(i=0, tri=first_tri(as); !at_end_of_tri_list(tri,as); tri=tri->next)
+//	    Tri_index(tri) = i++;
+//
+//	s = copy_surface(as,pos_curves,neg_curves,YES);
+//
+//	/* null_tri_array_numbers */
+//	for(i=0, tri=first_tri(as); !at_end_of_tri_list(tri,as); tri=tri->next)
+//	    Tri_index(tri) = 0;
+//
+//	for (tri = first_tri(s); !at_end_of_tri_list(tri,s); tri = tri->next)
+//	{
+//	    sorted(Point_of_tri(tri)[0]) = NO;
+//	    sorted(Point_of_tri(tri)[1]) = NO;
+//	    sorted(Point_of_tri(tri)[2]) = NO;
+//	}
+//	for (tri = first_tri(s), atri = first_tri(as);
+//	     !at_end_of_tri_list(tri,s); tri = tri->next, atri = atri->next)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//	    	p = Point_of_tri(tri)[i];
+//	    	if (sorted(p) == NO)
+//	    	{
+//	    	    if (!vertex_on_bond(tri,i))  /* the if is useless */
+//		    {
+//			ap = Point_of_tri(atri)[i];
+//			np = (POINT*)find_from_hash_table((POINTER)ap,
+//					                  p_table,p_size);
+//			if (np == NULL)
+//			{
+//			    (void) add_to_hash_table((POINTER)ap,(POINTER)p,
+//						     p_table,p_size);
+//			}
+//			else if (p != np)
+//			{
+//			    p = np;
+//			    Point_of_tri(tri)[i] = p;
+//			}
+//		    }
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
+//	DEBUG_LEAVE(copy_buffer_surface)
 	return s;
 }		/*end copy_buffer_surface*/
 
@@ -3530,35 +3530,35 @@ LOCAL void merge_point_pointers_at_subdomain_bdry(
 	P_LINK		*p_table,
 	int		p_size)
 {
-	POINT		*p, *ap;
-	int		i, j;
-
-        for (i = 0; i < nt; ++i)
-	{
-	    sorted(Point_of_tri(tris_s[i])[0]) = NO; 
-	    sorted(Point_of_tri(tris_s[i])[1]) = NO;
-	    sorted(Point_of_tri(tris_s[i])[2]) = NO;
-	    sorted(Point_of_tri(tris_a[i])[0]) = NO; 
-	    sorted(Point_of_tri(tris_a[i])[1]) = NO;
-	    sorted(Point_of_tri(tris_a[i])[2]) = NO;
-	}
-	for (i = 0; i < nt; ++i)
-	{
-	    for (j = 0; j < 3; ++j)
-	    {
-		ap = Point_of_tri(tris_a[i])[j];
-		if (sorted(ap) == NO)
-		{
-	            p = (POINT*)find_from_hash_table((POINTER)ap,
-						     p_table,p_size);
-		    if(p != Point_of_tri(tris_a[i])[j])
-		        printf("#merge_point  \n");
-		    
-		    Point_of_tri(tris_a[i])[j] = p;
-		    sorted(p) = YES;
-		}
-	    }
-	}
+//	POINT		*p, *ap;
+//	int		i, j;
+//
+//        for (i = 0; i < nt; ++i)
+//	{
+//	    sorted(Point_of_tri(tris_s[i])[0]) = NO; 
+//	    sorted(Point_of_tri(tris_s[i])[1]) = NO;
+//	    sorted(Point_of_tri(tris_s[i])[2]) = NO;
+//	    sorted(Point_of_tri(tris_a[i])[0]) = NO; 
+//	    sorted(Point_of_tri(tris_a[i])[1]) = NO;
+//	    sorted(Point_of_tri(tris_a[i])[2]) = NO;
+//	}
+//	for (i = 0; i < nt; ++i)
+//	{
+//	    for (j = 0; j < 3; ++j)
+//	    {
+//		ap = Point_of_tri(tris_a[i])[j];
+//		if (sorted(ap) == NO)
+//		{
+//	            p = (POINT*)find_from_hash_table((POINTER)ap,
+//						     p_table,p_size);
+//		    if(p != Point_of_tri(tris_a[i])[j])
+//		        printf("#merge_point  \n");
+//		    
+//		    Point_of_tri(tris_a[i])[j] = p;
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
 }	/*end merge_point_pointers_at_subdomain_bdry*/
 
 
@@ -4353,77 +4353,77 @@ EXPORT	void cut_surface(
         POINTER func_params,		     /* Constraint function params */
 	boolean force_clip)
 {
-	INTERFACE *intfc = surf->interface;
-	TRI *tri,*ntri;
-	POINT *p;
-	double *p1,*p2,*pc;
-	int i,j,dim = intfc->dim;
-	double distance;
-	double tol = 1e-5*MIN_SC_SEP(intfc);
-
-	if (force_clip)
-	{
-	    set_current_interface(surf->interface);
-
-	    for (tri=first_tri(surf); !at_end_of_tri_list(tri,surf); 
-				tri=tri->next)
-	    	for (i = 0; i < 3; ++i)
-		    sorted(Point_of_tri(tri)[i]) = NO;
-
-	    for (tri=first_tri(surf); !at_end_of_tri_list(tri,surf); 
-				tri=tri->next)
-	    {
-	    	for (i = 0; i < 3; ++i)
-		{
-		    if (sorted(Point_of_tri(tri)[i]) ||
-			sorted(Point_of_tri(tri)[(i+1)%3]))
-			continue;
-		    p1 = Coords(Point_of_tri(tri)[i]);
-		    p2 = Coords(Point_of_tri(tri)[(i+1)%3]);
-		    if ((constr_func(func_params,p1) && 
-			!constr_func(func_params,p2)) ||
-		        (constr_func(func_params,p2) && 
-			!constr_func(func_params,p1)))
-		    {
-			pc = constr_position(p1,p2,constr_func,func_params);
-			distance = distance_between_positions(pc,p1,dim);
-			if (distance < tol)
-			{
-			    for (j = 0; j < dim; ++j)
-				p1[j] = pc[j];
-			    sorted(Point_of_tri(tri)[i]) = YES;
-					/*use flag sorted for new point*/
-			    continue;
-			}
-			distance = distance_between_positions(pc,p2,dim);
-			if (distance < tol)
-			{
-			    for (j = 0; j < dim; ++j)
-				p2[j] = pc[j];
-			    sorted(Point_of_tri(tri)[(i+1)%3]) = YES; 
-					/*use flag sorted for new point*/
-			    continue;
-			}
-			p = Point(pc);
-			insert_point_in_tri_side(p,i,tri,surf);
-			sorted(p) = YES;  /*use flag sorted for new point*/
-		    }
-		}
-	    }
-	}
-	for (tri=first_tri(surf); !at_end_of_tri_list(tri,surf); tri=ntri)
-	{
-	    ntri = tri->next;
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (!constr_func(func_params,Coords(p)))
-		{
-		    remove_out_domain_tri(tri,surf);
-		    break;
-		}
-	    }
-	}
+//	INTERFACE *intfc = surf->interface;
+//	TRI *tri,*ntri;
+//	POINT *p;
+//	double *p1,*p2,*pc;
+//	int i,j,dim = intfc->dim;
+//	double distance;
+//	double tol = 1e-5*MIN_SC_SEP(intfc);
+//
+//	if (force_clip)
+//	{
+//	    set_current_interface(surf->interface);
+//
+//	    for (tri=first_tri(surf); !at_end_of_tri_list(tri,surf); 
+//				tri=tri->next)
+//	    	for (i = 0; i < 3; ++i)
+//		    sorted(Point_of_tri(tri)[i]) = NO;
+//
+//	    for (tri=first_tri(surf); !at_end_of_tri_list(tri,surf); 
+//				tri=tri->next)
+//	    {
+//	    	for (i = 0; i < 3; ++i)
+//		{
+//		    if (sorted(Point_of_tri(tri)[i]) ||
+//			sorted(Point_of_tri(tri)[(i+1)%3]))
+//			continue;
+//		    p1 = Coords(Point_of_tri(tri)[i]);
+//		    p2 = Coords(Point_of_tri(tri)[(i+1)%3]);
+//		    if ((constr_func(func_params,p1) && 
+//			!constr_func(func_params,p2)) ||
+//		        (constr_func(func_params,p2) && 
+//			!constr_func(func_params,p1)))
+//		    {
+//			pc = constr_position(p1,p2,constr_func,func_params);
+//			distance = distance_between_positions(pc,p1,dim);
+//			if (distance < tol)
+//			{
+//			    for (j = 0; j < dim; ++j)
+//				p1[j] = pc[j];
+//			    sorted(Point_of_tri(tri)[i]) = YES;
+//					/*use flag sorted for new point*/
+//			    continue;
+//			}
+//			distance = distance_between_positions(pc,p2,dim);
+//			if (distance < tol)
+//			{
+//			    for (j = 0; j < dim; ++j)
+//				p2[j] = pc[j];
+//			    sorted(Point_of_tri(tri)[(i+1)%3]) = YES; 
+//					/*use flag sorted for new point*/
+//			    continue;
+//			}
+//			p = Point(pc);
+//			insert_point_in_tri_side(p,i,tri,surf);
+//			sorted(p) = YES;  /*use flag sorted for new point*/
+//		    }
+//		}
+//	    }
+//	}
+//	for (tri=first_tri(surf); !at_end_of_tri_list(tri,surf); tri=ntri)
+//	{
+//	    ntri = tri->next;
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (!constr_func(func_params,Coords(p)))
+//		{
+//		    remove_out_domain_tri(tri,surf);
+//		    break;
+//		}
+//	    }
+//	}
 }	/* end cut_surface */
 
 LOCAL 	double *constr_position(

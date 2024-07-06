@@ -135,103 +135,103 @@ EXPORT void I_ShiftSurface(
 	SURFACE *surf,
 	double *displacement)
 {
-	TRI *tri;
-	POINT *p;
-	int i,j;
-
-	surf_tri_loop(surf,tri)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(tri)[i];
-		sorted(p) = NO;
-	    }
-	}
-	surf_tri_loop(surf,tri)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (sorted(p) == YES) continue;
-		for (j = 0; j < 3; ++j)
-		    Coords(p)[j] += displacement[j];
-		sorted(p) = YES;
-	    }
-	}
+//	TRI *tri;
+//	POINT *p;
+//	int i,j;
+//
+//	surf_tri_loop(surf,tri)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		sorted(p) = NO;
+//	    }
+//	}
+//	surf_tri_loop(surf,tri)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (sorted(p) == YES) continue;
+//		for (j = 0; j < 3; ++j)
+//		    Coords(p)[j] += displacement[j];
+//		sorted(p) = YES;
+//	    }
+//	}
 }	/* end I_ShiftSurface */
 
 EXPORT void I_TransInteriorIntfcPoints(
 	INTERFACE *intfc,
 	double *disp)
 {
-        POINT *p;
-	int i,dim = intfc->dim;
-	SURFACE **s;
-	CURVE **c;
-	TRI *t;
-	BOND *b;
-
-	intfc_surface_loop(intfc,s)
-	{
-	    surf_tri_loop(*s,t)
-	    {
-		for (i = 0; i < 3; ++i)
-		{
-		    p = Point_of_tri(t)[i];
-		    sorted(p) = NO;
-		}
-	    }
-	}
-	intfc_curve_loop(intfc,c)
-	{
-	    b = (*c)->first;	p = b->start;
-	    sorted(p) = NO;
-	    curve_bond_loop(*c,b)
-	    {
-		p = b->end;
-	    	sorted(p) = NO;
-	    }
-	}
-
-	intfc_surface_loop(intfc,s)
-	{
-	    if (is_bdry_hs(Hyper_surf(*s)))
-		continue;
-	    surf_tri_loop(*s,t)
-	    {
-		for (i = 0; i < 3; ++i)
-		{
-		    p = Point_of_tri(t)[i];
-		    if (sorted(p)) continue;
-	    	    for (i = 0; i < dim; ++i)
-			Coords(p)[i] += disp[i];
-		    sorted(p) = YES;
-		}
-	    }
-	}
-	intfc_curve_loop(intfc,c)
-	{
-	    if (curve_of_boundary_hs(*c))
-	    {
-		printf("Skip boundary curve:\n");
-		continue;
-	    }
-	    b = (*c)->first;	p = b->start;
-	    if (!sorted(p))
-	    {
-	    	for (i = 0; i < dim; ++i)
-		    Coords(p)[i] += disp[i];
-	    	sorted(p) = YES;
-	    }
-	    curve_bond_loop(*c,b)
-	    {
-		p = b->end;
-		if (sorted(p)) continue;
-	    	for (i = 0; i < dim; ++i)
-		    Coords(p)[i] += disp[i];
-	    	sorted(p) = YES;
-	    }
-	}
+//        POINT *p;
+//	int i,dim = intfc->dim;
+//	SURFACE **s;
+//	CURVE **c;
+//	TRI *t;
+//	BOND *b;
+//
+//	intfc_surface_loop(intfc,s)
+//	{
+//	    surf_tri_loop(*s,t)
+//	    {
+//		for (i = 0; i < 3; ++i)
+//		{
+//		    p = Point_of_tri(t)[i];
+//		    sorted(p) = NO;
+//		}
+//	    }
+//	}
+//	intfc_curve_loop(intfc,c)
+//	{
+//	    b = (*c)->first;	p = b->start;
+//	    sorted(p) = NO;
+//	    curve_bond_loop(*c,b)
+//	    {
+//		p = b->end;
+//	    	sorted(p) = NO;
+//	    }
+//	}
+//
+//	intfc_surface_loop(intfc,s)
+//	{
+//	    if (is_bdry_hs(Hyper_surf(*s)))
+//		continue;
+//	    surf_tri_loop(*s,t)
+//	    {
+//		for (i = 0; i < 3; ++i)
+//		{
+//		    p = Point_of_tri(t)[i];
+//		    if (sorted(p)) continue;
+//	    	    for (i = 0; i < dim; ++i)
+//			Coords(p)[i] += disp[i];
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
+//	intfc_curve_loop(intfc,c)
+//	{
+//	    if (curve_of_boundary_hs(*c))
+//	    {
+//		printf("Skip boundary curve:\n");
+//		continue;
+//	    }
+//	    b = (*c)->first;	p = b->start;
+//	    if (!sorted(p))
+//	    {
+//	    	for (i = 0; i < dim; ++i)
+//		    Coords(p)[i] += disp[i];
+//	    	sorted(p) = YES;
+//	    }
+//	    curve_bond_loop(*c,b)
+//	    {
+//		p = b->end;
+//		if (sorted(p)) continue;
+//	    	for (i = 0; i < dim; ++i)
+//		    Coords(p)[i] += disp[i];
+//	    	sorted(p) = YES;
+//	    }
+//	}
 }	/* end I_TransInteriorIntfcPoints */
 
 LOCAL boolean curve_of_boundary_hs(
@@ -320,52 +320,52 @@ EXPORT void I_SphericalRotateInteriorIntfcPoints(
         double phi,
         double theta)
 {
-        POINT *p;
-	int i,dim = intfc->dim;
-	SURFACE **s;
-	CURVE **c;
-	TRI *t;
-	BOND *b;
-	boolean first = YES;
-
-	reset_sort_status(intfc);
-
-	intfc_surface_loop(intfc,s)
-	{
-	    if (is_bdry_hs(Hyper_surf(*s)))
-		continue;
-	    surf_tri_loop(*s,t)
-	    {
-		for (i = 0; i < 3; ++i)
-		{
-		    p = Point_of_tri(t)[i];
-		    if (sorted(p)) continue;
-		    rotate_point_with_spherical_angle(p,center,phi,theta,first);
-		    if (first == YES) first = NO;
-		    sorted(p) = YES;
-		}
-	    }
-	}
-	intfc_curve_loop(intfc,c)
-	{
-	    if (curve_of_boundary_hs(*c))
-		continue;
-	    b = (*c)->first;	p = b->start;
-	    if (!sorted(p))
-	    {
-		rotate_point_with_spherical_angle(p,center,phi,theta,first);
-		if (first == YES) first = NO;
-	    	sorted(p) = YES;
-	    }
-	    curve_bond_loop(*c,b)
-	    {
-		p = b->end;
-		if (sorted(p)) continue;
-		rotate_point_with_spherical_angle(p,center,phi,theta,first);
-		if (first == YES) first = NO;
-	    	sorted(p) = YES;
-	    }
-	}
+//        POINT *p;
+//	int i,dim = intfc->dim;
+//	SURFACE **s;
+//	CURVE **c;
+//	TRI *t;
+//	BOND *b;
+//	boolean first = YES;
+//
+//	reset_sort_status(intfc);
+//
+//	intfc_surface_loop(intfc,s)
+//	{
+//	    if (is_bdry_hs(Hyper_surf(*s)))
+//		continue;
+//	    surf_tri_loop(*s,t)
+//	    {
+//		for (i = 0; i < 3; ++i)
+//		{
+//		    p = Point_of_tri(t)[i];
+//		    if (sorted(p)) continue;
+//		    rotate_point_with_spherical_angle(p,center,phi,theta,first);
+//		    if (first == YES) first = NO;
+//		    sorted(p) = YES;
+//		}
+//	    }
+//	}
+//	intfc_curve_loop(intfc,c)
+//	{
+//	    if (curve_of_boundary_hs(*c))
+//		continue;
+//	    b = (*c)->first;	p = b->start;
+//	    if (!sorted(p))
+//	    {
+//		rotate_point_with_spherical_angle(p,center,phi,theta,first);
+//		if (first == YES) first = NO;
+//	    	sorted(p) = YES;
+//	    }
+//	    curve_bond_loop(*c,b)
+//	    {
+//		p = b->end;
+//		if (sorted(p)) continue;
+//		rotate_point_with_spherical_angle(p,center,phi,theta,first);
+//		if (first == YES) first = NO;
+//	    	sorted(p) = YES;
+//	    }
+//	}
 }	/* end I_SphericalRotateInteriorIntfcPoints */
 
 EXPORT void I_SphericalRotateInteriorSurfPoints(
@@ -374,30 +374,30 @@ EXPORT void I_SphericalRotateInteriorSurfPoints(
         double phi,
         double theta)
 {
-	TRI *t;
-	POINT *p;
-	int i;
-	boolean first = YES;
-
-	surf_tri_loop(surf,t)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(t)[i];
-		sorted(p) = NO;
-	    }
-	}
-	surf_tri_loop(surf,t)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(t)[i];
-		if (sorted(p) || Boundary_point(p)) continue;
-		rotate_point_with_spherical_angle(p,center,phi,theta,first);
-		if (first == YES) first = NO;
-		sorted(p) = YES;
-	    }
-	}
+//	TRI *t;
+//	POINT *p;
+//	int i;
+//	boolean first = YES;
+//
+//	surf_tri_loop(surf,t)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(t)[i];
+//		sorted(p) = NO;
+//	    }
+//	}
+//	surf_tri_loop(surf,t)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(t)[i];
+//		if (sorted(p) || Boundary_point(p)) continue;
+//		rotate_point_with_spherical_angle(p,center,phi,theta,first);
+//		if (first == YES) first = NO;
+//		sorted(p) = YES;
+//	    }
+//	}
 }	/* end I_SphericalRotateInteriorSurfPoints */
 
 EXPORT void I_SphericalRotateInteriorCurvePoints(
@@ -428,26 +428,26 @@ EXPORT void I_SphericalRotateInteriorNodePoints(
 
 EXPORT int I_NumOfSurfInteriorPoints(SURFACE *surf)
 {
-	TRI *tri;
-        POINT *p;
+//	TRI *tri;
+//        POINT *p;
         int i,n;
-
-	surf_tri_loop(surf,tri)
-	{
-	    for (i = 0; i < 3; ++i)
-		sorted(Point_of_tri(tri)[i]) = NO;
-	}
-	n = 0;
-	surf_tri_loop(surf,tri)
-	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (sorted(p) || Boundary_point(p)) continue;
-		++n;
-		sorted(p) = YES;
-	    }
-	}
+//
+//	surf_tri_loop(surf,tri)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//		sorted(Point_of_tri(tri)[i]) = NO;
+//	}
+//	n = 0;
+//	surf_tri_loop(surf,tri)
+//	{
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (sorted(p) || Boundary_point(p)) continue;
+//		++n;
+//		sorted(p) = YES;
+//	    }
+//	}
 	return n;
 }	/* end I_NumOfSurfInteriorPoints */
 
@@ -464,45 +464,45 @@ EXPORT void I_FoldSurface(
 	SIDE side,
 	boolean first)
 {
-	TRI *tri;
-	POINT *p;
-        int i,j;
-	double pv[MAXD],cx[MAXD];
-	const double *nor;
-	double prod;
-	double tol = 0.1;
-
-	if (first == YES)
-	{
-	    surf_tri_loop(surf,tri)
-	    {
-	    	for (i = 0; i < 3; ++i)
-		    sorted(Point_of_tri(tri)[i]) = NO;
-	    }
-	}
-	surf_tri_loop(surf,tri)
-	{
-	    nor = Tri_normal(tri);
-	    for (i = 0; i < 3; ++i)
-	    {
-		p = Point_of_tri(tri)[i];
-		if (sorted(p)) continue;
-		for (j = 0; j < 3; ++j)
-		    pv[j] = Coords(p)[j] - axis[j];
-		Cross3d(pv,dir,cx);
-		prod = Mag3d(cx);
-		if (prod == 0.0) continue;
-		for (j = 0; j < 3; ++j)
-		    cx[j] /= prod;
-		prod = Dot3d(cx,nor);
-		if ((prod < 0  && side == POSITIVE_SIDE) ||
-		    (prod >= 0 && side == NEGATIVE_SIDE))
-		    continue;
-		sorted(p) = YES;
-		I_RotatePointAboutAxis(p,dir,axis,angle);
-		
-	    }
-	}
+//	TRI *tri;
+//	POINT *p;
+//        int i,j;
+//	double pv[MAXD],cx[MAXD];
+//	const double *nor;
+//	double prod;
+//	double tol = 0.1;
+//
+//	if (first == YES)
+//	{
+//	    surf_tri_loop(surf,tri)
+//	    {
+//	    	for (i = 0; i < 3; ++i)
+//		    sorted(Point_of_tri(tri)[i]) = NO;
+//	    }
+//	}
+//	surf_tri_loop(surf,tri)
+//	{
+//	    nor = Tri_normal(tri);
+//	    for (i = 0; i < 3; ++i)
+//	    {
+//		p = Point_of_tri(tri)[i];
+//		if (sorted(p)) continue;
+//		for (j = 0; j < 3; ++j)
+//		    pv[j] = Coords(p)[j] - axis[j];
+//		Cross3d(pv,dir,cx);
+//		prod = Mag3d(cx);
+//		if (prod == 0.0) continue;
+//		for (j = 0; j < 3; ++j)
+//		    cx[j] /= prod;
+//		prod = Dot3d(cx,nor);
+//		if ((prod < 0  && side == POSITIVE_SIDE) ||
+//		    (prod >= 0 && side == NEGATIVE_SIDE))
+//		    continue;
+//		sorted(p) = YES;
+//		I_RotatePointAboutAxis(p,dir,axis,angle);
+//		
+//	    }
+//	}
 }	/* end I_FoldSurface */
 
 /***********************************************************************

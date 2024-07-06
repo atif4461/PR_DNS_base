@@ -307,76 +307,76 @@ LOCAL boolean buffer_extension3d2(
 	int		nb,
 	boolean		status)
 {
-	BOND		*b;
-	NODE		**n;
-	CURVE		**c;
-	HYPER_SURF	*hs;
-	HYPER_SURF_ELEMENT *hse;
-	POINT		*p;
-	SURFACE		**s;
-	TRI		*t;
-	RECT_GRID	*gr = computational_grid(intfc);
-	RECT_GRID	*adj_gr = computational_grid(adj_intfc);
-	RECT_GRID	dual_gr;
-	double		T[MAXD];
-	int		i;
-	int		dim = intfc->dim;
-
-	DEBUG_ENTER(buffer_extension3d2)
-
-	set_current_interface(intfc);
-
-		/* Set periodic shift */
-
-	for (i = 0; i < dim; ++i)
-	    T[i] = 0;
-	if (nb == 0)				/* Lower neighbor */
-	    T[dir] = gr->L[dir] - adj_gr->U[dir];
-	else					/* Upper neighbor */
-	    T[dir] = gr->U[dir] - adj_gr->L[dir];
-
-		/* Shift points on interface */
-
-	(void) next_point(adj_intfc,NULL,NULL,NULL);
-	for (s = adj_intfc->surfaces; s && *s; ++s)
-	{
-	    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
-	    {
-	        for(i=0; i<3; i++)
-		{
-		    p = Point_of_tri(t)[i];
-		    if(!sorted(p))
-		    {
-		        Coords(p)[dir] += T[dir];
-			sorted(p) = YES;
-		    }
-		}
-	    }
-	}
-
-	set_dual_grid(&dual_gr,gr);
-
-		/* Patch tris from adj_intfc to intfc */
-	if (debugging("scatter_old"))
-	{
-	    if(!append_adj_intfc_to_buffer2_old(intfc,adj_intfc,gr,&dual_gr,
-				dir,nb))
-	    {
-	        status = FUNCTION_FAILED;
-	        (void) printf("WARNING: in buffer_extension3d2(), "
-	    	          "append_adj_intfc_to_buffer2_old() failed\n");
-	    }
-	    DEBUG_LEAVE(buffer_extension3d2)
-	    return status;
-	}
-
-	if(!append_adj_intfc_to_buffer2(intfc,adj_intfc,gr,&dual_gr,dir,nb))
-	{
-	    status = FUNCTION_FAILED;
-	    (void) printf("WARNING: in buffer_extension3d2(), "
-	    	          "append_adj_intfc_to_buffer2() failed\n");
-	}
-	DEBUG_LEAVE(buffer_extension3d2)
+//	BOND		*b;
+//	NODE		**n;
+//	CURVE		**c;
+//	HYPER_SURF	*hs;
+//	HYPER_SURF_ELEMENT *hse;
+//	POINT		*p;
+//	SURFACE		**s;
+//	TRI		*t;
+//	RECT_GRID	*gr = computational_grid(intfc);
+//	RECT_GRID	*adj_gr = computational_grid(adj_intfc);
+//	RECT_GRID	dual_gr;
+//	double		T[MAXD];
+//	int		i;
+//	int		dim = intfc->dim;
+//
+//	DEBUG_ENTER(buffer_extension3d2)
+//
+//	set_current_interface(intfc);
+//
+//		/* Set periodic shift */
+//
+//	for (i = 0; i < dim; ++i)
+//	    T[i] = 0;
+//	if (nb == 0)				/* Lower neighbor */
+//	    T[dir] = gr->L[dir] - adj_gr->U[dir];
+//	else					/* Upper neighbor */
+//	    T[dir] = gr->U[dir] - adj_gr->L[dir];
+//
+//		/* Shift points on interface */
+//
+//	(void) next_point(adj_intfc,NULL,NULL,NULL);
+//	for (s = adj_intfc->surfaces; s && *s; ++s)
+//	{
+//	    for (t = first_tri(*s); !at_end_of_tri_list(t,*s); t = t->next)
+//	    {
+//	        for(i=0; i<3; i++)
+//		{
+//		    p = Point_of_tri(t)[i];
+//		    if(!sorted(p))
+//		    {
+//		        Coords(p)[dir] += T[dir];
+//			sorted(p) = YES;
+//		    }
+//		}
+//	    }
+//	}
+//
+//	set_dual_grid(&dual_gr,gr);
+//
+//		/* Patch tris from adj_intfc to intfc */
+//	if (debugging("scatter_old"))
+//	{
+//	    if(!append_adj_intfc_to_buffer2_old(intfc,adj_intfc,gr,&dual_gr,
+//				dir,nb))
+//	    {
+//	        status = FUNCTION_FAILED;
+//	        (void) printf("WARNING: in buffer_extension3d2(), "
+//	    	          "append_adj_intfc_to_buffer2_old() failed\n");
+//	    }
+//	    DEBUG_LEAVE(buffer_extension3d2)
+//	    return status;
+//	}
+//
+//	if(!append_adj_intfc_to_buffer2(intfc,adj_intfc,gr,&dual_gr,dir,nb))
+//	{
+//	    status = FUNCTION_FAILED;
+//	    (void) printf("WARNING: in buffer_extension3d2(), "
+//	    	          "append_adj_intfc_to_buffer2() failed\n");
+//	}
+//	DEBUG_LEAVE(buffer_extension3d2)
 	return status;
 }	/*end buffer_extension3d2*/
 

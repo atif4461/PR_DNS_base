@@ -2064,45 +2064,45 @@ EXPORT  void invert_tri(
 EXPORT  void i_invert_surface(
         SURFACE *s)
 {
-	/*	old code
-        CURVE **c;
-        TRI *t;
-	COMPONENT comp_tmp;
-        for (c = surf->pos_curves; c && *c; ++c)
-            invert_curve(*c);
-        for (c = surf->neg_curves; c && *c; ++c)
-            invert_curve(*c);
-
-        for (t = first_tri(surf); !at_end_of_tri_list(t,surf); t = t->next)
-            invert_tri(t);
-        comp_tmp = negative_component(surf);
-        negative_component(surf) = positive_component(surf);
-        positive_component(surf) = comp_tmp;
-	*/
-	TRI             *t;
-        POINT           *p;
-        TRI_NEIGHBOR    tn;
-        int             i;
-
-        for(t = first_tri(s); !at_end_of_tri_list(t,s); t = t->next)
-        {
-            for(i=0; i<3; i++)
-            {
-                p = Point_of_tri(t)[i];
-                sorted(p) = NO;
-            }
-        }
-
-        for(t = first_tri(s); !at_end_of_tri_list(t,s); t = t->next)
-        {
-            p = Point_of_tri(t)[1];
-            Point_of_tri(t)[1] = Point_of_tri(t)[2];
-            Point_of_tri(t)[2] = p;
-
-            tn = Tri_neighbor(t)[0];
-            Tri_neighbor(t)[0] = Tri_neighbor(t)[2];
-            Tri_neighbor(t)[2] = tn;
-
-            set_normal_of_tri(t);
-        }
+//	/*	old code
+//        CURVE **c;
+//        TRI *t;
+//	COMPONENT comp_tmp;
+//        for (c = surf->pos_curves; c && *c; ++c)
+//            invert_curve(*c);
+//        for (c = surf->neg_curves; c && *c; ++c)
+//            invert_curve(*c);
+//
+//        for (t = first_tri(surf); !at_end_of_tri_list(t,surf); t = t->next)
+//            invert_tri(t);
+//        comp_tmp = negative_component(surf);
+//        negative_component(surf) = positive_component(surf);
+//        positive_component(surf) = comp_tmp;
+//	*/
+//	TRI             *t;
+//        POINT           *p;
+//        TRI_NEIGHBOR    tn;
+//        int             i;
+//
+//        for(t = first_tri(s); !at_end_of_tri_list(t,s); t = t->next)
+//        {
+//            for(i=0; i<3; i++)
+//            {
+//                p = Point_of_tri(t)[i];
+//                sorted(p) = NO;
+//            }
+//        }
+//
+//        for(t = first_tri(s); !at_end_of_tri_list(t,s); t = t->next)
+//        {
+//            p = Point_of_tri(t)[1];
+//            Point_of_tri(t)[1] = Point_of_tri(t)[2];
+//            Point_of_tri(t)[2] = p;
+//
+//            tn = Tri_neighbor(t)[0];
+//            Tri_neighbor(t)[0] = Tri_neighbor(t)[2];
+//            Tri_neighbor(t)[2] = tn;
+//
+//            set_normal_of_tri(t);
+//        }
 }       /* end i_invert_surface */
