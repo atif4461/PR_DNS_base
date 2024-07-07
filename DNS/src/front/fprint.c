@@ -1201,20 +1201,21 @@ LOCAL	void show_front_vtk(
 
 	/* Create vtk directories */
 
+        sprintf(sdirname,"%s/vtk",out_name1);
         sprintf(vdirname,"%s/vtk",out_name1);
         sprintf(dirname,"%s/vtk",out_name1);
-	if (pp_mynode() == 0)
-	{
-	    if (!create_directory(dirname,YES))
-	    {
-	    	screen("Cannot create directory %s\n",dirname);
-	    	clean_up(ERROR);
-	    }
-	}
+	//if (pp_mynode() == 0)
+	//{
+	//    if (!create_directory(dirname,YES))
+	//    {
+	//    	screen("Cannot create directory %s\n",dirname);
+	//    	clean_up(ERROR);
+	//    }
+	//}
 	pp_gsync();
         sprintf(dirname,"%s/vtk.ts%s",dirname,right_flush(step,7));
         sprintf(sdirname,"vtk.ts%s",right_flush(step,7));
-	if (pp_numnodes() > 1)
+	//if (pp_numnodes() > 1)
 	{
             sprintf(dirname,"%s-nd%s",dirname,right_flush(pp_mynode(),4));
 	}

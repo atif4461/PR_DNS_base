@@ -5,6 +5,8 @@
 #include <iFluid.h>
 #include "fftw3.h"
 #include "heffte.h"
+#include <torch/torch.h>
+#include <torch/script.h>
 
 #define         LIQUID_COMP2           3
 #define         SOLID_COMP             1
@@ -351,6 +353,11 @@ public:
 	void computeVolumeForceLinear();
 	double computeDspRate();
 	double computeDspRateLinear();
+
+        void transformVelPrdns2Torch(int time,
+	     std::vector<torch::jit::IValue> &inputs);
+
+
 #ifdef __HDF5__
 	int write_hdf5_field(double*,const char*,const char*);
 #endif

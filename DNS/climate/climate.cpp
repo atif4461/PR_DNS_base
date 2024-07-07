@@ -333,38 +333,40 @@ static  void melting_flow_driver(
 
 
 
-      	//std::cout << "CUDA Version: " << CUDA_VERSION / 1000 << (CUDA_VERSION / 10) % 100 << std::endl;
-	//torch::Tensor tensor = torch::rand({2, 3});
-	//std::cout << tensor << std::endl;
-	//
-	//torch::jit::script::Module module;
+      	std::cout << "CUDA Version: " << CUDA_VERSION / 1000 << (CUDA_VERSION / 10) % 100 << std::endl;
+	torch::Tensor tensor = torch::rand({2, 3});
+	std::cout << tensor << std::endl;
+	
+	torch::jit::script::Module module;
 	//try {
-	//  // Deserialize the ScriptModule from a file using torch::jit::load().
-        //  // module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5_uv_1000_8_8_100_0.5_0.001_32/model.pt");
-	//  module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5/autoreg5_1000_8_8_100_0.5_0.001_64/model.pt");
+	  // Deserialize the ScriptModule from a file using torch::jit::load().
+          // module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5_uv_1000_8_8_100_0.5_0.001_32/model.pt");
+	module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5/autoreg5_1000_8_8_100_0.5_0.001_64/model.pt");
 	//}
 	//catch (const c10::Error& e) {
 	//  std::cerr << "error loading the model\n";
 	//  return -1;
 	//}
-	//
-	//std::cout << "ok\n";
-	//
-	//// Create a vector of inputs.
-	//std::vector<torch::jit::IValue> inputs;
-	//inputs.push_back(torch::ones({1, 10, 256, 256}));
-	//
-	//// Execute the model and turn its output into a tensor.
-	//at::Tensor output = module.forward(inputs).toTensor();
-	//std::cout << output.sizes() << " shape and slice " ;//<< output.slice(/*dim=*/1, /*start=*/0, /*end=*/1) << '\n';
+	
+	std::cout << "ok\n";
+	
+	// Create a vector of inputs.
+	std::vector<torch::jit::IValue> inputs;
+	//inputs.push_back(torch::zeros({1, 10, 256, 256}));
+	at::Tensor input_tensor = torch::zeros({1, 10, 256, 256});
+	inputs.push_back(input_tensor);
+	
+	// Execute the model and turn its output into a tensor.
+	at::Tensor output = module.forward(inputs).toTensor();
+	std::cout << output.sizes() << " shape and slice " ;//<< output.slice(/*dim=*/1, /*start=*/0, /*end=*/1) << '\n';
 
 
 
 
 
 
-
-        for (;;)
+        for (int tt=0; tt < 1; tt++)
+        //for (;;)
         {
             gettimeofday(&tv1, NULL);
 	    FT_Propagate(front);
@@ -419,7 +421,12 @@ static  void melting_flow_driver(
             printf("\nruntime = %10.2f,   total runtime = %10.2f,  time = %10.9f   step = %7d   dt = %10.9f\n\n\n",
                             runtime, totaltime, front->time,front->step,front->dt);
             fflush(stdout);
-	    
+
+	    // Transform the velocity data into matrix form
+	    // that can be loaded into a torch model
+	    v_cartesian->transformVelPrdns2Torch(front->time,inputs);
+
+
             if (FT_IsSaveTime(front))
 	    {
                 printf("Recording data for post analysis ...\n");
