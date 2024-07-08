@@ -1,0 +1,61 @@
+install spack
+
+spack intall mpich+cuda fortran=false
+
+Test cuda-aware-bcast mpi example from NERSC
+
+# # # # # # # # # # #
+# PETSC Cuda-aware
+# # # # # # # # # # #
+
+git clone https://gitlab.com/petsc/petsc.git
+
+./configure CC=mpicc --CXX=mpic++ --with-debugging=0 COPTFLAGS="-O3 -march=native -mtune=native" CXXOPTFLAGS="-O3 -march=native -mtune=native" FOPTFLAGS="-O3 -march=native -mtune=native" --download-f2cblaslapack=1 --download-make=1 --download-hdf5=1 --download-hypre=1 --with-shared-libraries --with-static=1 --with-cuda=1 --prefix=/home/atif/packages/petsc-3.21.2-cudaaware/
+
+make -j16 PETSC_DIR=/home/atif/packages/petsc-gitlab PETSC_ARCH=arch-linux-c-opt all
+
+make PETSC_DIR=/home/atif/packages/petsc-gitlab PETSC_ARCH=arch-linux-c-opt install
+
+
+# # # # # # # # # # #
+# FFTW and heFFTe
+# # # # # # # # # # #
+
+https://github.com/atif4461/PR_DNS_base/blob/heffte/install_heffte.md
+
+# # # # # # # # # # #
+# update git index
+# # # # # # # # # # #
+
+git update-index --assume-unchanged ../cmake-modules/FindPETSc.cmake
+git update-index --assume-unchanged ../cmake-modules/FindHDF4.cmake
+git update-index --assume-unchanged ../cmake-modules/FindHDF5.cmake
+git update-index --assume-unchanged climate/cmake_install.cmake
+git update-index --assume-unchanged cmake_install.cmake
+git update-index --assume-unchanged solver/cmake_install.cmake
+git update-index --assume-unchanged src/cmake_install.cmake
+git update-index --assume-unchanged iFluid/cmake_install.cmake
+
+# # # # # # # # # # #
+# install and run
+# # # # # # # # # # #
+module use modulefiles/
+module load mpich-4.2.1-cudaaware
+export PATH=/home/atif/packages/petsc-3.21.2-cudaaware/lib/petsc/bin/:$PATH
+
+salloc to dahlia
+salloc -w dahlia -c 47 --gres=gpu:4 --time=240:00:00
+
+conda activate pr-dns
+
+# Regular DNS
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -DCMAKE_CXX_COMPILER=mpic++ -DCMAKE_C_COMPILER=mpicc .
+
+# DNS + Torch
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -DCMAKE_CXX_COMPILER=mpic++ -DCMAKE_C_COMPILER=mpicc . -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES=86 -DCMAKE_PREFIX_PATH=/home/atif/packages/miniconda/lib/python3.12/site-packages/torch/
+
+# run
+mpirun -n 8 ./climate/climate -d 3 -p 2 2 2 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o climate/out-pr-dns/
+
+mpirun -n 1 ./climate/climate -d 2 -p 1 1 -i ./climate/input-entrainment/in-entrainment2dm -o 2d-decay/ &> srun.log
+

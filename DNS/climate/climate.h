@@ -354,8 +354,8 @@ public:
 	double computeDspRate();
 	double computeDspRateLinear();
 
-        void transformVelPrdns2Torch(int time,
-	     std::vector<torch::jit::IValue> &inputs);
+        void transformVel2Dprdns2Torch(int time,
+	     at::Tensor &inputs);
 
 
 #ifdef __HDF5__
