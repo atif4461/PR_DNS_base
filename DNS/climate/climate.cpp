@@ -49,7 +49,7 @@ static void	melt_flow_point_propagate(Front*,POINTER,POINT*,POINT*,
 			HYPER_SURF_ELEMENT*,HYPER_SURF*,double,double*);
 
 extern  char  *in_name;
-char *restart_state_name,*restart_name,*out_name;
+char *restart_state_name,*restart_name,*out_name1;
 boolean RestartRun;
 boolean ReadFromInput;
 int RestartStep;
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 
 	in_name      		= f_basic.in_name;
 	restart_state_name      = f_basic.restart_state_name;
-    out_name     		= f_basic.out_name;
+    out_name1     		= f_basic.out_name;
     restart_name 		= f_basic.restart_name;
     RestartRun   		= f_basic.RestartRun;
     ReadFromInput   	= f_basic.ReadFromInput;
@@ -275,7 +275,7 @@ static  void melting_flow_driver(
 	    {
                 vtk_plot_scatter(front);
 	    }
-            FT_AddMovieFrame(front,out_name,YES);
+            FT_AddMovieFrame(front,out_name1,YES);
         }
         else
 	{
@@ -283,7 +283,7 @@ static  void melting_flow_driver(
             v_cartesian->initMovieVariables();
             if (eqn_params->prob_type == PARTICLE_TRACKING)
                 vtk_plot_scatter(front);
-            FT_AddMovieFrame(front,out_name,YES);
+            FT_AddMovieFrame(front,out_name1,YES);
 	}
 
 	FT_TimeControlFilter(front);
