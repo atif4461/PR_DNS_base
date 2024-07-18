@@ -354,8 +354,9 @@ public:
 	double computeDspRate();
 	double computeDspRateLinear();
 
-        void transformVel2Dprdns2Torch(int time,
+        void transformVel2Dprdns2torch(int time,
 	     at::Tensor &inputs);
+        void transformVel2Dtorch2prdns(at::Tensor &inputs);
 
 
 #ifdef __HDF5__

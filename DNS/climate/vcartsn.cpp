@@ -2682,6 +2682,9 @@ void VCARTESIAN::checkField()
             {
                 int i = (int)(imax/2);
 		index = d_index2d(i,j,top_gmax);
+		//printf("CHANGING LYAPUNOV\n");
+		//field->vel[0][index] *= 2.0;
+		//field->vel[1][index] *= 0.5;
                     printf("%s[%d][%d] = (%f,%f)\n",
                         "velo",i,j,
                         field->vel[0][index],field->vel[1][index]);

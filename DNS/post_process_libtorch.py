@@ -14,9 +14,12 @@ import h5py
 import sys
 import numpy as np
 # import plotly.graph_objects as go
+from utils import get_rel_l1_error, get_rel_l2_error
+from utils.compute_gradients import *
 
 
-module = torch.jit.load('./output_tensor.pt').to('cpu')
+       
+module  = torch.jit.load('/home/atif/PR_DNS_base/DNS/input_tensor_50.pt').to('cpu')
 print(f'{module}')
 print("Parameters:")
 
@@ -30,57 +33,58 @@ for name, buffer in module.named_buffers():
 Nx = 256
 Ny = 256
 
+
+velx = zeros((5,Nx,Ny))
+vely = zeros((5,Nx,Ny))
+vel = zeros((2,Nx,Ny))
+
 for name, param in module.named_parameters():
-    print(f"{name}: {param.dtype} {param} {param.shape} 0,0->{param[0,0,255,0]},{param[0,1,255,0]} and 255,255->{param[0,0,0,255]},{param[0,1,0,255]}")
+    print(f"{name}: {param.dtype} {param.shape} 0,0->{param[0,0,255,0]},{param[0,1,255,0]} and 255,255->{param[0,0,0,255]},{param[0,1,0,255]}")
   
     with torch.no_grad():
         
         for index in range(0,1):
             
-            # Plotting a sample vorticity heat map
-            #vortmax = (np.max(vortFD))
-            #vortmin = (np.min(vortFD))
-            #umax = (torch.max(u))
-            #umin = (torch.min(u))
-            #vmax = (torch.max(v))
-            #vmin = (torch.min(v))
-             
-          
-            fig, axs = plt.subplots(figsize=(150, 40))
+            velx = param[0,:,0:256,:]
+            vely = param[0,:,256:512,:]
             
-            for a in range (0,5):
-                ax2 = fig.add_subplot(3,10,a+1)
-                im  = ax2.imshow(param[0,2*a  ,:,:], cmap='bwr', interpolation='nearest')
-                plt.axis('off')
-                ax2.set_xticks([])
-                ax2.set_yticks([])
-            
-                ax2 = fig.add_subplot(3,10,a+11)
-                im  = ax2.imshow(param[0,2*a+1,:,:], cmap='bwr', interpolation='nearest')
-                plt.axis('off')
-                ax2.set_xticks([])
-                ax2.set_yticks([])
-     
-                vortFD = zeros((Ny, Nx))
-                u = param[0,2*a  ,:,:]
-                v = param[0,2*a+1,:,:]
-                for ii in range(1, Ny-1):
-                    for jj in range(1, Nx-1):
-                        vortFD[ii, jj] = v[ii,jj+1] - v[ii,jj-1] - u[ii-1,jj] + u [ii+1,jj]  
-     
-                ax2 = fig.add_subplot(3,10,a+21)
-                im  = ax2.imshow(torch.from_numpy(vortFD[:,:]), cmap='bwr', interpolation='nearest')
-                plt.axis('off')
-                ax2.set_xticks([])
-                ax2.set_yticks([])
-     
-            
-            fig.subplots_adjust(right=0.85)
-            cbar_ax = fig.add_axes([0.86, 0.15, 0.01, 0.7])
-            cbar_ax.tick_params(labelsize=20)
-            fig.colorbar(im,cax=cbar_ax)
-            
-            fig.savefig(f'test_{index}_3d_channels_uv.png')
-            plt.close()
+            fig, axs = plt.subplots(figsize=(10, 40))
         
-    
+            for a in range(0,5):
+
+                vel[0,:,:] = velx[a,:,:]
+                vel[1,:,:] = vely[a,:,:]
+                vortFD = calculate_vorticity_2d( vel, 1, 1) 
+ 
+                ax2 = fig.add_subplot(3,1,1)
+                im  = ax2.imshow(velx[a,:,:], cmap='BrBG', interpolation='nearest')
+                plt.axis('off')
+                ax2.set_xticks([])
+                ax2.set_yticks([])
+            
+                ax2 = fig.add_subplot(3,1,2)
+                im  = ax2.imshow(vely[a,:,:], cmap='BrBG', interpolation='nearest')
+                plt.axis('off')
+                ax2.set_xticks([])
+                ax2.set_yticks([])
+         
+                ax2 = fig.add_subplot(3,1,3)
+                im  = ax2.imshow(vortFD[:,:], cmap='BrBG', interpolation='nearest')
+                plt.axis('off')
+                ax2.set_xticks([])
+                ax2.set_yticks([])
+         
+            
+                fig.subplots_adjust(right=0.85)
+                cbar_ax = fig.add_axes([0.86, 0.15, 0.01, 0.7])
+                cbar_ax.tick_params(labelsize=20)
+                fig.colorbar(im,cax=cbar_ax)
+                
+                fig.savefig(f'test_input_{a}_3d_channels_uv.png')
+                plt.close()
+            
+     
+
+
+
+

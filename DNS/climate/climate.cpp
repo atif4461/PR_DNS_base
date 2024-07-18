@@ -329,48 +329,26 @@ static  void melting_flow_driver(
         printf("atif0 Melting flow driver initialize :  %10.2f \n", (tv8.tv_usec - tv7.tv_usec)/1000000.0 + (tv8.tv_sec - tv7.tv_sec));
 #endif
 
-        // Allocate tensor to save PRDNS' velocites in channels
-	at::Tensor input_tensor = torch::zeros({1, 20, 256, 256}, torch::dtype(torch::kFloat32));
 
-        for (int tt=0; tt < 51; tt++)
-        //for (;;)
+for (int outer_loop = 0; outer_loop < 8; outer_loop++)
+{
+
+        // Allocate tensor to save PRDNeS' velocites in channels
+	const int total_snapshots = 10;
+	at::Tensor input_tensor = torch::zeros({1, total_snapshots, 512, 256}, torch::dtype(torch::kFloat32));
+	std::cout << input_tensor[0].sizes() << " shape and slice input" ;//<< output.slice(/*dim=*/1, /*start=*/0, /*end=*/1) << '\n';
+
+	int warmup = 0;
+	if (outer_loop == 0) 
+	    warmup = 200;
+	int time_march = 5;
+	int tmax = warmup + time_march*total_snapshots;
+        for (int tt=0; tt < tmax; tt++)
         {
             gettimeofday(&tv1, NULL);
 	    FT_Propagate(front);
 	    l_cartesian->solve(front->dt);
 	    printf("Solved NS equations\n");
-	    v_cartesian->recordTKE();
-
-#ifdef __PRDNS_TIMER__
-            gettimeofday(&tv3, NULL);
-#endif
-	    if (eqn_params->if_volume_force && front->time < 0.0001)
-	    {
-                v_cartesian->solve(0.0);
-	    }
-	    else
-	    {
-                 v_cartesian->solve(front->dt);
-                 printf("Solved vapor and temperature equations\n");
-
-#ifdef __PRDNS_TIMER__
-                 gettimeofday(&tv4, NULL);
-#endif
-                 if (eqn_params->prob_type == PARTICLE_TRACKING)
-                 {
-                    ParticlePropagate(front);
-#ifdef __CUDA__
-                    v_cartesian->uploadParticle();
-#endif
-                 }
-#ifdef __PRDNS_TIMER__
-                 gettimeofday(&tv5, NULL);
-                 t1 = (tv5.tv_usec - tv4.tv_usec)/1000000.0 + (tv5.tv_sec - tv4.tv_sec);
-#endif
-	    }
-#ifdef __PRDNS_TIMER__
-            gettimeofday(&tv6, NULL);
-#endif
 
 	    FT_AddTimeStepToCounter(front);
 	    FT_SetTimeStep(front);
@@ -381,9 +359,6 @@ static  void melting_flow_driver(
             totaltime += runtime;
 #ifdef __PRDNS_TIMER__
             printf("\n atif1 NavierStokes solver                    :  %10.2f", (tv3.tv_usec - tv1.tv_usec)/1000000.0 + (tv3.tv_sec - tv1.tv_sec));
-            printf("\n atif2 Particle Propagate + Vapor temperature :  %10.2f", (tv6.tv_usec - tv3.tv_usec)/1000000.0 + (tv6.tv_sec - tv3.tv_sec));
-            printf("\n atif3 Particle Propagate                     :      %10.2f", t1);
-            printf("\n atif4 FT Add Set TimeStep                    :  %10.2f", (tv2.tv_usec - tv6.tv_usec)/1000000.0 + (tv2.tv_sec - tv6.tv_sec));
 #endif
             printf("\nruntime = %10.2f,   total runtime = %10.2f,  time = %10.9f   step = %7d   dt = %10.9f\n\n\n",
                             runtime, totaltime, front->time,front->step,front->dt);
@@ -391,8 +366,8 @@ static  void melting_flow_driver(
 
 	    // Transform the velocity data into matrix form
 	    // that can be loaded into a torch model
-	    if (front->step % 5 == 0)
-	       v_cartesian->transformVel2Dprdns2Torch(front->step/5-1,input_tensor);
+	    if (tt >=warmup and tt % time_march == 0)
+	       v_cartesian->transformVel2Dprdns2torch((tt-warmup)/time_march,input_tensor);
 
 
             if (FT_IsSaveTime(front))
@@ -425,7 +400,11 @@ static  void melting_flow_driver(
 	    FT_TimeControlFilter(front);
         }
 
-        torch::save(input_tensor, "input_tensor.pt");
+	std::string input_string = "input_tensor_"+std::to_string(outer_loop)+"_"+std::to_string(front->step)+".pt";
+	const char *input_string_chars = input_string.c_str();
+        torch::save(input_tensor, input_string_chars);
+        //torch::save(input_tensor, "input_tensor.pt");
+	std::cout << input_tensor.sizes() << " shape and slice " ;
 
 	// normalize with the initial time fields
         auto mean = input_tensor[0].mean();
@@ -434,7 +413,7 @@ static  void melting_flow_driver(
 	torch::jit::script::Module module;
 	
 	// Deserialize the ScriptModule from a file using torch::jit::load().
-	module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5_uv_1000_8_8_100_0.5_0.001_32/model.pt");
+	module = torch::jit::load("/home/atif/neuraloperator/ico-turb/autoreg5_uv_4000_8_8_100_0.5_0.001_32/model.pt");
 	
 	// Create a vector of inputs.
 	std::vector<torch::jit::IValue> inputs;
@@ -445,11 +424,18 @@ static  void melting_flow_driver(
 	std::cout << output.sizes() << " shape and slice " ;//<< output.slice(/*dim=*/1, /*start=*/0, /*end=*/1) << '\n';
 	std::cout << "ok\n";
 
+	std::string output_string = "output_tensor_"+std::to_string(outer_loop)+"_"+std::to_string(front->step)+".pt";
+	const char *output_string_chars = output_string.c_str();
 	output.requires_grad_(true);
-        torch::save(output * std + mean, "output_tensor.pt");
+        torch::save(output * std + mean, output_string_chars);
+        //torch::save(output * std + mean, "output_tensor.pt");
 
         // Denormalize FNOs prediction to input to PRDNS
-	auto vel_pred = output[4] * std + mean;
+	auto vel_pred = output[0][4] * std + mean;
+
+	v_cartesian->transformVel2Dtorch2prdns(vel_pred);
+
+} // end outer_loop
 
 
 
