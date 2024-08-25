@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iFluid.h>
 #include "fftw3.h"
+#include "heffte.h"
 
 #define         LIQUID_COMP2           3
 #define         SOLID_COMP             1
@@ -46,6 +47,7 @@ enum _INIT_STATE{
 	TAYLOR_STATE,
 	PRESET_STATE,
 	FOURIER_STATE,
+	FOURIER_STATE_HEFFTE,
 	SINE_STATE,
 	ABC_STATE,
 	LR_STATE, /*left and right state*/
@@ -345,6 +347,8 @@ public:
 	void recordTKE();
 	void computeVolumeForce();
 	void computeVolumeForceFourier();
+	void computeVolumeForceFourierHeffte();
+	void computeVolumeForceFourierHefftePlain();
 	void computeVolumeForceLinear();
 	double computeDspRate();
 	double computeDspRateLinear();

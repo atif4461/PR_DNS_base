@@ -1,7 +1,7 @@
-Domain limit in 0-th dimension: 0 1.024 
-Domain limit in 1-th dimension: 0 1.024
-Domain limit in 2-th dimension: 0 1.024
-Computational grid: 128 128 128
+Domain limit in 0-th dimension: 0 0.512
+Domain limit in 1-th dimension: 0 0.512
+Domain limit in 2-th dimension: 0 0.512
+Computational grid: 64 64 64
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -9,21 +9,16 @@ Upper boundary in 1-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 2-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 2-th dimension: PERIODIC_BOUNDARY
 
-Max time: 4.99
-Max step: 40
-Print interval: 0.1
-Movie frame interval: 0.5 
+Max time: 30.0
+Max step: 50000
+Print interval: 0.5
+Movie frame interval: 500
 CFL factor: 0.75
 Redistribution interval: 10000000
 Type yes to turn off auto-redistribution: y
 
-******************PETSc flags from Vanessa***********
-Enter PETSc Hypre preconditioner flag (0/1): 1
-Enter pc_hypre_boomeramg_strong_threshold: 0.5
-Enter PETSc cuda flag (0/1): 0
-
-Enter problem type: ENTRAINMENT 
-Enter case type: 1
+Enter problem type: ENTRAINMENT
+Enter case type: 3
 Enter yes to use big data: no
 Enter fraction of cloudy air: 0.502769
 ******************Initial phase conditions***********
@@ -43,17 +38,17 @@ Choose numerical scheme
         UNSPLIT_EXPLICIT (EX)
         UNSPLIT_IMPLICIT (IM)
         CRANK_NICOLSON (CN)
-Enter scheme: CN 
+Enter scheme: CN
 Enter reference pressure(Pa): 82844.139706
-Enter yes to enable volume force: yes 
+Enter yes to enable volume force: yes
 Enter pc_hypre_boomeramg_strong_threshold: 0.5
 
-********************Droplets********************* 
+********************Droplets*********************
 Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
 Enter phase state of water drop: W
-Enter number of water drops: 10000000 
+Enter number of water drops: 8800000
 Enter density of water drops: 1000
 Two methods for initialization:
         Prompt initialization (P)
@@ -73,8 +68,8 @@ Enter gravity: 0 0 -9.8
 Type y to make yz cross section movie: n
 Type y to make xz cross section movie: n
 Type y to make xy cross section movie: n
-Type y to make movie of pressure: n 
-Type y to make movie of vorticity: n 
+Type y to make movie of pressure: n
+Type y to make movie of vorticity: n
 Type y to make movie of velocity: n
 Type y to make movie of solute: n
 Type y to make movie of temperature: n
@@ -84,11 +79,12 @@ Type y to make vector velocity field movie: n
 
 ************Debugging options*****************
 
-Enter yes for debugging: yes 
-Enter the debugging string: tvolume_force 
+Enter yes for debugging: yes
+Enter the debugging string: pp_clock
+Enter the debugging string: trace
+Enter the debugging string: tvolume_force
 Enter the debugging string: tMPIIO
 Enter the debugging string: PETSc
-Enter the debugging string: tparticles 
+Enter the debugging string: tparticles
 Enter the debugging string: tCLOCK
 Enter the debugging string: tstep_size
-

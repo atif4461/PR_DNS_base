@@ -13,7 +13,9 @@ else()
     get_filename_component(PETSC_DIR ${PETSCMPIEXEC}/../.. ABSOLUTE)
 endif()
 
-set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.16.0-mpich/")
+set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.20.4-cudaaware/") #perlmutter
+#set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.16.0-mpich/") # perlmutter old
+#set(PETSC_DIR "/work/atif/petsc-3.16.0/") # lambda2
 MESSAGE(zhangao  ${PETSC_DIR})
 
 find_path(PETSc_INCLUDE_DIR petsc.h 

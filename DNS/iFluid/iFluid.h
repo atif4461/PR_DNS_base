@@ -237,6 +237,8 @@ public:
 				IF_PARAMS*);
 	void (*setInitialVelocity) (COMPONENT,int*,double*,double*,double*,
 				RECT_GRID*,IF_PARAMS*);
+	void (*setInitialVelocityHeffte) (COMPONENT,int*,double*,double*,double*,
+				int*,int*,RECT_GRID*,IF_PARAMS*);
 	int (*findStateAtCrossing)(Front*,int*,GRID_DIRECTION,int,
 				POINTER*,HYPER_SURF**,double*);
 	int (*findStateAtCGCrossing)(Front*,int*,GRID_DIRECTION,int,
@@ -252,6 +254,7 @@ public:
 	//User interface
 	virtual void setInitialCondition(void) = 0;
 	virtual void setParallelVelocity(void) = 0;
+	virtual void setParallelVelocityParallelized(void) = 0;
 	virtual void solve(double dt) = 0; // main step function
         virtual void vtk_plot_scalar(char*, const char*) = 0;
 
@@ -421,6 +424,7 @@ public:
 
 	void setInitialCondition(void);
 	void setParallelVelocity(void);
+	void setParallelVelocityParallelized(void);
 	void solve(double dt);
         void vtk_plot_scalar(char*, const char*);
 protected:
@@ -462,6 +466,7 @@ public:
 
 	void setInitialCondition(void);
 	void setParallelVelocity(void);
+	void setParallelVelocityParallelized(void);
 	void solve(double dt);
 	void solveTest(const char *msg);
         void vtk_plot_scalar(char*, const char*);

@@ -43,4 +43,4 @@ include_directories("${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
 target_include_directories(climate PRIVATE ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 #link libraries
 target_link_libraries(climate frontier solver ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
-
+target_link_libraries(climate Heffte::Heffte)

@@ -11,3 +11,17 @@ target_include_directories(ifluid PUBLIC
                               	${petsc_include_dir}
 				${ifluid_include_dir}
                              	${external_include_dir})
+
+#create excutable
+add_executable(iFluid iFluid.cpp)
+
+#include directories
+target_include_directories(iFluid PUBLIC
+				   ${solver_include_dir}
+				   ${frontier_include_dir}	
+				   ${ifluid_include_dir}
+				   ${external_include_dir})
+
+#link libraries
+target_link_libraries(iFluid frontier solver ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
+

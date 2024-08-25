@@ -458,9 +458,16 @@ EXPORT	void	FT_Init(
 		argc -= 2;
 		argv += 2;
 		break;
-#if defined(__MPI__)
             case 'p':
             case 'P':
+	    	if (strcmp(argv[0], "-pc_type") == 0)  /* VLM */
+		{
+                    argc -= 2;
+		    argv += 2;
+		    break;
+		}
+
+#if defined(__MPI__)
                 for (i = 0; i < MAXD; ++i)
                 {
                     if (argc < 2 || argv[1][0] == '-') break;
@@ -481,7 +488,8 @@ EXPORT	void	FT_Init(
 		break;
 #endif /* defined(__MPI__) */
 	    case 'l':  /* VLM */
-	    	if (strncmp(argv[0], "-log", 4) == 0)
+	    	//if (strncmp(argv[0], "-log", 4) == 0)
+	    	if (strcmp(argv[0], "-log_view") == 0)
 		{
                     argc -= 1;
 		    argv += 1;

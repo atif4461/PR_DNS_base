@@ -27,6 +27,9 @@ find_package (HDF4 QUIET)
 
 find_package (GD QUIET)
 
+set (heFFTe_PATH "/global/homes/a/atif/packages/heffte-2.4.0/")
+find_package(Heffte 2.4.0 REQUIRED PATHS ${heFFTe_PATH})
+
 if (MPI_FOUND) 
     MESSAGE(STATUS "Found MPI: ${MPI_LIBRARIES}")
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__MPI__")
@@ -47,6 +50,12 @@ if (GD_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__GD__")
 else ()
     MESSAGE(WARNING "GD cannot be found. Set GD_DIR if gd animation is needed. Build continues ...")
+endif()
+
+if (Heffte_FFTW_FOUND)
+    MESSAGE(STATUS "Found heFFTe ${heFFTe_PATH}")
+else ()
+    MESSAGE(WARNING "heFFTe cannot be found. Build continues ...")
 endif()
 
 #dependencies detection finished
@@ -83,6 +92,11 @@ endif()
 if (HDF4_FOUND)
 	list( APPEND external_include_dir ${HDF4_INCLUDE_DIR})
 	list( APPEND external_lib_dir ${HDF4_LIBRARIES})
+endif()
+
+if (Heffte_FFTW_FOUND)
+	list( APPEND external_include_dir "${heFFTe_PATH}/include")
+	list( APPEND external_lib_dir "${heFFTe_PATH}/lib")
 endif()
 
 # Recurse into the following subdirectories

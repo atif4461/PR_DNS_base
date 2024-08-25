@@ -1229,6 +1229,9 @@ void Incompress_Solver_Smooth_2D_Cartesian::setParallelVelocity()
 	    printf("Leaving setParallelVelocity()\n");
 }
 
+/* To be implemented if required: atif */
+void Incompress_Solver_Smooth_2D_Cartesian::setParallelVelocityParallelized(){}
+
 void Incompress_Solver_Smooth_2D_Cartesian::computeProjectionDual(void)
 {
 	static DUAL_ELLIPTIC_SOLVER dual_elliptic_solver(*front);
