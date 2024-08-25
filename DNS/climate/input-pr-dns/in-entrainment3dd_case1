@@ -18,9 +18,12 @@ Redistribution interval: 10000000
 Type yes to turn off auto-redistribution: y
 
 ******************PETSc flags from Vanessa***********
-Enter PETSc Hypre preconditioner flag (0/1): 1
+Enter PETSc Hypre preconditioner flag (0/1): 0
 Enter pc_hypre_boomeramg_strong_threshold: 0.5
 Enter PETSc cuda flag (0/1): 0
+Use GMRES for pure Neumman solver (0/1): 1
+Use GMRES for non pure Neumman solver (0/1): 1
+Use PCGAMG as preconditioner for GMRES (0/1): 0
 
 Enter problem type: ENTRAINMENT 
 Enter case type: 1
@@ -46,7 +49,6 @@ Choose numerical scheme
 Enter scheme: CN 
 Enter reference pressure(Pa): 82844.139706
 Enter yes to enable volume force: yes 
-Enter pc_hypre_boomeramg_strong_threshold: 0.5
 
 ********************Droplets********************* 
 Water phase state can be

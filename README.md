@@ -79,4 +79,5 @@ cmake -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc .
 /opt/cray/pe/craype/2.7.20/bin/CC
 https://docs.nersc.gov/development/programming-models/mpi/cray-mpich/
 
+srun -n 4 -G 4 --gpu-bind=none ./climate/climate -d 3 -p 2 2 1 -i ./climate/input-pr-dns/in-entrainment3dd_case1 -o $PSCRATCH/out-cuda -mat_type aijcusparse -vec_type cuda pc_type gasm -log_view
 
