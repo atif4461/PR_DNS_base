@@ -196,7 +196,8 @@ int main(int argc, char **argv)
 	if (debugging("trace")) printf("Passed FT_InitVeloFunc()\n");
 
 #ifdef __CUDA__
-        initDeviceParticle();
+	/* allocate device memory for particles; cudaMalloc, cudaMallocHost */
+        initDeviceParticle(v_cartesian->eqn_params->num_drops);
 #endif
 
 
@@ -213,6 +214,7 @@ int main(int argc, char **argv)
         gettimeofday(&tv3, NULL);
 #endif
 #ifdef __CUDA__
+	/* clear device memory for particles; cudaFree */
         clearDeviceParticle();
 #endif
 
@@ -313,6 +315,7 @@ static  void melting_flow_driver(
 	    v_cartesian->output();
 
 #ifdef __CUDA__
+	/* copy host to device */
         v_cartesian->uploadParticle();
         v_cartesian->initFlg = 0;
 #endif
@@ -334,9 +337,6 @@ static  void melting_flow_driver(
 #endif
 	    if (eqn_params->if_volume_force && front->time < 0.005)
 	    {
-//#ifdef __CUDA__
-//                uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
-//#endif
                 v_cartesian->solve(0.0);
 	    }
 	    else
@@ -345,6 +345,7 @@ static  void melting_flow_driver(
                 gettimeofday(&tv9, NULL);
 #endif
 #ifdef __CUDA__
+		/* copy drops data from host to device */
                 uploadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
 #endif
 #ifdef __PRDNS_TIMER__
@@ -359,11 +360,9 @@ static  void melting_flow_driver(
                 {
                     struct timeval tv1_,tv2_;
 		    gettimeofday(&tv1_, NULL);
-                    ParticlePropagate(front);
-                    // Before ParticlePropagate_CUDA() implementation
-                    //v_cartesian->uploadParticle();
 
-                    //downloadParticle(v_cartesian->eqn_params->num_drops, v_cartesian->eqn_params->particle_array);
+		    /* calls CUDA functions when invoked */
+                    ParticlePropagate(front);
 
                     gettimeofday(&tv2_, NULL);
                     time = (tv2_.tv_usec - tv1_.tv_usec)/1000000.0 + (tv2_.tv_sec - tv1_.tv_sec);

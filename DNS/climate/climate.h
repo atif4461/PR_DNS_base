@@ -16,7 +16,7 @@
 #ifdef __CUDA__
 extern double* g_particle_buffer;
 extern double* g_particle_buffer_D;
-extern int g_max_num_particle;
+extern long int g_max_num_particle;
 extern double* g_particle_input;
 extern double* g_particle_input_D;
 #endif
@@ -241,7 +241,8 @@ public:
         double* drops_D;
         double* cloud_D;
         double* supersat_D;
-        int max_comp_size;
+        long int max_comp_size;
+	int max_num_drops;
         int initFlg;
 #endif
 
@@ -428,7 +429,7 @@ extern void ParticlePropagate(Front*);
 #ifdef __CUDA__
 extern void ParticlePropagate_CUDA(int num_drops, bool condensation, bool sedimentation, double rho0mu, double K, double dt, double gx, double gy, double gz);
 extern void ParticlePropagate_CUDA_1node(int num_drops, bool condensation, bool sedimentation, double rho0mu, double K, double dt, double gx, double gy, double gz, double Ux, double Lx, double Uy, double Ly, double Uz, double Lz);
-extern void initDeviceParticle();
+extern void initDeviceParticle(int num_drops);
 extern void clearDeviceParticle();
 extern void uploadParticle(int num_drops, PARTICLE* particles);
 extern void downloadParticle(int num_drops, PARTICLE* particles);

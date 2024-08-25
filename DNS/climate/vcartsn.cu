@@ -11,13 +11,12 @@
 using namespace std;
 
 
-
 #ifdef __CUDA__
 
 
 double* g_particle_buffer;
 double* g_particle_buffer_D;
-int g_max_num_particle;
+long int g_max_num_particle;
 double* g_particle_input;
 double* g_particle_input_D;
 
@@ -50,9 +49,6 @@ double* g_particle_input_D;
 
 
 void VCARTESIAN::initDevice() {
-    
-  cout << "[CUDA] : VCARTESIAN::initDevice() CALLED!!!" << endl;
-
 
   cudaError_t ierr;
 
@@ -75,22 +71,10 @@ void VCARTESIAN::initDevice() {
 
   ierr = cudaSetDevice(myid % count);
 
-  /*
-  // Moved to Global
-  max_num_particle = 100000000; // 100 M
-
-  //particle_buffer = new double[max_num_particle*5]; // radius, x,y,z, rho 
-  ierr = cudaMallocHost((void**)&particle_buffer, 5*max_num_particle*sizeof(double));
-  if(cudaSuccess != ierr) {
-    cout << "[CUDA] : VCARTESIAN::initDevice() Error!!! : cudaMallocHost(particle_buffer) : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
-  }
-  ierr = cudaMalloc((void**)&particle_buffer_D, 5*max_num_particle*sizeof(double));
-  if(cudaSuccess != ierr) {
-    cout << "[CUDA] : VCARTESIAN::initDevice() Error!!! : cudaMalloc(particle_buffer_D) :" << ierr << ", " << cudaGetErrorString(ierr) << endl;
-  }
-  */
-
-  max_comp_size = 100000000; // 100 M
+  //NUMBER 
+  //TODO make max_comp_size same as local grid size
+  max_comp_size = 256*256*256; // 100 M
+  cout << "[CUDA] : allocating memory for grid " << 4*max_comp_size << " doubles per MPI" << endl;
   ierr = cudaMalloc((void**)&source_D, max_comp_size*sizeof(double));
   if(cudaSuccess != ierr) {
     cout << "[CUDA] : VCARTESIAN::initDevice() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
@@ -110,6 +94,7 @@ void VCARTESIAN::initDevice() {
 
 }
 
+
 void VCARTESIAN::cleanDevice() {
   cudaFree(supersat_D);
   cudaFree(cloud_D);
@@ -119,14 +104,18 @@ void VCARTESIAN::cleanDevice() {
   //cudaFree(particle_buffer);
 }
 
+
 void VCARTESIAN::initOutput() {
   cudaMemset((void*)source_D, 0, sizeof(double)*comp_size);
   cudaMemset((void*)drops_D, 0, sizeof(double)*comp_size);
   cudaMemset((void*)cloud_D, 0, sizeof(double)*comp_size);
 }
 
+
 void VCARTESIAN::uploadParticle() {
-  //cout << "[CUDA] : VCARTESIAN::uploadParticle() CALLED!!!" << endl;
+  
+  if (debugging("trace"))
+    cout << "[CUDA] : VCARTESIAN::uploadParticle() CALLED!!!" << endl;
   cudaError_t ierr;
 
   PARTICLE* particles = eqn_params->particle_array;
@@ -146,28 +135,22 @@ void VCARTESIAN::uploadParticle() {
     z[i] = particles[i].center[2];
   }
 
-
   ierr = cudaMemcpy(g_particle_buffer_D, g_particle_buffer, 5*num_particles*sizeof(double), cudaMemcpyHostToDevice);
   if(cudaSuccess != ierr) {
     cout << "[CUDA] : VCARTESIAN::uploadParticle() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
   }
 
-
 }
 
-void VCARTESIAN::uploadSupersat() {
 
-  //cout << "[CUDA] : VCARTESIAN::uploadSupersat() CALLED!!!" << endl;
+void VCARTESIAN::uploadSupersat() {
 
   cudaError_t ierr = cudaMemcpy(supersat_D, eqn_params->field->supersat, comp_size*sizeof(double), cudaMemcpyHostToDevice);
   if(cudaSuccess != ierr) {
     cout << "[CUDA] : VCARTESIAN::uploadSupersat() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
   }
 
-
-
 }
-
 
 
 __global__ void computeDropsInCell(int num_drops, double* particles, double* supersat, double* source, double* drops, double* cloud, double topLx, double topLy, double topLz, double tophx, double tophy, double tophz, int gmax0, int gmax1, double K, double rho_a) {
@@ -195,11 +178,7 @@ __global__ void computeDropsInCell(int num_drops, double* particles, double* sup
       atomicAdd(&drops[index], 1.0);
       atomicAdd(&cloud[index], cld);
     //}
-
   }
-
-
-
 }
 
 
@@ -223,20 +202,13 @@ __global__ void computeTemperatureSource_Kernel(int num_drops, double* particles
     double src = (lcp*4.0*PI*rho*K/rho_a)*supersat[index]*radius;
 
     atomicAdd(&source[index], src);
-
   }
-
-
 
 }
 
 
-
-
-
 void VCARTESIAN::computeVaporSource_DropsInCell(int gmax0, int gmax1, double rho_0, double a3) {
 
-    //cout << "[CUDA] VCARTESIAN::computeVaporSource_DropsInCell() CALLED!!!" << endl;
     int num_drops = eqn_params->num_drops;
 
     int threads = 1024;
@@ -275,21 +247,14 @@ void VCARTESIAN::retrieveResult(double* source, double* drops, double* cloud) {
 }
 
 
-
-
-
-
-
-
-
-
 void VCARTESIAN::computeVaporSource_CUDA(int num_drops, PARAMS* eqn_params, int gmax0, int gmax1, double rho_0, double a3, double lcp) {
 
     int threads = 1024;
     //int threads = 32;
     int blocks = num_drops/threads + (num_drops%threads ? 1 : 0);
 
-    cout << "[CUDA] VCARTESIAN::computeVaporSource_CUDA() : blocks=" << blocks << endl;
+    if (debugging("trace"))
+      cout << "[CUDA] VCARTESIAN::computeVaporSource_CUDA() : blocks=" << blocks << endl;
 
     computeTemperatureSource_Kernel<<<blocks, threads>>>(num_drops, g_particle_buffer_D, supersat_D, source_D, top_L[0], top_L[1], top_L[2], top_h[0], top_h[1], top_h[2], gmax0, gmax1, eqn_params->K, rho_0*a3, lcp);
     cudaDeviceSynchronize();
@@ -300,9 +265,7 @@ void VCARTESIAN::computeVaporSource_CUDA(int num_drops, PARAMS* eqn_params, int 
     if(cudaSuccess != ierr) {
       cout << "[CUDA] : VCARTESIAN::computeVaporSource_CUDA() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
     }
-
     //cout << "[CUDA] VCARTESIAN::computeVaporSource_CUDA() : 3!!!" << endl;
-
 
 }
 
@@ -314,9 +277,6 @@ void VCARTESIAN::retrieveSource(double* source) {
     cout << "[CUDA] : VCARTESIAN::retrieveResult() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
   }
 }
-
-
-
 
 
 __global__ void propagateParticle_Kernel_c1s1(int num_drops, double* particles, double* particle_input, double rho0mu, double K, double dt, double gx, double gy, double gz) {
@@ -365,9 +325,7 @@ __global__ void propagateParticle_Kernel_c1s1(int num_drops, double* particles, 
       particles[i + 4*num_drops] += temp*w + (dt - temp) * (w0 + gz*tau_p);
       particles[i + 7*num_drops] = exp_p*w + (1 - exp_p) * (w0 + gz*tau_p);
 
-
     }
-
   }
 
 }
@@ -434,28 +392,15 @@ __global__ void propagateParticle_Kernel_c1s1_1node(int num_drops, double* parti
           particles[i + 4*num_drops] = Lz + fmod(particles[i + 4*num_drops], Uz - Lz);
       if (particles[i + 4*num_drops] < Lz)
           particles[i + 4*num_drops] = Uz + fmod(particles[i + 4*num_drops], Uz - Lz);
-
-
-
-
     }
-
   }
 
 }
 
 
-
-
-
-
-
-
-
-
 void ParticlePropagate_CUDA(int num_drops, bool condensation, bool sedimentation, double rho0mu, double K, double dt, double gx, double gy, double gz) {
-    cout << "[CUDA] : ParticlePropagate_CUDA() CALLED!!!" << endl;
-
+    if (debugging("trace"))
+      cout << "[CUDA] : ParticlePropagate_CUDA() CALLED!!!" << endl;
 
     int threads = 1024;
     int blocks = num_drops/threads + (num_drops%threads ? 1 : 0);
@@ -476,8 +421,8 @@ void ParticlePropagate_CUDA(int num_drops, bool condensation, bool sedimentation
 
 
 void ParticlePropagate_CUDA_1node(int num_drops, bool condensation, bool sedimentation, double rho0mu, double K, double dt, double gx, double gy, double gz, double Ux, double Lx, double Uy, double Ly, double Uz, double Lz) {
-    cout << "[CUDA] : ParticlePropagate_CUDA() CALLED!!!" << endl;
-
+    if (debugging("trace"))
+      cout << "[CUDA] : ParticlePropagate_CUDA() CALLED!!!" << endl;
 
     int threads = 1024;
     int blocks = num_drops/threads + (num_drops%threads ? 1 : 0);
@@ -497,14 +442,11 @@ void ParticlePropagate_CUDA_1node(int num_drops, bool condensation, bool sedimen
 }
 
 
-
-
-void initDeviceParticle() {
-  cout << "[CUDA] : initDeviceParticle() CALLED!!!" << endl;
-
+void initDeviceParticle(int num_drops) {
+  if (debugging("trace"))
+    cout << "[CUDA] : initDeviceParticle() CALLED!!!" << endl;
 
   cudaError_t ierr;
-
 
   int count;
   int myid = pp_mynode();
@@ -516,8 +458,9 @@ void initDeviceParticle() {
 
   ierr = cudaSetDevice(myid);
 
-
-  g_max_num_particle = 100000000; // 100 M
+  //NUMBER 
+  g_max_num_particle = num_drops*2; // 100 M
+  cout << "[CUDA] : allocating memory for particles " << 12*g_max_num_particle << " doubles per MPI" << endl;
 
   /*
    * particle_buffer_D structure
@@ -546,12 +489,14 @@ void initDeviceParticle() {
 
 }
 
+
 void clearDeviceParticle() {
   cudaFree(g_particle_buffer_D);
   cudaFree(g_particle_buffer);
   cudaFree(g_particle_input_D);
   cudaFree(g_particle_input);
 }
+
 
 void uploadParticle(int num_drops, PARTICLE* particles) {
 
@@ -577,15 +522,20 @@ void uploadParticle(int num_drops, PARTICLE* particles) {
     w[i] = particles[i].vel[2];
   }
 
+  // TODO
+  //if (num_drops > max_num_drops) {
+  //  cout << "ABORTING!!! DROPS IN " << pp_mynode() << " HAVE EXCEEDED MAX PERMISSIBLE VALUE OF " << max_num_drops << endl;
+  //  abort();  
+  //}
+  cout << "copying " << 8*num_drops << " drops " << endl;
 
   ierr = cudaMemcpy(g_particle_buffer_D, g_particle_buffer, 8*num_drops*sizeof(double), cudaMemcpyHostToDevice);
   if(cudaSuccess != ierr) {
     cout << "[CUDA] : uploadParticle() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
   }
 
-
-
 }
+
 
 void downloadParticle(int num_drops, PARTICLE* particles) {
 
@@ -593,7 +543,6 @@ void downloadParticle(int num_drops, PARTICLE* particles) {
   if(cudaSuccess != ierr) {
     cout << "[CUDA] : downloadParticle()() Error!!! : " << ierr << ", " << cudaGetErrorString(ierr) << endl;
   }
-
 
   double* radius = g_particle_buffer + num_drops;
   double* x = g_particle_buffer + 2*num_drops;
