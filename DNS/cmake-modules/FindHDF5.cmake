@@ -4,7 +4,7 @@
 #  HDF5_LIBRARIES - The libraries needed to use HDF5
 #  HDF5_DEFINITIONS - Compiler switches required for using HDF5
 
-set(PETSC_DIR "/global/homes/a/atif/packages/petsc-3.20.4-cudaaware/") # perlmutter
+set(HDF5_DIR "/global/homes/a/atif/packages/petsc-3.20.4-cudaaware/") # perlmutter
 #set(HDF5_DIR "/global/homes/a/atif/packages/petsc-3.16.0-mpich/") # perlmutter old
 #set(PETSC_DIR "/work/atif/petsc-3.16.0/") # lambda2
 
