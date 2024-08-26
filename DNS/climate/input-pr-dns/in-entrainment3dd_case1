@@ -10,7 +10,7 @@ Lower boundary in 2-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 2-th dimension: PERIODIC_BOUNDARY
 
 Max time: 4.99
-Max step: 40
+Max step: 7
 Print interval: 0.1
 Movie frame interval: 0.5 
 CFL factor: 0.75
@@ -20,7 +20,7 @@ Type yes to turn off auto-redistribution: y
 ******************PETSc flags from Vanessa***********
 Enter PETSc Hypre preconditioner flag (0/1): 0
 Enter pc_hypre_boomeramg_strong_threshold: 0.5
-Enter PETSc cuda flag (0/1): 0
+Enter PETSc cuda flag (0/1): 1
 Use GMRES for pure Neumman solver (0/1): 1
 Use GMRES for non pure Neumman solver (0/1): 1
 Use PCGAMG as preconditioner for GMRES (0/1): 0
@@ -55,7 +55,7 @@ Water phase state can be
         Ice Particle (I)
         Liquid Water Drop (W)
 Enter phase state of water drop: W
-Enter number of water drops: 10000000 
+Enter number of water drops: 25000000 
 Enter density of water drops: 1000
 Two methods for initialization:
         Prompt initialization (P)
