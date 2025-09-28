@@ -211,8 +211,8 @@ static  void ifluid_driver(
 
 	if (debugging("step_size"))
                 printf("Time step from start: %f\n",front->dt);
-        //for (;;)
-        for (int i=0; i < 2; i++)
+        for (;;)
+        //for (int i=0; i < 2; i++)
         {
             /* Propagating interface for time step dt */
 
