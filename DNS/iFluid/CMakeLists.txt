@@ -23,5 +23,6 @@ target_include_directories(iFluid PUBLIC
 				   ${external_include_dir})
 
 #link libraries
-target_link_libraries(iFluid frontier solver ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
+target_link_libraries(iFluid ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
+#target_link_libraries(iFluid frontier solver ifluid ${FFTW3_LIBRARY} ${MPI_C_LIBRARIES})
 

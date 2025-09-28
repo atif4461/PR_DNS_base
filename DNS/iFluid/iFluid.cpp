@@ -211,7 +211,8 @@ static  void ifluid_driver(
 
 	if (debugging("step_size"))
                 printf("Time step from start: %f\n",front->dt);
-        for (;;)
+        //for (;;)
+        for (int i=0; i < 2; i++)
         {
             /* Propagating interface for time step dt */
 
@@ -254,11 +255,13 @@ static  void ifluid_driver(
 
             if (FT_IsSaveTime(front))
 	    {
+		printf("PRINTING INTERIOR STATES");
             	FT_Save(front,out_name);
 		l_cartesian->printFrontInteriorStates(out_name);
 	    }
             if (FT_IsMovieFrameTime(front))
 	    {
+		printf("PRINTING MOVIE FRAMES");
             	FT_AddMovieFrame(front,out_name,binary);
 	    }
 	    //recordBdryEnergyFlux(front,out_name);

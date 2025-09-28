@@ -1,7 +1,7 @@
 Domain limit in 0-th dimension: -0.5 0.5 
 Domain limit in 1-th dimension: -0.5 0.5
 Domain limit in 2-th dimension: -0.5 0.5
-Computational grid: 64 64 64  
+Computational grid: 128 128 16  
 Lower boundary in 0-th dimension: PERIODIC_BOUNDARY
 Upper boundary in 0-th dimension: PERIODIC_BOUNDARY
 Lower boundary in 1-th dimension: PERIODIC_BOUNDARY
@@ -29,7 +29,7 @@ Projection type can be
         KIM_MOIN
         PEROT_BOTELLA
 Enter projection type: SIMPLE
-Enter density and viscosity of the fluid: 1 0.0001
+Enter density and viscosity of the fluid: 1 0.01
 Enter gravity: 0.0 0.0 0.0
 
 Type y to make movie of pressure: y

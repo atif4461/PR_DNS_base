@@ -358,7 +358,7 @@ static void TG_state(
         IF_PARAMS *iFparams)
 {
         int i;
-        double tcoords[MAXD], a[MAXD] = {2*PI, 2*PI, 2*PI}, A[MAXD] = {1., -1., 0.};
+        double tcoords[MAXD], a[MAXD] = {2*PI, 2*PI, 2*PI}, A[MAXD] = {0., -0., 0.};
         double **vel = field->vel;
         switch (dim)
         {
@@ -371,9 +371,11 @@ static void TG_state(
             case 3:
                 for (i = 0; i < dim; i++)
                     tcoords[i] = a[i] * coords[i];
-                vel[0][index] = A[0]*cos(tcoords[0])*sin(tcoords[1])*sin(tcoords[2]);
-                vel[1][index] = A[1]*sin(tcoords[0])*cos(tcoords[1])*sin(tcoords[2]);
-                vel[2][index] = A[2]*sin(tcoords[0])*sin(tcoords[1])*cos(tcoords[2]);
+                vel[0][index] = A[0]*sin(tcoords[0]) * cos(tcoords[1]);
+                vel[1][index] = A[1]*cos(tcoords[0]) * sin(tcoords[1]);
+                //vel[0][index] = A[0]*cos(tcoords[0])*sin(tcoords[1])*sin(tcoords[2]);
+                //vel[1][index] = A[1]*sin(tcoords[0])*cos(tcoords[1])*sin(tcoords[2]);
+                //vel[2][index] = A[2]*sin(tcoords[0])*sin(tcoords[1])*cos(tcoords[2]);
                 break;
             default:
                 printf("Unknown dim = %d\n",dim);

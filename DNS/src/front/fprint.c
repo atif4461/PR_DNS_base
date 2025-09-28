@@ -93,6 +93,11 @@ LOCAL	void	show_front_hdf(Front*,char*);
 LOCAL	void	show_front_vtk(Front*,char*,boolean);
 LOCAL	void	show_front_sdl(Front*,char*);
 
+LOCAL   void    vti_plot_vector_field(const char*,Front*,int);
+LOCAL   void    pvti_plot_vector_field(const char*,const char*,Front*,int);
+LOCAL   void    vti_plot_scalar_field3d(const char*,Front*,int);
+LOCAL   void    pvti_plot_scalar_field3d(const char*,const char*,Front*,int);
+
 /*******************************************************************************
 *									       *
 *		    Printout for Structures in fdecs.h			       *
@@ -1225,26 +1230,26 @@ LOCAL	void show_front_vtk(
 	}
         //vtk_interface_plot(dirname,front->interf,print_in_binary,
 	//				front->time,front->step);
-	if (first == YES)
-	{
-	    sprintf(fname,"%s/intfc.visit",vdirname);
-	    intfc_file = fopen(fname,"w");
-	    if (dim == 3)
-	    {
-	    	sprintf(fname,"%s/curves.visit",vdirname);
-	    	curve_file = fopen(fname,"w");
-		sprintf(prefix,"3d-");
-	    }
-	    else
-		sprintf(prefix,"2d-");
-	}
-	fprintf(intfc_file,"%s/%sintfc.vtk\n",sdirname,prefix);
-	fflush(intfc_file);
-	if (dim == 3)
-	{
-	    fprintf(curve_file,"%s/%scurves.vtk\n",sdirname,prefix);
-	    fflush(curve_file);
-	}
+	//if (first == YES)
+	//{
+	//    sprintf(fname,"%s/intfc.visit",vdirname);
+	//    intfc_file = fopen(fname,"w");
+	//    if (dim == 3)
+	//    {
+	//    	sprintf(fname,"%s/curves.visit",vdirname);
+	//    	curve_file = fopen(fname,"w");
+	//	sprintf(prefix,"3d-");
+	//    }
+	//    else
+	//	sprintf(prefix,"2d-");
+	//}
+	//fprintf(intfc_file,"%s/%sintfc.vtk\n",sdirname,prefix);
+	//fflush(intfc_file);
+	//if (dim == 3)
+	//{
+	//    fprintf(curve_file,"%s/%scurves.vtk\n",sdirname,prefix);
+	//    fflush(curve_file);
+	//}
 	if (front->vtk_movie_var != NULL)
 	{
 	    VTK_MOVIE_VAR *vtk_movie_var = front->vtk_movie_var;
@@ -1269,6 +1274,7 @@ LOCAL	void show_front_vtk(
 	    for (i = 0; i < vtk_movie_var->num_vector_var; ++i)
 	    {
 	    	vtk_plot_vector_field(dirname,front,i);
+	    	vti_plot_vector_field(dirname,front,i);
 		if (first == YES)
 		{
 	    	    sprintf(fname,"%s/%s.visit",vdirname,vnames[i]);
@@ -4253,3 +4259,496 @@ LOCAL void vtk_plot_intfc_color(
 	}
 	fclose(vfile);
 }	/* end vtk_plot_intfc_color */
+
+
+
+LOCAL void vti_plot_vector_field(
+        const char *dname,
+        Front *front,
+        int n)
+{
+        INTERFACE *grid_intfc = front->grid_intfc;
+        RECT_GRID *gr = &topological_grid(grid_intfc);
+        int gmax[MAXD],icoords[MAXD];
+        double h[MAXD],L[MAXD],vec[MAXD];
+        VTK_MOVIE_VAR *vtk_movie_var = front->vtk_movie_var;
+        double **top_var = vtk_movie_var->vector_var[n];
+        char *vname = vtk_movie_var->vector_var_name[n];
+        static char *fname = NULL;
+        FILE *vfile;
+        size_t fname_len = 0;
+        int i,j,k,l,index,dim = grid_intfc->dim;
+        double time = front->time;
+
+        fname = get_vtk_file_name(fname,dname,vname,&fname_len);
+        {
+            char *dot = strrchr(fname,'.');
+            if (dot) strcpy(dot,".vti");
+        }
+
+        if (create_directory(dname,YES) == FUNCTION_FAILED)
+        {
+            (void) printf("WARNING in vtk_interface_plot(), directory "
+                          "%s doesn't exist and can't be created\n",dname);
+            return;
+        }
+        pp_gsync();
+        vfile = fopen(fname,"w");
+
+	RECT_GRID* top_grid = &topological_grid(grid_intfc);
+
+        int             *lbuf = front->rect_grid->lbuf;
+        int             *ubuf = front->rect_grid->ubuf;
+        int             *top_gmax = top_grid->gmax;
+        double          *top_h = top_grid->h;
+        /*use local grid for plotting, buffer is not plotted out*/
+        double          *top_L = top_grid->L;
+
+        int kmin,kmax,jmin,jmax,imin,imax,pointsx,pointsy,pointsz;
+        imin = (lbuf[0] == 0) ? 1 : lbuf[0];
+        jmin = (lbuf[1] == 0) ? 1 : lbuf[1];
+        kmin = (lbuf[2] == 0) ? 1 : lbuf[2];
+        imax = (ubuf[0] == 0) ? top_gmax[0] - 1 : top_gmax[0] - ubuf[0];
+        jmax = (ubuf[1] == 0) ? top_gmax[1] - 1 : top_gmax[1] - ubuf[1];
+        kmax = (ubuf[2] == 0) ? top_gmax[2] - 1 : top_gmax[2] - ubuf[2];
+	printf("\nijk min %d %d %d\n", imin, jmin, kmin);
+	printf("ijk max %d %d %d\n", imax, jmax, kmax);
+	printf("lbuf 012 %d %d %d\n", lbuf[0], lbuf[1], lbuf[2]);
+	printf("ubuf 012 %d %d %d\n", ubuf[0], ubuf[1], ubuf[2]);
+	printf("top gmax %d %d %d\n", top_gmax[0], top_gmax[1], top_gmax[2]);
+        pointsx = imax - imin + 1;
+        pointsy = jmax - jmin + 1;
+        pointsz = kmax - kmin + 1;
+	printf("points xyz %d %d %d\n", pointsx, pointsy, pointsz);
+
+        int pp_icoords[MAXD];
+        int myid = pp_mynode();
+        PP_GRID *pp_grid = front->pp_grid;
+        find_Cartesian_coordinates(myid,pp_grid,pp_icoords);
+        for (i = 0; i < dim; ++i)
+        {
+            gmax[i] = gr->gmax[i]; 
+	    h[i] = gr->h[i];
+	}
+	L[0] = (pp_icoords[0]*pointsx+0.5)*h[0]; 
+	L[1] = (pp_icoords[1]*pointsy+0.5)*h[1]; 
+	L[2] = (pp_icoords[2]*pointsz+0.5)*h[2]; 
+	printf("pp_icoords %d %d %d\n", pp_icoords[0], pp_icoords[1], pp_icoords[2]);
+	printf("Origin %f %f %f\n", L[0], L[1], L[2]);
+        /* ----- VTI header ----- */
+        fprintf(vfile,"<?xml version=\"1.0\"?>\n");
+        fprintf(vfile,"<VTKFile type=\"ImageData\" version=\"0.1\" byte_order=\"LittleEndian\">\n");
+        fprintf(vfile,"  <ImageData WholeExtent=\"0 %d 0 %d 0 %d\" Origin=\"%f %f %f\" Spacing=\"%f %f %f\">\n",
+                pointsx-1, pointsy-1, pointsz-1, L[0], L[1], L[2], h[0], h[1], h[2]);
+        fprintf(vfile,"    <Piece Extent=\"0 %d 0 %d 0 %d\">\n", pointsx-1, pointsy-1, pointsz-1);
+        fprintf(vfile,"      <PointData Vectors=\"%s\">\n", vname);
+        fprintf(vfile,"        <DataArray type=\"Float64\" Name=\"%s\" NumberOfComponents=\"3\" format=\"ascii\">\n", vname);
+
+        for (l = 0; l < MAXD; ++l) 
+	    vec[l] = 0.0;
+        
+	for (k = kmin; k <= kmax; k++)
+        for (j = jmin; j <= jmax; j++)
+        for (i = imin; i <= imax; i++)
+        {
+            icoords[0] = i;
+            icoords[1] = j;
+            icoords[2] = k;
+            index  = d_index(icoords,gmax,dim);
+            for (l = 0; l < dim; ++l)
+                vec[l] = top_var[l][index];
+            /* ASCII values; 3 comps regardless of dim */
+            fprintf(vfile,"          %f %f %f\n",vec[0],vec[1],vec[2]);
+        }
+
+        /* ----- Close VTI tags ----- */
+        fprintf(vfile,"        </DataArray>\n");
+        fprintf(vfile,"      </PointData>\n");
+        fprintf(vfile,"      <CellData/>\n");
+        fprintf(vfile,"    </Piece>\n");
+        fprintf(vfile,"  </ImageData>\n");
+        fprintf(vfile,"</VTKFile>\n");
+
+
+
+//        for (i = 0; i < 3; ++i)
+//        {
+//            gmax[i] = 1; L[i] = 0.0; h[i] = 0.0;
+//        }
+//        for (i = 0; i < dim; ++i)
+//        {
+//            gmax[i] = gr->gmax[i]; L[i] = gr->L[i]; h[i] = gr->h[i];
+//        }
+//
+//        /* ----- VTI header ----- */
+//        fprintf(vfile,"<?xml version=\"1.0\"?>\n");
+//        fprintf(vfile,"<VTKFile type=\"ImageData\" version=\"0.1\" byte_order=\"LittleEndian\">\n");
+//        fprintf(vfile,"  <ImageData WholeExtent=\"0 %d 0 %d 0 %d\" Origin=\"%f %f %f\" Spacing=\"%f %f %f\">\n",
+//                gmax[0], gmax[1], gmax[2], L[0], L[1], L[2], h[0], h[1], h[2]);
+//        fprintf(vfile,"    <Piece Extent=\"0 %d 0 %d 0 %d\">\n", gmax[0], gmax[1], gmax[2]);
+//        fprintf(vfile,"      <PointData Vectors=\"%s\">\n", vname);
+//        fprintf(vfile,"        <DataArray type=\"Float64\" Name=\"%s\" NumberOfComponents=\"3\" format=\"ascii\">\n", vname);
+//
+//        for (l = 0; l < MAXD; ++l) vec[l] = 0.0;
+//        for (k = 0; k <= gmax[2]; k++)
+//        for (j = 0; j <= gmax[1]; j++)
+//        for (i = 0; i <= gmax[0]; i++)
+//        {
+//            icoords[0] = i;
+//            icoords[1] = j;
+//            icoords[2] = k;
+//            index  = d_index(icoords,gmax,dim);
+//            for (l = 0; l < dim; ++l)
+//                vec[l] = top_var[l][index];
+//            /* ASCII values; 3 comps regardless of dim */
+//            fprintf(vfile,"          %f %f %f\n",vec[0],vec[1],vec[2]);
+//        }
+//
+//        /* ----- Close VTI tags ----- */
+//        fprintf(vfile,"        </DataArray>\n");
+//        fprintf(vfile,"      </PointData>\n");
+//        fprintf(vfile,"      <CellData/>\n");
+//        fprintf(vfile,"    </Piece>\n");
+//        fprintf(vfile,"  </ImageData>\n");
+//        fprintf(vfile,"</VTKFile>\n");
+//
+        fclose(vfile);
+}       /* end vti_plot_vector_field */
+
+
+
+#ifndef ijk_to_I
+#define ijk_to_I(i,j,k,gmax) ((i) + (j)*(gmax)[0] + (k)*(gmax)[0]*(gmax)[1])
+#endif
+
+//LOCAL void vti_plot_vector_field(const char *dirname, Front *front, int i)
+//{
+//    RECT_GRID *grid = front->rect_grid;
+//    int *gmax = grid->gmax;
+//    int *lmax = grid->lmax;
+//    int *loffset = grid->loffset;
+//    double *L = grid->L;
+//    double *h = grid->h;
+//    INTERFACE *intfc = front->interf;
+//    VTK_MOVIE_VAR *vtk_movie_var = front->vtk_movie_var;
+//    char **vnames = vtk_movie_var->vector_var_name;
+//    double (*get_vector)(Front*,double*,COMPONENT,int,double*) =
+//                        vtk_movie_var->get_vector[i];
+//    char fname[256];
+//    FILE *vfile;
+//    int i_loc, j_loc, k_loc, index_loc;
+//    int i_glob, j_glob, k_glob, index_glob;
+//    double coords[3], vector[3];
+//    COMPONENT comp;
+//    double *vx, *vy, *vz;
+//
+//    if (grid->dim != 3) return;
+//
+//    FT_VectorMemoryAlloc((POINTER*)&vx,lmax[0]*lmax[1]*lmax[2],sizeof(double));
+//    FT_VectorMemoryAlloc((POINTER*)&vy,lmax[0]*lmax[1]*lmax[2],sizeof(double));
+//    FT_VectorMemoryAlloc((POINTER*)&vz,lmax[0]*lmax[1]*lmax[2],sizeof(double));
+//
+//    for (k_loc = 0; k_loc < lmax[2]; k_loc++)
+//    for (j_loc = 0; j_loc < lmax[1]; j_loc++)
+//    for (i_loc = 0; i_loc < lmax[0]; i_loc++)
+//    {
+//        index_loc = i_loc + j_loc*lmax[0] + k_loc*lmax[0]*lmax[1];
+//
+//        i_glob = i_loc + loffset[0];
+//        j_glob = j_loc + loffset[1];
+//        k_glob = k_loc + loffset[2];
+//
+//        coords[0] = L[0] + i_glob*h[0];
+//        coords[1] = L[1] + j_glob*h[1];
+//        coords[2] = L[2] + k_glob*h[2];
+//
+//        index_glob = ijk_to_I(i_glob, j_glob, k_glob, gmax);
+//        comp = top_grid.i_comp[index_glob];
+//
+//        if (is_excluded_comp(comp,intfc))
+//        {
+//            vx[index_loc] = vy[index_loc] = vz[index_loc] = 0.0;
+//        }
+//        else
+//        {
+//            if (is_exterior_comp(comp,intfc))
+//                comp = nearest_interior_comp(YES,NO_COMP,coords,intfc);
+//            get_vector(front,coords,comp,i,vector);
+//            vx[index_loc] = vector[0];
+//            vy[index_loc] = vector[1];
+//            vz[index_loc] = vector[2];
+//        }
+//    }
+//
+//    sprintf(fname,"%s/%s.vti",dirname,vnames[i]);
+//    vfile = fopen(fname,"w");
+//
+//    fprintf(vfile, "<VTKFile type=\"ImageData\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">\n");
+//    fprintf(vfile, "  <ImageData WholeExtent=\"%d %d %d %d %d %d\" ", 0, gmax[0]-1, 0, gmax[1]-1, 0, gmax[2]-1);
+//    fprintf(vfile, "Origin=\"%f %f %f\" Spacing=\"%f %f %f\">\n", L[0], L[1], L[2], h[0], h[1], h[2]);
+//    fprintf(vfile, "    <Piece Extent=\"%d %d %d %d %d %d\">\n",
+//            loffset[0], loffset[0] + lmax[0] - 1,
+//            loffset[1], loffset[1] + lmax[1] - 1,
+//            loffset[2], loffset[2] + lmax[2] - 1);
+//
+//    fprintf(vfile, "      <PointData Vectors=\"%s\">\n", vnames[i]);
+//    fprintf(vfile, "        <DataArray type=\"Float64\" Name=\"%s\" NumberOfComponents=\"3\" format=\"ascii\">\n", vnames[i]);
+//
+//    for (index_loc = 0; index_loc < lmax[0]*lmax[1]*lmax[2]; index_loc++)
+//    {
+//        fprintf(vfile, "          %f %f %f\n", vx[index_loc], vy[index_loc], vz[index_loc]);
+//    }
+//
+//    fprintf(vfile, "        </DataArray>\n");
+//    fprintf(vfile, "      </PointData>\n");
+//    fprintf(vfile, "    </Piece>\n");
+//    fprintf(vfile, "  </ImageData>\n");
+//    fprintf(vfile, "</VTKFile>\n");
+//
+//    fclose(vfile);
+//
+//    FT_Free((POINTER)vx);
+//    FT_Free((POINTER)vy);
+//    FT_Free((POINTER)vz);
+//}
+//
+//LOCAL void pvti_plot_vector_field(const char *vdirname, const char *sdirname, Front *front, int i)
+//{
+//    RECT_GRID *grid = front->rect_grid;
+//    VTK_MOVIE_VAR *vtk_movie_var = front->vtk_movie_var;
+//    char **vnames = vtk_movie_var->vector_var_name;
+//    int num_procs = pp_numnodes();
+//    int my_rank = pp_mynode();
+//
+//    int my_ext[6];
+//    my_ext[0] = grid->loffset[0]; my_ext[1] = grid->loffset[0] + grid->lmax[0] - 1;
+//    my_ext[2] = grid->loffset[1]; my_ext[3] = grid->loffset[1] + grid->lmax[1] - 1;
+//    my_ext[4] = grid->loffset[2]; my_ext[5] = grid->loffset[2] + grid->lmax[2] - 1;
+//
+//    int *all_exts = NULL;
+//    if (my_rank == 0) {
+//        FT_VectorMemoryAlloc((POINTER*)&all_exts, num_procs * 6, sizeof(int));
+//    }
+//
+//    // Gather extents from all processes to master.
+//    // NOTE: This assumes a parallel environment with send/receive capabilities.
+//    // You may need to adapt this part to your specific MPI/parallel library.
+//    if (my_rank == 0) {
+//        int j;
+//        for(j=0; j<6; ++j) all_exts[j] = my_ext[j];
+//        for (int rank = 1; rank < num_procs; ++rank) {
+//            // Assuming pp_recv(buffer, count, type, source_rank, tag)
+//            pp_recv(&all_exts[rank*6], 6, PP_INT, rank, 0);
+//        }
+//    } else {
+//        // Assuming pp_send(buffer, count, type, dest_rank, tag)
+//        pp_send(my_ext, 6, PP_INT, 0, 0);
+//    }
+//    pp_gsync();
+//
+//    if (my_rank == 0) {
+//        char fname[256];
+//        FILE *pvfile;
+//        int *gmax = grid->gmax;
+//        double *L = grid->L;
+//        double *h = grid->h;
+//
+//        sprintf(fname,"%s/%s.pvti", vdirname, vnames[i]);
+//        pvfile = fopen(fname, "w");
+//
+//        fprintf(pvfile, "<VTKFile type=\"PImageData\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">\n");
+//        fprintf(pvfile, "  <PImageData WholeExtent=\"%d %d %d %d %d %d\" ", 0, gmax[0]-1, 0, gmax[1]-1, 0, gmax[2]-1);
+//        fprintf(pvfile, "GhostLevel=\"0\" Origin=\"%f %f %f\" Spacing=\"%f %f %f\">\n", L[0], L[1], L[2], h[0], h[1], h[2]);
+//        fprintf(pvfile, "    <PPointData Vectors=\"%s\">\n", vnames[i]);
+//        fprintf(pvfile, "      <PDataArray type=\"Float64\" Name=\"%s\" NumberOfComponents=\"3\"/>\n", vnames[i]);
+//        fprintf(pvfile, "    </PPointData>\n");
+//
+//        for (int rank = 0; rank < num_procs; ++rank) {
+//            char piece_path[256];
+//            sprintf(piece_path, "%s-nd%s/%s.vti", sdirname, right_flush(rank,4), vnames[i]);
+//            fprintf(pvfile, "    <Piece Extent=\"%d %d %d %d %d %d\" Source=\"%s\"/>\n",
+//                all_exts[rank*6 + 0], all_exts[rank*6 + 1],
+//                all_exts[rank*6 + 2], all_exts[rank*6 + 3],
+//                all_exts[rank*6 + 4], all_exts[rank*6 + 5],
+//                piece_path);
+//        }
+//        fprintf(pvfile, "  </PImageData>\n");
+//        fprintf(pvfile, "</VTKFile>\n");
+//        fclose(pvfile);
+//        FT_Free(all_exts);
+//    }
+//}
+//
+LOCAL void vti_plot_scalar_field3d(const char *dirname, Front *front, int i)
+{
+//        VTK_MOVIE_VAR *vtk_movie_var = front->vtk_movie_var;
+//        double *top_var = vtk_movie_var->scalar_var[n];
+//        char *varname = vtk_movie_var->scalar_var_name[n];
+//
+//        int i,j,k,index;
+//        char dirname[256],filename[256];
+//        FILE *outfile;
+//        double m_coords[MAXD],coord_x,coord_y,coord_z;
+//        int pointsx,pointsy,pointsz,num_points,num_cells,num_cell_list;
+//        int icoords[3],p_gmax[3];
+//
+//        /*set domain*/
+//        INTERFACE* grid_intfc = front->grid_intfc;
+//        RECT_GRID* top_grid = &topological_grid(grid_intfc);
+//
+//        int             *lbuf = front->rect_grid->lbuf;
+//        int             *ubuf = front->rect_grid->ubuf;
+//        int             *top_gmax = top_grid->gmax;
+//        double          *top_h = top_grid->h;
+//        /*use local grid for plotting, buffer is not plotted out*/
+//        double          *top_L = top_grid->L;
+//
+//        int kmin,kmax,jmin,jmax,imin,imax;
+//        imin = (lbuf[0] == 0) ? 1 : lbuf[0]-1;
+//        jmin = (lbuf[1] == 0) ? 1 : lbuf[1]-1;
+//        kmin = (lbuf[2] == 0) ? 1 : lbuf[2]-1;
+//        imax = (ubuf[0] == 0) ? top_gmax[0] - 1 : top_gmax[0] - ubuf[0]+1;
+//        jmax = (ubuf[1] == 0) ? top_gmax[1] - 1 : top_gmax[1] - ubuf[1]+1;
+//        kmax = (ubuf[2] == 0) ? top_gmax[2] - 1 : top_gmax[2] - ubuf[2]+1;
+//
+//        pointsx = imax - imin + 1;
+//        pointsy = jmax - jmin + 1;
+//        pointsz = kmax - kmin + 1;
+//        num_points = pointsx * pointsy * pointsz;
+//
+//        for (i = 0; i < dim; ++i)
+//        {
+//            gmax[i] = gr->gmax[i]; 
+//	    L[i] = gr->L[i]; 
+//	    h[i] = gr->h[i];
+//        }
+//
+//        sprintf(filename, "%s/vti/vti.ts%s",OutName(front),
+//                right_flush(front->step,7));
+//        if (pp_numnodes() > 1)
+//            sprintf(filename,"%s-nd%s",filename,right_flush(pp_mynode(),4));
+//
+//        if (!create_directory(filename,NO))
+//        {
+//            printf("Cannot create directory %s\n",filename);
+//            clean_up(ERROR);
+//        }
+//        sprintf(filename,"%s/%s.vti",filename,varname);
+//        outfile = fopen(filename,"w");
+//        fprintf(outfile,"# vtk DataFile Version 3.0\n");
+//        fprintf(outfile,"%s\n",varname);
+//        fprintf(outfile,"ASCII\n\n");
+//
+//        fprintf(outfile,"DATASET RECTILINEAR_GRID\n");
+//        fprintf(outfile,"DIMENSIONS  %d  %d  %d\n",pointsx,pointsy,pointsz);
+//        fprintf(outfile,"X_COORDINATES    %d float\n",pointsx);
+//        for (i = imin; i <= imax; i++)
+//                fprintf(outfile,"%f\n",top_L[0]+(i-imin)*top_h[0]);
+//        fprintf(outfile,"Y_COORDINATES    %d float\n",pointsy);
+//        for (i = jmin; i <= jmax; i++)
+//                fprintf(outfile,"%f\n",top_L[1]+(i-jmin)*top_h[1]);
+//        fprintf(outfile,"Z_COORDINATES    %d float\n",pointsz);
+//        for (i = kmin; i <= kmax; i++)
+//                fprintf(outfile,"%f\n",top_L[2]+(i-kmin)*top_h[2]);
+//
+//        fprintf(outfile, "POINT_DATA %i\n", num_points);
+//        fprintf(outfile, "SCALARS %s float\n",varname);
+//        fprintf(outfile, "LOOKUP_TABLE default\n");
+//        for (k = kmin; k <= kmax; k++)
+//        for (j = jmin; j <= jmax; j++)
+//        for (i = imin; i <= imax; i++)
+//        {
+//            index = d_index3d(i,j,k,top_gmax);
+//            fprintf(outfile,"%f\n",top_var[index]);
+//        }
+//        fclose(outfile);
+
+//    sprintf(fname,"%s/%s.vti",dirname,snames[i]);
+//    sfile = fopen(fname,"w");
+//
+//    fprintf(sfile, "<VTKFile type=\"ImageData\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">\n");
+//    fprintf(sfile, "  <ImageData WholeExtent=\"%d %d %d %d %d %d\" ", 0, gmax[0]-1, 0, gmax[1]-1, 0, gmax[2]-1);
+//    fprintf(sfile, "Origin=\"%f %f %f\" Spacing=\"%f %f %f\">\n", L[0], L[1], L[2], h[0], h[1], h[2]);
+//    fprintf(sfile, "    <Piece Extent=\"%d %d %d %d %d %d\">\n", 0, gmax[0]-1, 0, gmax[1]-1, 0, gmax[2]-1);
+//
+//    fprintf(sfile, "      <PointData Scalars=\"%s\">\n", snames[i]);
+//    fprintf(sfile, "        <DataArray type=\"Float64\" Name=\"%s\" format=\"ascii\">\n", snames[i]);
+//
+//    for (index_loc = 0; index_loc < lmax[0]*lmax[1]*lmax[2]; index_loc++)
+//    {
+//        fprintf(sfile, "          %f\n", s_values[index_loc]);
+//    }
+//
+//    fprintf(sfile, "        </DataArray>\n");
+//    fprintf(sfile, "      </PointData>\n");
+//    fprintf(sfile, "    </Piece>\n");
+//    fprintf(sfile, "  </ImageData>\n");
+//    fprintf(sfile, "</VTKFile>\n");
+//
+//    fclose(sfile);
+//
+//    FT_Free((POINTER)s_values);
+}
+
+//LOCAL void pvti_plot_scalar_field3d(const char *vdirname, const char* sdirname, Front *front, int i)
+//{
+//
+//    RECT_GRID *grid = front->rect_grid;
+//    VTK_MOVIE_VAR *vtk_movie_var = front->vtk_movie_var;
+//    char **snames = vtk_movie_var->scalar_var_name;
+//    int num_procs = pp_numnodes();
+//    int my_rank = pp_mynode();
+//
+//    int my_ext[6];
+//    my_ext[0] = grid->loffset[0]; my_ext[1] = grid->loffset[0] + grid->lmax[0] - 1;
+//    my_ext[2] = grid->loffset[1]; my_ext[3] = grid->loffset[1] + grid->lmax[1] - 1;
+//    my_ext[4] = grid->loffset[2]; my_ext[5] = grid->loffset[2] + grid->lmax[2] - 1;
+//
+//    int *all_exts = NULL;
+//    if (my_rank == 0) {
+//        FT_VectorMemoryAlloc((POINTER*)&all_exts, num_procs * 6, sizeof(int));
+//    }
+//
+//    if (my_rank == 0) {
+//        int j;
+//        for(j=0; j<6; ++j) all_exts[j] = my_ext[j];
+//        for (int rank = 1; rank < num_procs; ++rank) {
+//            pp_recv(&all_exts[rank*6], 6, PP_INT, rank, 0);
+//        }
+//    } else {
+//        pp_send(my_ext, 6, PP_INT, 0, 0);
+//    }
+//    pp_gsync();
+//
+//    if (my_rank == 0) {
+//        char fname[256];
+//        FILE *pvfile;
+//        int *gmax = grid->gmax;
+//        double *L = grid->L;
+//        double *h = grid->h;
+//
+//        sprintf(fname,"%s/%s.pvti", vdirname, snames[i]);
+//        pvfile = fopen(fname, "w");
+//
+//        fprintf(pvfile, "<VTKFile type=\"PImageData\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">\n");
+//        fprintf(pvfile, "  <PImageData WholeExtent=\"%d %d %d %d %d %d\" ", 0, gmax[0]-1, 0, gmax[1]-1, 0, gmax[2]-1);
+//        fprintf(pvfile, "GhostLevel=\"0\" Origin=\"%f %f %f\" Spacing=\"%f %f %f\">\n", L[0], L[1], L[2], h[0], h[1], h[2]);
+//        fprintf(pvfile, "    <PPointData Scalars=\"%s\">\n", snames[i]);
+//        fprintf(pvfile, "      <PDataArray type=\"Float64\" Name=\"%s\"/>\n", snames[i]);
+//        fprintf(pvfile, "    </PPointData>\n");
+//
+//        for (int rank = 0; rank < num_procs; ++rank) {
+//            char piece_path[256];
+//            sprintf(piece_path, "%s-nd%s/%s.vti", sdirname, right_flush(rank,4), snames[i]);
+//            fprintf(pvfile, "    <Piece Extent=\"%d %d %d %d %d %d\" Source=\"%s\"/>\n",
+//                all_exts[rank*6 + 0], all_exts[rank*6 + 1],
+//                all_exts[rank*6 + 2], all_exts[rank*6 + 3],
+//                all_exts[rank*6 + 4], all_exts[rank*6 + 5],
+//                piece_path);
+//        }
+//        fprintf(pvfile, "  </PImageData>\n");
+//        fprintf(pvfile, "</VTKFile>\n");
+//        fclose(pvfile);
+//        FT_Free(all_exts);
+//    }
+//}
