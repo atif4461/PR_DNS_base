@@ -44,7 +44,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/fmohammad/PR_DNS_base/DNS/climate/cmake_install.cmake")
   include("/home/fmohammad/PR_DNS_base/DNS/iFluid/cmake_install.cmake")
   include("/home/fmohammad/PR_DNS_base/DNS/src/cmake_install.cmake")
   include("/home/fmohammad/PR_DNS_base/DNS/solver/cmake_install.cmake")

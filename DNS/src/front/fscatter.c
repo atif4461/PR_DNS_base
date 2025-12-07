@@ -496,29 +496,29 @@ EXPORT void scatter_top_grid_float_array(
         //kmax = (ubuf[2] == 0) ? top_gmax[2] - 1 : top_gmax[2] - ubuf[2];
 	//printf("\nijk min %d %d %d\n", imin, jmin, kmin);
 	//printf("ijk max %d %d %d\n", imax, jmax, kmax);
-	printf("lbuf 012 %d %d %d ubuf 012 %d %d %d\n", lbuf[0], lbuf[1], lbuf[2], ubuf[0], ubuf[1], ubuf[2]);
-	printf("top gmax %d %d %d\n", gmax[0], gmax[1], gmax[2]);
+	//printf("lbuf 012 %d %d %d ubuf 012 %d %d %d\n", lbuf[0], lbuf[1], lbuf[2], ubuf[0], ubuf[1], ubuf[2]);
+	//printf("top gmax %d %d %d\n", gmax[0], gmax[1], gmax[2]);
         //pointsx = imax - imin + 1;
         //pointsy = jmax - jmin + 1;
         //pointsz = kmax - kmin + 1;
 	//printf("points xyz %d %d %d\n", pointsx, pointsy, pointsz);
 
-	for (int i = 0; i <= gmax[0]; ++i)
-	for (int j = 0; j <= gmax[1]; ++j)
-	for (int k = 0; k <= gmax[2]; ++k)
-        {
-	    auto ic = d_index3d(i,j,k,gmax);
-	    solute[ic] = j + myid*(1+gmax[1]);
-	}
+	//for (int i = 0; i <= gmax[0]; ++i)
+	//for (int j = 0; j <= gmax[1]; ++j)
+	//for (int k = 0; k <= gmax[2]; ++k)
+        //{
+	//    auto ic = d_index3d(i,j,k,gmax);
+	//    solute[ic] = i + myid*(1+gmax[0]);
+	//}
 
-	for (int j = 0; j <= gmax[1]; ++j)
-	{
-	    auto ic0= d_index3d(10,j,10,gmax);
-	    auto ic1= d_index3d(12,j,12,gmax);
-	    auto ic2= d_index3d(14,j,14,gmax);
-	    auto ic3= d_index3d(16,j,16,gmax);
-            printf("Before communication value at j=%d is %f and %f and %f and %f\n", j+myid*(1+gmax[1]), solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
-	}
+	//for (int i = 0; i <= gmax[0]; ++i)
+	//{
+	//    auto ic0= d_index3d(i,10,10,gmax);
+	//    auto ic1= d_index3d(i,12,12,gmax);
+	//    auto ic2= d_index3d(i,14,14,gmax);
+	//    auto ic3= d_index3d(i,16,16,gmax);
+        //    printf("Before communication value at i=%d is %f and %f and %f and %f\n", i+myid*(1+gmax[0]), solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
+	//}
 
 	for (dir = 0; dir < dim; ++dir)
 	{
@@ -536,17 +536,19 @@ EXPORT void scatter_top_grid_float_array(
 		    			storage);
 		    if (dst_id != myid)
 		    	pp_send(array_id(0),storage,len,dst_id);
+		    if (dir == 0)
+		        printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** sending %d points from bmin %d bmax %d \n", dir, side, len, bmin[dir]+myid*(1+gmax[0]), bmax[dir]+myid*(1+gmax[0]) );
 		    if (dir == 1)
 		        printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** sending %d points from bmin %d bmax %d \n", dir, side, len, bmin[dir]+myid*(1+gmax[1]), bmax[dir]+myid*(1+gmax[1]) );
 		}
-                //else if (rect_boundary_type(intfc,dir,side) ==
-                //                REFLECTION_BOUNDARY)
-                //{
-		//    printf("** dir=%d, side=%d REFLECTION_BOUNDARY **\n", dir, side );
-		//    array_symmetry = (symmetry == NULL) ? EVEN : symmetry[dir];
-                //    reflect_array_buffer(dim,dir,side,gmax,lbuf,ubuf,solute,
-		//			array_symmetry);
-                //}
+                else if (rect_boundary_type(intfc,dir,side) ==
+                                REFLECTION_BOUNDARY)
+                {
+		    printf("** dir=%d, side=%d REFLECTION_BOUNDARY **\n", dir, side );
+		    array_symmetry = (symmetry == NULL) ? EVEN : symmetry[dir];
+                    reflect_array_buffer(dim,dir,side,gmax,lbuf,ubuf,solute,
+					array_symmetry);
+                }
 
 		if (rect_boundary_type(intfc,dir,(side+1)%2) ==
 					SUBDOMAIN_BOUNDARY)
@@ -559,19 +561,21 @@ EXPORT void scatter_top_grid_float_array(
 		    	pp_recv(array_id(0),dst_id,storage,len);
 		    unbundle_array_buffer(dim,bmin,bmax,gmax,solute,
 		    			storage);
+		    if (dir == 0)
+		        printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** receiving %d points from bmin %d bmax %d \n", dir, side, len, bmin[dir]+myid*(1+gmax[0]), bmax[dir]+myid*(1+gmax[0]) );
 		    if (dir == 1)
 		        printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** receiving %d points from bmin %d bmax %d \n", dir, side, len, bmin[dir]+myid*(1+gmax[1]), bmax[dir]+myid*(1+gmax[1]) );
 		}
 	    }
 	}
-	for (int j = 0; j <= gmax[1]; ++j)
-	{
-	    auto ic0= d_index3d(10,j,10,gmax);
-	    auto ic1= d_index3d(12,j,12,gmax);
-	    auto ic2= d_index3d(14,j,14,gmax);
-	    auto ic3= d_index3d(16,j,16,gmax);
-            printf("After communication value at j=%d is %f and %f and %f and %f\n", j+myid*(1+gmax[1]), solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
-	}
+	//for (int i = 0; i <= gmax[0]; ++i)
+	//{
+	//    auto ic0= d_index3d(i,10,10,gmax);
+	//    auto ic1= d_index3d(i,12,12,gmax);
+	//    auto ic2= d_index3d(i,14,14,gmax);
+	//    auto ic3= d_index3d(i,16,16,gmax);
+        //    printf("After communication value at i=%d is %f and %f and %f and %f\n", i+myid*(1+gmax[0]), solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
+	//}
 
 }	/* end scatter_top_grid_float_array */
 
@@ -677,11 +681,13 @@ LOCAL	int set_send_buffer_limits(
 	if (side == 0)
 	{
 	    bmin[dir] = lbuf[dir];
-	    bmax[dir] = lbuf[dir] + 4;// + ubuf[dir];
+	    bmax[dir] = lbuf[dir] + ubuf[dir];
+	    if (ubuf[dir] == 0) bmax[dir] += 4;
 	}
 	else
 	{
-	    bmin[dir] = gmax[dir] - lbuf[dir] - ubuf[dir] + 1 - 4;
+	    bmin[dir] = gmax[dir] - lbuf[dir] - ubuf[dir] + 1;
+	    if (lbuf[dir] == 0) bmin[dir] -= 4;
 	    bmax[dir] = gmax[dir] - ubuf[dir] + 1 ;
 	}
 	len = 1;
@@ -714,7 +720,8 @@ LOCAL	int set_recv_buffer_limits(
 	}
 	else
 	{
-	    bmin[dir] = gmax[dir] - 3;// - ubuf[dir] + 1;
+	    bmin[dir] = gmax[dir] - ubuf[dir] + 1;
+	    if (ubuf[dir] == 0) bmin[dir] -= 4;
 	    bmax[dir] = gmax[dir] + 1;
 	}
 	len = 1;

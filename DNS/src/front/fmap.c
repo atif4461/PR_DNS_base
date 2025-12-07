@@ -1742,11 +1742,8 @@ EXPORT void FT_ReadSpaceDomain(
 	char input_string[200],sbdry[200];
 	int i,status;
 
-    printf("zhangtao: %d in file %s\n", __LINE__, __FILE__);
 	infile = fopen(in_name,"r");
-    printf("zhangtao: %s\n", in_name);
-    printf("zhangtao: %d\n", infile);
-    printf("zhangtao: %d in file %s\n", __LINE__, __FILE__);
+        printf("FT_ReadSpaceDomain: %d in file %s\n", __LINE__, __FILE__);
 	for (i = 0; i < f_basic->dim; ++i)
 	{
             sprintf(input_string,"Domain limit in %d-th dimension:",i);

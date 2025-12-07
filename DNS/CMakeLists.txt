@@ -79,7 +79,7 @@ if (HDF4_FOUND)
 endif()
 
 # Recurse into the following subdirectories
-add_subdirectory (climate)
+#add_subdirectory (climate)
 add_subdirectory (iFluid)
 add_subdirectory (src)
 add_subdirectory (solver)

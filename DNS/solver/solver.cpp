@@ -247,7 +247,7 @@ void PETSc::Set_petsc_input()	// VLM
 	retv = fclose(infile);
 	printf("\npetsc_hypre_pc %d; pc_hypre_boomeramg_strong_threshold [%s]\n", petsc_hypre_pc, hypre_thres);
 	printf("pureNeumann_gmres %d; nonpureNeumann_gmres %d\n", pureNeumann_gmres, nonpureNeumann_gmres);
-	printf("petsc_use_pcamg %d\n", petsc_use_pcgamg);
+	printf("petsc_use_pcamg for gmres %d\n", petsc_use_pcgamg);
 	printf("petsc_solver_first_time %d\n", petsc_solver_first_time);
 	printf("petsc_cuda %d; fclose retval %d\n", petsc_cuda, retv);
 }
@@ -636,20 +636,26 @@ void PETSc::Solve_withPureNeumann_GMRES(void)
 
 void PETSc::Solve_withPureNeumann(void)
 {
-	if (petsc_hypre_pc)
+	//if (petsc_hypre_pc)
+	//{
+	//printf("AT %d  %s\n", __LINE__, __FILE__);
+        //fflush(stdout);
+	//    Solve_withPureNeumann_HYPRE();
+	//}
+	//else
 	{
-	    Solve_withPureNeumann_HYPRE();
-	}
-	else
-	{
-	    if (pureNeumann_gmres)
+	    //if (pureNeumann_gmres)
 	    {
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	        Solve_withPureNeumann_GMRES();
 	    }
-	    else
-	    {
-	        Solve_withPureNeumann_BCGSL();   
-	    }
+	    //else
+	    //{
+	    //printf("AT %d  %s\n", __LINE__, __FILE__);
+            //fflush(stdout);
+	    //    Solve_withPureNeumann_BCGSL();   
+	    //}
 	}
 
         //VLM 
@@ -672,12 +678,11 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
         {
 	    printf("VLM: Solve_HYPRE() --> I SHOULDN'T BE HERE!!!!!!\n");
 	}
-        printf("Entering Solve_withPureNeumann_HYPRE()\n");
-	printf("hypre strong_threshold %s\n", hypre_thres);
 
-
-	if (debugging("trace"))
-        printf("Entering Solve_withPureNeumann_HYPRE()\n");
+	if (debugging("trace")) {
+        	printf("Entering Solve_withPureNeumann_HYPRE()\n");
+		printf("hypre strong_threshold %s\n", hypre_thres);
+	}
 
         start_clock("Assemble matrix -- Solve_withPureNeumann_HYPRE");
         ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);
@@ -732,10 +737,12 @@ void PETSc::Solve_withPureNeumann_HYPRE(void)
         //VLM 
         KSPConvergedReason reason;
         KSPGetConvergedReason(ksp, &reason);
-        printf("VLM: KSPConvergedReason: %d; Leaving Solve_withPureNeumann_HYPRE()\n", reason);
 
 	if (debugging("trace"))
-	printf("Leaving Solve_withPureNeumann_HYPRE()\n");
+	{
+        	printf("VLM: KSPConvergedReason: %d\n", reason);
+		printf("Leaving Solve_withPureNeumann_HYPRE()\n");
+	}
         //fclose(infile);
 }
 

@@ -502,6 +502,8 @@ void ELLIPTIC_SOLVER::solve2d(double *soln)
 
 void ELLIPTIC_SOLVER::solve3d(double *soln)
 {
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	int index,index_nb[6],size;
 	double k0,k_nb[6];
 	double rhs,coeff[6];
@@ -528,6 +530,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	max_soln = -HUGE;
 	min_soln = HUGE;
 
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	for (k = kmin; k <= kmax; k++)
 	for (j = jmin; j <= jmax; j++)
         for (i = imin; i <= imax; i++)
@@ -607,6 +611,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
             solver.Set_b(I,rhs);
 	}
 	use_neumann_solver = pp_min_status(use_neumann_solver);
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	
 	solver.SetMaxIter(40000);
 	solver.SetTol(1e-10);
@@ -614,6 +620,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	start_clock("Petsc Solver");
 	if (use_neumann_solver)
 	{
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	    if (size < 8)
 	    {
 	    	(void) printf("Isolated small region for solve3d()\n");
@@ -636,6 +644,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	}
 	else
 	{
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	    (void) printf("\nUsing non-Neumann Solver!\n");
 	    solver.Solve();
 	    solver.GetNumIterations(&num_iter);
@@ -654,6 +664,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	}
 	stop_clock("Petsc Solver");
 
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	double *x;
 	FT_VectorMemoryAlloc((POINTER*)&x,size,sizeof(double));
 	solver.Get_x(x);
@@ -692,6 +704,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	pp_global_max(&max_soln,1);
 	pp_global_min(&min_soln,1);
 
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	if (debugging("step_size"))
 	{
 	    printf("Max solution = %20.14f occuring at: %d %d %d\n",
@@ -721,13 +735,15 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
                     icrds_max[2] = k;
                 }
             }
-            (void) printf("In dual elliptic solver:\n");
+            (void) printf("In elliptic solver:\n");
             (void) printf("Max relative elliptic error: %20.14f\n",max_error);
             (void) printf("Occuring at (%d %d %d)\n",icrds_max[0],
                                 icrds_max[1],icrds_max[2]);
             error = checkSolver(icrds_max,YES);
         }
 
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	FT_FreeThese(1,x);
 }	/* end solve3d */
 
@@ -950,6 +966,8 @@ void ELLIPTIC_SOLVER::dsolve2d(double *soln)
 
 void ELLIPTIC_SOLVER::dsolve3d(double *soln)
 {
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	int index,index_nb,size;
 	double rhs,coeff[3][2];
 	int I,I_nb;
@@ -1199,7 +1217,7 @@ double ELLIPTIC_SOLVER::checkSolver(
 
 	if (print_details)
 	{
-	    (void) printf("\nEntering checkSolver()\n");
+	    (void) printf("\nEntering Elliptic checkSolver()\n");
 	    (void) printf("icoords = ");
 	    for (i = 0; i < dim; ++i)
 	    	(void) printf("%d ",icoords[i]);

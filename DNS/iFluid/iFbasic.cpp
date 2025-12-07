@@ -24,9 +24,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /*******************************************************************
  * 		         iFbasic.cpp
  *******************************************************************/
+#include <iostream>
 #include "iFluid.h"
 #include "solver.h"
-
 //----------------------------------------------------------------
 //		L_RECTANGLE
 //----------------------------------------------------------------
@@ -790,7 +790,7 @@ void Incompress_Solver_Smooth_Basis::setAdvectionDt()
 			"max_dt = %24.18g min_dt = %24.18g\n",max_dt,min_dt);
 	}
 	if (debugging("step_size"))
-	printf("Max speed = %f, hmin = %f, max_dt = %f\n",max_speed,hmin,max_dt);
+	    printf("Max speed = %f, hmin = %f, max_dt = %f, mu_min = %f\n",max_speed,hmin,max_dt,mu_min);
 }	/* end setAdvectionDt */
 
 

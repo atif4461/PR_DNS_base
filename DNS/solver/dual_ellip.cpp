@@ -862,7 +862,7 @@ double DUAL_ELLIPTIC_SOLVER::checkSolver(
 
 	if (print_details)
 	{
-	    (void) printf("\nEntering checkSolver()\n");
+	    (void) printf("\nEntering Dual Elliptic checkSolver()\n");
 	    (void) printf("icoords = ");
 	    for (i = 0; i < dim; ++i)
 	    	(void) printf("%d ",icoords[i]);

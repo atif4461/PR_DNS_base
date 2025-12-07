@@ -218,11 +218,13 @@ static  void ifluid_driver(
 
 	    if (debugging("trace"))
                 printf("Before FT_Propagate()\n");
+            fflush(stdout);
             FrontPreAdvance(front);
             FT_Propagate(front);
 	    if (debugging("trace")) printf("Passed FT_Propagate()\n");
 
             if (debugging("trace")) printf("Calling ifluid solve()\n");
+            fflush(stdout);
 	    l_cartesian->solve(front->dt);
 	    if (debugging("trace")) printf("Passed ifluid solve()\n");
 	    if (debugging("trace"))
@@ -230,6 +232,7 @@ static  void ifluid_driver(
                 (void) printf("After solve()\n");
                 (void) print_storage("at end of time step","trace");
             }
+            fflush(stdout);
 
 	    FT_AddTimeStepToCounter(front);
 				
@@ -251,17 +254,16 @@ static  void ifluid_driver(
 
             (void) printf("\ntime = %20.14f   step = %5d   next dt = %20.14f\n",
                         front->time,front->step,front->dt);
-            fflush(stdout);
 
             if (FT_IsSaveTime(front))
 	    {
-		printf("PRINTING INTERIOR STATES");
+	        printf("PRINTING INTERIOR STATES");
             	FT_Save(front,out_name);
-		l_cartesian->printFrontInteriorStates(out_name);
+	        l_cartesian->printFrontInteriorStates(out_name);
 	    }
             if (FT_IsMovieFrameTime(front))
 	    {
-		printf("PRINTING MOVIE FRAMES");
+	        printf("PRINTING MOVIE FRAMES");
             	FT_AddMovieFrame(front,out_name,binary);
 	    }
 	    //recordBdryEnergyFlux(front,out_name);
@@ -271,16 +273,18 @@ static  void ifluid_driver(
 
 	    if (debugging("storage"))
 	    {
-		char s[100];
-		sprintf(s,"Storage at end of time step %d",front->step);
-		print_storage(s,"trace");
+	        char s[100];
+	        sprintf(s,"Storage at end of time step %d",front->step);
+	        print_storage(s,"trace");
 	    }
 	    FT_TimeControlFilter(front);
 	    if (debugging("step_size"))
                 (void) printf("Time step from FT_TimeControlFilter(): %f\n",
                                         front->dt);
+            fflush(stdout);
         }
 	if (debugging("trace")) printf("After time loop\n");
+        fflush(stdout);
 }       /* end ifluid_driver */
 
 static int l_cartesian_vel(

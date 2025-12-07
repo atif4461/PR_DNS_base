@@ -117,19 +117,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named climate
-
-# Build rule for target.
-climate: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 climate
-.PHONY : climate
-
-# fast build rule for target.
-climate/fast:
-	$(MAKE) $(MAKESILENT) -f climate/CMakeFiles/climate.dir/build.make climate/CMakeFiles/climate.dir/build
-.PHONY : climate/fast
-
-#=============================================================================
 # Target rules for targets named ifluid
 
 # Build rule for target.
@@ -189,7 +176,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... climate"
 	@echo "... frontier"
 	@echo "... iFluid"
 	@echo "... ifluid"

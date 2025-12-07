@@ -402,6 +402,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::solve(double dt)
 	setComponent();
 	if (iFparams->num_scheme.ellip_method == DUAL_ELLIP)
 	    updateComponent();
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 /*
 printf("test vel comp\n");
 for (int k = kmin; k <= kmax; ++k)
@@ -425,6 +427,8 @@ clean_up(0);
 */
 	if (debugging("trace"))
 	    printf("Passed setComponent()\n");
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 
 	paintAllGridPoint(TO_SOLVE);
 	setGlobalIndex();
@@ -437,6 +441,8 @@ clean_up(0);
 	if (debugging("trace"))
 	    printf("Passed setSmoothedProperties()\n");
 	
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	// 1) solve for intermediate velocity
 	start_clock("computeAdvection");
 	computeAdvection();
@@ -451,6 +457,8 @@ clean_up(0);
 	if (debugging("sample_velocity"))
 	    sampleVelocity();
 	
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	start_clock("computeDiffusion");
 	computeDiffusion();
 	stop_clock("computeDiffusion");
@@ -464,6 +472,8 @@ clean_up(0);
 	if (debugging("sample_velocity"))
 	    sampleVelocity();
 
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	// 2) projection step
 	accum_dt += m_dt;
 	if (accum_dt >= min_dt)
@@ -472,38 +482,45 @@ clean_up(0);
 	    computeProjection();
 	    stop_clock("computeProjection");
 
+	    printf("AT %d  %s\n", __LINE__, __FILE__);
+            fflush(stdout);
+	    
 	    start_clock("computePressure");
 	    computePressure();
 	    stop_clock("computePressure");
 	    if (debugging("trace"))
-		printf("min_pressure = %f  max_pressure = %f\n",
-			min_pressure,max_pressure);
+	        printf("min_pressure = %f  max_pressure = %f\n",
+	        	min_pressure,max_pressure);
 
-	    start_clock("computeNewVelocity");
-	    computeNewVelocity();
-	    stop_clock("computeNewVelocity");
-	    accum_dt = 0.0;
+	    printf("AT %d  %s\n", __LINE__, __FILE__);
+            fflush(stdout);
+//	    start_clock("computeNewVelocity");
+//	    computeNewVelocity();
+//	    stop_clock("computeNewVelocity");
+//	    accum_dt = 0.0;
+//	    printf("AT %d  %s\n", __LINE__, __FILE__);
+//            fflush(stdout);
 	}
 
-	if (debugging("step_size"))
-	{
-	    printf("max_speed after computeNewVelocity(): %20.14f\n",
-				max_speed);
-	    (void) printf("max speed occured at (%d %d %d)\n",icrds_max[0],
-				icrds_max[1],icrds_max[2]);
-	}
-	if (debugging("sample_velocity"))
-	    sampleVelocity();
-
-	start_clock("copyMeshStates");
-	copyMeshStates();
-	stop_clock("copyMeshStates");
-
-        if(iFparams->if_ref_pres == YES)
-            setReferencePressure();
-
-	setAdvectionDt();
-	stop_clock("solve");
+//	if (debugging("step_size"))
+//	{
+//	    printf("max_speed after computeNewVelocity(): %20.14f\n",
+//				max_speed);
+//	    (void) printf("max speed occured at (%d %d %d)\n",icrds_max[0],
+//				icrds_max[1],icrds_max[2]);
+//	}
+//	if (debugging("sample_velocity"))
+//	    sampleVelocity();
+//
+//	start_clock("copyMeshStates");
+//	copyMeshStates();
+//	stop_clock("copyMeshStates");
+//
+//        if(iFparams->if_ref_pres == YES)
+//            setReferencePressure();
+//
+//	setAdvectionDt();
+//	stop_clock("solve");
 }	/* end solve */
 
 
@@ -526,8 +543,11 @@ void Incompress_Solver_Smooth_3D_Cartesian::copyMeshStates()
 void Incompress_Solver_Smooth_3D_Cartesian::
 	computeDiffusion(void)
 {
-	return computeDiffusionCN();
+	//return computeDiffusionCN();
 	//return computeDiffusionImplicit();
+	return computeDiffusionExplicit();
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 }	/* end computeDiffusion */
 
 void Incompress_Solver_Smooth_3D_Cartesian::
@@ -1273,24 +1293,25 @@ void Incompress_Solver_Smooth_3D_Cartesian::computePressure(void)
 	}
 	min_pressure =  HUGE;
 	max_pressure = -HUGE;
-	switch (iFparams->num_scheme.projc_method)
-	{
-	case BELL_COLELLA:
-	    computePressurePmI();
-	    break;
-	case KIM_MOIN:
-	    computePressurePmII();
-	    break;
-	case SIMPLE:
-	case PEROT_BOTELLA:
-	    computePressurePmI(); /* computePressurePmIII() not working */
-	    //computePressurePmIII();
-	    break;
-	case ERROR_PROJC_SCHEME:
-	default:
-	    (void) printf("Unknown computePressure() scheme!\n");
-	    clean_up(ERROR);
-	}
+	//switch (iFparams->num_scheme.projc_method)
+	//{
+	//case BELL_COLELLA:
+	//    computePressurePmI();
+	//    break;
+	//case KIM_MOIN:
+	//    computePressurePmII();
+	//    break;
+	//case SIMPLE:
+	//case PEROT_BOTELLA:
+	//    computePressurePmI(); /* computePressurePmIII() not working */
+	//    //computePressurePmIII();
+	//    break;
+	//case ERROR_PROJC_SCHEME:
+	//default:
+	//    (void) printf("Unknown computePressure() scheme!\n");
+	//    clean_up(ERROR);
+	//}
+	computePressurePmII();
         computeGradientQ();
 }	/* end computePressure */
 
@@ -1447,23 +1468,31 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionCim(void)
 
 void Incompress_Solver_Smooth_3D_Cartesian::computeProjection(void)
 {
-        switch (iFparams->num_scheme.ellip_method)
-        {
-        case SIMPLE_ELLIP:
-        case DUAL_ELLIP:
-            computeProjectionSimple();
-            return;
-        case DOUBLE_ELLIP:
-            computeProjectionDouble();
-            return;
-        case CIM_ELLIP:
-            computeProjectionCim();
-            return;
-        }
+        //switch (iFparams->num_scheme.ellip_method)
+        //{
+        //case SIMPLE_ELLIP:
+        //    computeProjectionSimple();
+        //    return;
+        //case DUAL_ELLIP:
+        //    computeProjectionDual();
+        //    return;
+        //case DOUBLE_ELLIP:
+        //    computeProjectionDouble();
+        //    return;
+        //case CIM_ELLIP:
+        //    computeProjectionCim();
+        //    return;
+        //}
+
+        computeProjectionSimple();
+        //computeProjectionDual();
+        return;
 }       /* end computeProjection */
 
 void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionDouble(void)
 {
+	(void) printf("Not implemented yet!\n");
+	clean_up(ERROR);
 }	/* end computeProjectionDouble */
 
 void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionDual(void)
@@ -1581,6 +1610,10 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 	if (debugging("trace"))
 	    (void) printf("Entering computeProjectionSimple()\n");
 
+	printf("\n* * * * START * * * *\n");
+
+	printf("AT %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	for (l = 0; l < dim; ++l)
         {
             vmin[l] = HUGE;
@@ -1608,8 +1641,57 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
                 }
             }
         }
+
+
+        if(debugging("step_size"))
+        {
+            sum_div = 0.0;
+            min_value =  HUGE;
+            max_value = -HUGE;
+	    min_phi =  HUGE;
+	    max_phi = -HUGE;
+            for (k = kmin; k <= kmax; k++)
+            for (j = jmin; j <= jmax; j++)
+            for (i = imin; i <= imax; i++)
+            {
+                index = d_index3d(i,j,k,top_gmax);
+                value = fabs(div_U[index]);
+                sum_div = sum_div + fabs(div_U[index]);
+	    	if (min_value > div_U[index]) 
+		{
+		    min_value = div_U[index];
+		    icrds_min[0] = i;
+		    icrds_min[1] = j;
+		    icrds_min[2] = k;
+		}
+	    	if (max_value < div_U[index]) 
+		{
+		    max_value = div_U[index];
+		    icrds_max[0] = i;
+		    icrds_max[1] = j;
+		    icrds_max[2] = k;
+		}
+            }
+            pp_global_min(&min_value,1);
+            pp_global_max(&max_value,1);
+	    L1_div = sum_div/(imax-imin+1)/(jmax-jmin+1)/(kmax-kmin+1);
+	    (void) printf("Before computeProjection:\n");
+            (void) printf("Sum div(U) = %f\n",sum_div);
+            (void) printf("Min div(U) = %f  ",min_value);
+	    (void) printf("occuring at: %d %d %d\n",icrds_min[0],icrds_min[1],
+					icrds_min[2]);
+            (void) printf("Max div(U) = %f  ",max_value);
+	    (void) printf("occuring at: %d %d %d\n",icrds_max[0],icrds_max[1],
+					icrds_max[2]);
+            (void) printf("L1  div(U) = %f\n",L1_div);
+        }
+
+
+
 	FT_ParallelExchGridArrayBuffer(source,front,NULL);
         FT_ParallelExchGridArrayBuffer(diff_coeff,front,NULL);
+	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
         for (k = 0; k <= top_gmax[2]; k++)
         for (j = 0; j <= top_gmax[1]; j++)
         for (i = 0; i <= top_gmax[0]; i++)
@@ -1662,6 +1744,9 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 					icrds_max[2]);
             (void) printf("L1  div(U) = %f\n",L1_div);
         }
+	printf("\n* * * * END * * * *\n");
+	fflush(stdout);
+	//abort();
 	if (debugging("check_div"))
         {
             checkVelocityDiv("Before computeProjection()");
@@ -1673,6 +1758,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
         elliptic_solver.getStateVar = getStatePhi;
         elliptic_solver.findStateAtCrossing = findStateAtCrossing;
 	paintAllGridPoint(NOT_SOLVED);
+	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	while (paintToSolveGridPoint())
 	{
 	    setGlobalIndex();
@@ -1687,6 +1774,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 	    paintSolvedGridPoint();
 	}
 
+	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 
 	min_phi =  HUGE;
 	max_phi = -HUGE;
@@ -1711,17 +1800,19 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 		icrds_max[2] = k;
 	    }
         }
-        if(debugging("step_size"))
-	{
-	    (void) printf("After computeProjection:\n");
-	    (void) printf("min_phi = %f  occuring at: %d %d %d\n",
-			min_phi,icrds_min[0],icrds_min[1],icrds_min[2]);
-	    (void) printf("max_phi = %f  occuring at: %d %d %d\n",
-			max_phi,icrds_max[0],icrds_max[1],icrds_max[2]);
-	    (void) printf("diff_phi = %f\n",max_phi-min_phi);
-	}
-	if (debugging("trace"))
-	    (void) printf("Leaving computeProjectionSimple()\n");
+	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
+        //if(debugging("step_size"))
+	//{
+	//    (void) printf("After computeProjection:\n");
+	//    (void) printf("min_phi = %f  occuring at: %d %d %d\n",
+	//		min_phi,icrds_min[0],icrds_min[1],icrds_min[2]);
+	//    (void) printf("max_phi = %f  occuring at: %d %d %d\n",
+	//		max_phi,icrds_max[0],icrds_max[1],icrds_max[2]);
+	//    (void) printf("diff_phi = %f\n",max_phi-min_phi);
+	//}
+	//if (debugging("trace"))
+	//    (void) printf("Leaving computeProjectionSimple()\n");
 }	/* end computeProjectionSimple */
 
 void Incompress_Solver_Smooth_3D_Cartesian::solveTest(const char *msg)
