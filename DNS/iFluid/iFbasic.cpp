@@ -2773,6 +2773,10 @@ double Incompress_Solver_Smooth_Basis::computeFieldPointDiv(
 	index = d_index(icoords,top_gmax,dim);
         comp = top_comp[index];
 
+	int dist_factor[3] = {1, 1, 1};
+        int icmin[3] = {imin, jmin, kmin};
+        int icmax[3] = {imax, jmax, kmax};
+
 	for (idir = 0; idir < dim; idir++)
 	{
 	    for (j = 0; j < dim; ++j)
@@ -2783,11 +2787,31 @@ double Incompress_Solver_Smooth_Basis::computeFieldPointDiv(
 	    	index_nb = d_index(icnb,top_gmax,dim);
 	    	u_edge[idir][nb] = field[idir][index_nb];
 	    }
+	    //if (lbuf[idir] == 0) {
+	    //    if (icoords[idir] == icmin[idir]) {
+	    //        dist_factor[idir] = 2;		
+	    //        icnb[idir] = icoords[idir];
+	    //        index_nb = d_index(icnb,top_gmax,dim);
+	    //        u_edge[0][0] = field[0][index_nb]; 	
+	    //        u_edge[1][0] = field[1][index_nb]; 	
+	    //        u_edge[2][0] = field[2][index_nb]; 	
+	    //    }
+	    //}
+	    //if (ubuf[idir] == 0) {
+	    //    if (icoords[idir] == icmax[idir]) {
+	    //        dist_factor[idir] = 2;
+	    //        icnb[idir] = icoords[idir];
+	    //        index_nb = d_index(icnb,top_gmax,dim);
+	    //        u_edge[0][1] = field[0][index_nb];	    
+	    //        u_edge[1][1] = field[1][index_nb];	    
+	    //        u_edge[2][1] = field[2][index_nb];	    
+	    //    }
+	    //}
 	}
 
 	div = 0.0;
 	for (i = 0; i < dim; ++i)
-	    div += 0.5*(u_edge[i][1] - u_edge[i][0])/top_h[i];
+	    div += dist_factor[i]*0.5*(u_edge[i][1] - u_edge[i][0])/top_h[i];
         return div;
 }       /* end computeFieldPointDiv */
 
@@ -2810,6 +2834,10 @@ void Incompress_Solver_Smooth_Basis::computeFieldPointGrad(
         comp = top_comp[index];
 	p0 = field[index];
 
+	int dist_factor[3] = {1, 1, 1};
+        int icmin[3] = {imin, jmin, kmin};
+        int icmax[3] = {imax, jmax, kmax};
+	
 	for (idir = 0; idir < dim; idir++)
 	{
 	    for (j = 0; j < dim; ++j)
@@ -2824,12 +2852,29 @@ void Incompress_Solver_Smooth_Basis::computeFieldPointGrad(
 		    p_edge[idir][nb] = field[index_nb];
 	    	else if (status ==CONST_P_PDE_BOUNDARY)
 		    p_edge[idir][nb] = getStatePhi(intfc_state);
-	    	else if (status ==CONST_V_PDE_BOUNDARY)
+	    	else if (status ==CONST_V_PDE_BOUNDARY) {
 		    p_edge[idir][nb] = p0;
+		    //printf("CONST_V_PDE_BOUNDARY ");
+		}
 	    }
+	    if (lbuf[idir] == 0) {
+	        if (icoords[idir] == icmin[idir]) {
+		    dist_factor[idir] = 2;		
+	            p_edge[idir][0] = p0; 	
+		}
+	    }
+	    if (ubuf[idir] == 0) {
+	        if (icoords[idir] == icmax[idir]) {
+		    dist_factor[idir] = 2;
+	            p_edge[idir][1] = p0;	    
+		}
+	    }
+
 	}
 	for (i = 0; i < dim; ++i)
-	    grad_field[i] = 0.5*(p_edge[i][1] - p_edge[i][0])/top_h[i];
+	    grad_field[i] = dist_factor[idir]*0.5*(p_edge[i][1] - p_edge[i][0])/top_h[i];
+
+	//printf("Gradient at %d,%d,%d is %f,%f,%f\n", icoords[0], icoords[1], icoords[2], grad_field[0], grad_field[1], grad_field[2]);
 }
 
 void Incompress_Solver_Smooth_Basis::computeDualFieldPointGrad(

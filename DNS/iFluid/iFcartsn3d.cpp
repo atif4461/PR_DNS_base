@@ -125,8 +125,11 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeNewVelocity(void)
 	double mag_grad_phi,max_grad_phi,ave_grad_phi;
 	int icrds_max[MAXD];
 
+
 	if (iFparams->num_scheme.ellip_method == DUAL_ELLIP)
         {
+	    printf("AT computeNewVelocity DUAL_ELLIP %d  %s\n", __LINE__, __FILE__);
+            fflush(stdout);
             computeNewVelocityDual();
             return;
         }
@@ -144,6 +147,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeNewVelocity(void)
 	    index = d_index3d(i,j,k,top_gmax);
 	    array[index] = phi[index];
 	}
+
 	for (k = kmin; k <= kmax; k++)
 	for (j = jmin; j <= jmax; j++)
         for (i = imin; i <= imax; i++)
@@ -162,6 +166,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeNewVelocity(void)
 	    icoords[2] = k;
 
 	    computeFieldPointGrad(icoords,array,grad_phi);
+	    printf("Phi at %d,%d,%d is %f, grad is %f,%f,%f\n", i,j,k, phi[index], grad_phi[0], grad_phi[1], grad_phi[2]);
 	    speed = 0.0;
 	    for (l = 0; l < 3; ++l)
 	    {
@@ -196,6 +201,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeNewVelocity(void)
                 if (vmax[l] < vel[l][index]) vmax[l] = vel[l][index];
             }
 	}
+	printf("AT computeNewVelocity() %d  %s\n", __LINE__, __FILE__);
+        fflush(stdout);
 	for (l = 0; l < 3; ++l)
 	{
 	    for (k = kmin; k <= kmax; k++)
@@ -456,7 +463,7 @@ clean_up(0);
 	}
 	if (debugging("sample_velocity"))
 	    sampleVelocity();
-	
+		
 	printf("AT %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
 	start_clock("computeDiffusion");
@@ -484,7 +491,8 @@ clean_up(0);
 
 	    printf("AT %d  %s\n", __LINE__, __FILE__);
             fflush(stdout);
-	    
+
+    
 	    start_clock("computePressure");
 	    computePressure();
 	    stop_clock("computePressure");
@@ -492,35 +500,36 @@ clean_up(0);
 	        printf("min_pressure = %f  max_pressure = %f\n",
 	        	min_pressure,max_pressure);
 
+
 	    printf("AT %d  %s\n", __LINE__, __FILE__);
             fflush(stdout);
-//	    start_clock("computeNewVelocity");
-//	    computeNewVelocity();
-//	    stop_clock("computeNewVelocity");
-//	    accum_dt = 0.0;
-//	    printf("AT %d  %s\n", __LINE__, __FILE__);
-//            fflush(stdout);
+	    start_clock("computeNewVelocity");
+	    computeNewVelocity();
+	    stop_clock("computeNewVelocity");
+	    accum_dt = 0.0;
+	    printf("AT %d  %s\n", __LINE__, __FILE__);
+            fflush(stdout);
 	}
 
-//	if (debugging("step_size"))
-//	{
-//	    printf("max_speed after computeNewVelocity(): %20.14f\n",
-//				max_speed);
-//	    (void) printf("max speed occured at (%d %d %d)\n",icrds_max[0],
-//				icrds_max[1],icrds_max[2]);
-//	}
-//	if (debugging("sample_velocity"))
-//	    sampleVelocity();
-//
-//	start_clock("copyMeshStates");
-//	copyMeshStates();
-//	stop_clock("copyMeshStates");
-//
-//        if(iFparams->if_ref_pres == YES)
-//            setReferencePressure();
-//
-//	setAdvectionDt();
-//	stop_clock("solve");
+	if (debugging("step_size"))
+	{
+	    printf("max_speed after computeNewVelocity(): %20.14f\n",
+				max_speed);
+	    (void) printf("max speed occured at (%d %d %d)\n",icrds_max[0],
+				icrds_max[1],icrds_max[2]);
+	}
+	if (debugging("sample_velocity"))
+	    sampleVelocity();
+
+	start_clock("copyMeshStates");
+	copyMeshStates();
+	stop_clock("copyMeshStates");
+
+        if(iFparams->if_ref_pres == YES)
+            setReferencePressure();
+
+	setAdvectionDt();
+	stop_clock("solve");
 }	/* end solve */
 
 
@@ -543,9 +552,9 @@ void Incompress_Solver_Smooth_3D_Cartesian::copyMeshStates()
 void Incompress_Solver_Smooth_3D_Cartesian::
 	computeDiffusion(void)
 {
-	//return computeDiffusionCN();
+	return computeDiffusionCN();
 	//return computeDiffusionImplicit();
-	return computeDiffusionExplicit();
+	//return computeDiffusionExplicit(); // atif: does not work, gives numerical artifact waves at corners for ldc2d
 	printf("AT %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
 }	/* end computeDiffusion */
@@ -1619,6 +1628,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
             vmin[l] = HUGE;
             vmax[l] = -HUGE;
         }
+
         /* Compute velocity divergence */
         for (k = kmin; k <= kmax; k++)
         for (j = jmin; j <= jmax; j++)
@@ -1641,6 +1651,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
                 }
             }
         }
+
+
 
 
         if(debugging("step_size"))
@@ -1686,10 +1698,13 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
             (void) printf("L1  div(U) = %f\n",L1_div);
         }
 
-
-
 	FT_ParallelExchGridArrayBuffer(source,front,NULL);
-        FT_ParallelExchGridArrayBuffer(diff_coeff,front,NULL);
+
+	printf("\n* * * * END * * * *\n");
+	fflush(stdout);
+	//abort();
+        
+	FT_ParallelExchGridArrayBuffer(diff_coeff,front,NULL);
 	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
         for (k = 0; k <= top_gmax[2]; k++)
@@ -1744,9 +1759,6 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 					icrds_max[2]);
             (void) printf("L1  div(U) = %f\n",L1_div);
         }
-	printf("\n* * * * END * * * *\n");
-	fflush(stdout);
-	//abort();
 	if (debugging("check_div"))
         {
             checkVelocityDiv("Before computeProjection()");
@@ -1802,6 +1814,27 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
         }
 	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
+
+
+
+	//atiftest
+	//double *phi = field->phi;
+        //int icoords[MAXD];
+       	double grad_phi[MAXD];
+        for (k = kmin; k <= kmax; k++)
+	for (j = jmin; j <= jmax; j++)
+        for (i = imin; i <= imax; i++)
+	{
+	    //computeFieldPointGrad(icoords,array,grad_phi);
+	    int index = d_index3d(i,j,k,top_gmax);
+	    printf("Phitest1 at %d,%d,%d is %f, grad is %f,%f,%f\n", i,j,k, phi[index], grad_phi[0], grad_phi[1], grad_phi[2]);
+        }
+
+
+
+
+
+
         //if(debugging("step_size"))
 	//{
 	//    (void) printf("After computeProjection:\n");
