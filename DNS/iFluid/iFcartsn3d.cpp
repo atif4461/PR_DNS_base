@@ -166,7 +166,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeNewVelocity(void)
 	    icoords[2] = k;
 
 	    computeFieldPointGrad(icoords,array,grad_phi);
-	    printf("Phi at %d,%d,%d is %f, grad is %f,%f,%f\n", i,j,k, phi[index], grad_phi[0], grad_phi[1], grad_phi[2]);
+	    //printf("Phi at %d,%d,%d is %f, grad is %f,%f,%f\n", i,j,k, phi[index], grad_phi[0], grad_phi[1], grad_phi[2]);
 	    speed = 0.0;
 	    for (l = 0; l < 3; ++l)
 	    {
@@ -552,9 +552,9 @@ void Incompress_Solver_Smooth_3D_Cartesian::copyMeshStates()
 void Incompress_Solver_Smooth_3D_Cartesian::
 	computeDiffusion(void)
 {
-	return computeDiffusionCN();
+	//return computeDiffusionCN();
 	//return computeDiffusionImplicit();
-	//return computeDiffusionExplicit(); // atif: does not work, gives numerical artifact waves at corners for ldc2d
+	return computeDiffusionExplicit(); // atif: does not work, gives numerical artifact waves at corners for ldc2d
 	printf("AT %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
 }	/* end computeDiffusion */
@@ -1320,7 +1320,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::computePressure(void)
 	//    (void) printf("Unknown computePressure() scheme!\n");
 	//    clean_up(ERROR);
 	//}
-	computePressurePmII();
+	computePressurePmI();
         computeGradientQ();
 }	/* end computePressure */
 
@@ -1631,9 +1631,9 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 
         /* Compute velocity divergence */
         for (k = kmin; k <= kmax; k++)
-        for (j = jmin; j <= jmax; j++)
         for (i = imin; i <= imax; i++)
-        {
+        for (j = jmin; j <= jmax; j++)
+        {   
             icoords[0] = i;
             icoords[1] = j;
             icoords[2] = k;
@@ -1651,8 +1651,6 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
                 }
             }
         }
-
-
 
 
         if(debugging("step_size"))
@@ -1814,23 +1812,6 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
         }
 	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
-
-
-
-	//atiftest
-	//double *phi = field->phi;
-        //int icoords[MAXD];
-       	double grad_phi[MAXD];
-        for (k = kmin; k <= kmax; k++)
-	for (j = jmin; j <= jmax; j++)
-        for (i = imin; i <= imax; i++)
-	{
-	    //computeFieldPointGrad(icoords,array,grad_phi);
-	    int index = d_index3d(i,j,k,top_gmax);
-	    printf("Phitest1 at %d,%d,%d is %f, grad is %f,%f,%f\n", i,j,k, phi[index], grad_phi[0], grad_phi[1], grad_phi[2]);
-        }
-
-
 
 
 

@@ -508,16 +508,16 @@ EXPORT void scatter_top_grid_float_array(
 	//for (int k = 0; k <= gmax[2]; ++k)
         //{
 	//    auto ic = d_index3d(i,j,k,gmax);
-	//    solute[ic] = k + myid*100;
+	//    solute[ic] = j + myid*100;
 	//}
 
-	//for (int i = 0; i <= gmax[0]; ++i)
+	//for (int j = 0; j <= gmax[1]; ++j)
 	//{
-	//    auto ic0= d_index3d(i,10,10,gmax);
-	//    auto ic1= d_index3d(i,9,9,gmax);
-	//    auto ic2= d_index3d(i,4,4,gmax);
-	//    auto ic3= d_index3d(i,6,6,gmax);
-        //    printf("Before communication value at i=%d is %f and %f and %f and %f\n", i, solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
+	//    auto ic0= d_index3d(10,j,10,gmax);
+	//    auto ic1= d_index3d( 9,j, 9,gmax);
+	//    auto ic2= d_index3d(14,j,14,gmax);
+	//    auto ic3= d_index3d( 6,j, 6,gmax);
+        //    printf("Before communication value at j=%d is %f and %f and %f and %f\n", j, solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
 	//}
 
 	for (dir = 0; dir < dim; ++dir)
@@ -569,13 +569,13 @@ EXPORT void scatter_top_grid_float_array(
 	    }
 	}
 
-	//for (int i = 0; i <= gmax[0]; ++i)
+	//for (int j = 0; j <= gmax[1]; ++j)
 	//{
-	//    auto ic0= d_index3d(i,10,10,gmax);
-	//    auto ic1= d_index3d(i,9,9,gmax);
-	//    auto ic2= d_index3d(i,4,4,gmax);
-	//    auto ic3= d_index3d(i,6,6,gmax);
-        //    printf("After communication value at i=%d is %f and %f and %f and %f\n", i, solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
+	//    auto ic0= d_index3d(10,j,10,gmax);
+	//    auto ic1= d_index3d( 9,j,9,gmax);
+	//    auto ic2= d_index3d( 4,j,4,gmax);
+	//    auto ic3= d_index3d( 6,j,6,gmax);
+        //    printf("After communication value at j=%d is %f and %f and %f and %f\n", j, solute[ic0], solute[ic1], solute[ic2], solute[ic3]);
 	//}
 
 }	/* end scatter_top_grid_float_array */
@@ -619,7 +619,7 @@ LOCAL	void bundle_array_buffer(
 		ft_assign(variable,array+ic,FLOAT);
 		variable += FLOAT;
 	    }
-	    printf("\npacking %d,%d,%d to %d,%d,%d \n", bmin[0],bmin[1],bmin[2],bmax[0],bmax[1],bmax[2] );
+	    //printf("\npacking %d,%d,%d to %d,%d,%d \n", bmin[0],bmin[1],bmin[2],bmax[0],bmax[1],bmax[2] );
 	}
 }	/* end bundle_array_buffer */
 
@@ -662,7 +662,7 @@ LOCAL	void unbundle_array_buffer(
 		ft_assign(array+ic,variable,FLOAT);
 		variable += FLOAT;
 	    }
-	    printf("\nunpacking %d,%d,%d to %d,%d,%d \n", bmin[0],bmin[1],bmin[2],bmax[0],bmax[1],bmax[2] );
+	    //printf("\nunpacking %d,%d,%d to %d,%d,%d \n", bmin[0],bmin[1],bmin[2],bmax[0],bmax[1],bmax[2] );
 	}
 }	/* end unbundle_array_buffer */
 
@@ -698,7 +698,7 @@ LOCAL	int set_send_buffer_limits(
 	len = 1;
 	for (i = 0; i < dim; ++i)
 	    len *= (bmax[i] - bmin[i]);
-	printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** sending %d points from bmin %d bmax %d \n", dir, side, len, bmin[dir], bmax[dir] );
+	//printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** sending %d points from bmin %d bmax %d \n", dir, side, len, bmin[dir], bmax[dir] );
 	return len*FLOAT;
 }	/* end set_send_buffer_limits */
 
@@ -727,13 +727,13 @@ LOCAL	int set_recv_buffer_limits(
 	else
 	{
 	    bmin[dir] = gmax[dir] - ubuf[dir] + 1;
-	    //if (ubuf[dir] == 0) bmin[dir] -= 4;
+	    if (ubuf[dir] == 0) bmin[dir] -= 4;
 	    bmax[dir] = gmax[dir] + 1;
 	}
 	len = 1;
 	for (i = 0; i < dim; ++i)
 	    len *= (bmax[i] - bmin[i]);
-	printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** receiving %d points at bmin %d bmax %d \n", dir, side, len, bmin[dir], bmax[dir] );
+	//printf("** dir=%d, side=%d SUBDOMAIN_BOUNDARY ** receiving %d points at bmin %d bmax %d \n", dir, side, len, bmin[dir], bmax[dir] );
 	return len*FLOAT;
 }	/* end set_recv_buffer_limits */
 

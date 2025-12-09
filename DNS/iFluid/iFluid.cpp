@@ -236,8 +236,8 @@ static  void ifluid_driver(
 
 	    FT_AddTimeStepToCounter(front);
 				
-FT_AddMovieFrame(front,out_name,binary);
-std::exit(0);
+//FT_AddMovieFrame(front,out_name,binary);
+//std::exit(0);
             //Next time step determined by maximum speed of previous
             //step, assuming the propagation is hyperbolic and
             //is not dependent on second order derivatives of
