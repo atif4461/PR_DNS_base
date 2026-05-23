@@ -257,13 +257,13 @@ static  void ifluid_driver(
             (void) printf("\ntime = %20.14f   step = %5d   next dt = %20.14f\n",
                         front->time,front->step,front->dt);
 
-            if (FT_IsSaveTime(front))
+            //if (FT_IsSaveTime(front))
 	    {
 	        printf("PRINTING INTERIOR STATES");
             	FT_Save(front,out_name);
 	        l_cartesian->printFrontInteriorStates(out_name);
 	    }
-            if (FT_IsMovieFrameTime(front))
+            //if (FT_IsMovieFrameTime(front))
 	    {
 	        printf("PRINTING MOVIE FRAMES");
             	FT_AddMovieFrame(front,out_name,binary);

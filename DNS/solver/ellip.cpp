@@ -532,6 +532,10 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 
 	printf("AT %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
+	printf("ELLIPTIC imin = %d  imax = %d\n",imin,imax);
+	int III;
+	if (pp_mynode() == 0) III = 64;
+	else III = imin;
 	for (k = kmin; k <= kmax; k++)
 	for (j = jmin; j <= jmax; j++)
         for (i = imin; i <= imax; i++)
@@ -559,17 +563,28 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	
 	    k0 = D[index];
 	    num_nb = 0;
+	    if (i == III && k == 4 && j > jmax-4) printf("coeff = ");
 	    for (l = 0; l < 6; ++l)
 	    {
 		status = (*findStateAtCrossing)(front,icoords,dir[l],comp,
                                 &intfc_state,&hs,crx_coords);
 		if (status != CONST_V_PDE_BOUNDARY)
+		{
+	    	    if (i == 64 && k == 4 && j > jmax-4)
+			printf("B1:");
 		    num_nb++;
+		}
                 if (status == CONST_V_PDE_BOUNDARY ||
 		    status == CONST_P_PDE_BOUNDARY)
+		{
+	    	    if (i == 64 && k == 4 && j > jmax-4)
+			printf("B2:");
 		    index_nb[l] = index;
+		}
 		k_nb[l] = 0.5*(k0 + D[index_nb[l]]);
 	    	coeff[l] = k_nb[l]/(top_h[l/2]*top_h[l/2]); 
+	    	    if (i == 64 && k == 4 && j > jmax-4)
+			printf("%f ",coeff[l]);
 	    }
 
 	    rhs = source[index];
@@ -592,6 +607,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 		    use_neumann_solver = NO;
 		}
 	    }
+	    if (i == III && k == 4 && j > jmax-4)
+		printf("(%d,%d,%d) aII = %f  rhs = %f\n",i,j,k,aII,rhs);
 	    /*
 	     * This change reflects the need to treat point with only one
 	     * interior neighbor (a convex point). Not sure why PETSc cannot
@@ -683,6 +700,8 @@ void ELLIPTIC_SOLVER::solve3d(double *soln)
 	    I = ijk_to_I[i][j][k];
 	    if (I == -1) continue;
 	    soln[index] = x[I-ilower];
+	    if (i == 64 && k == 4)
+		printf("(%d,%d,%d) soln = %f\n",i,j,k,soln[index]);
 	    if (max_soln < soln[index]) 
 	    {
 		max_soln = soln[index];

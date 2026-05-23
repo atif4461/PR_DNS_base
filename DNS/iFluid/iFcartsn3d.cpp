@@ -452,6 +452,8 @@ clean_up(0);
         fflush(stdout);
 	// 1) solve for intermediate velocity
 	start_clock("computeAdvection");
+        double **vel = field->vel;
+        double *phi = field->phi;
 	computeAdvection();
 	stop_clock("computeAdvection");
 	if (debugging("step_size"))
@@ -494,7 +496,23 @@ clean_up(0);
 
     
 	    start_clock("computePressure");
+	printf("Before computePressure()\n");
+	for (j = jmin; j < jmax; ++j)
+	{
+		i = 65; k = 4;
+	    index  = d_index3d(i,j,k,top_gmax);
+	    //printf("vel[index] = %f %f %f\n",vel[0][index],vel[1][index],vel[2][index]);
+	    printf("phi[%d,%d,%d] = %f\n",i,j,k,phi[index]);
+	}
 	    computePressure();
+	printf("After computePressure()\n");
+	for (j = jmin; j < jmax; ++j)
+	{
+		i = 65; k = 4;
+	    index  = d_index3d(i,j,k,top_gmax);
+	    //printf("vel[index] = %f %f %f\n",vel[0][index],vel[1][index],vel[2][index]);
+	    printf("phi[%d,%d,%d] = %f\n",i,j,k,phi[index]);
+	}
 	    stop_clock("computePressure");
 	    if (debugging("trace"))
 	        printf("min_pressure = %f  max_pressure = %f\n",
@@ -505,6 +523,13 @@ clean_up(0);
             fflush(stdout);
 	    start_clock("computeNewVelocity");
 	    computeNewVelocity();
+	printf("After computeNewVelocity()\n");
+	for (j = jmin; j < jmax; ++j)
+	{
+		i = 65; k = 4;
+	    index  = d_index3d(i,j,k,top_gmax);
+	    printf("vel[index] = %f %f %f\n",vel[0][index],vel[1][index],vel[2][index]);
+	}
 	    stop_clock("computeNewVelocity");
 	    accum_dt = 0.0;
 	    printf("AT %d  %s\n", __LINE__, __FILE__);
@@ -1705,6 +1730,7 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 	FT_ParallelExchGridArrayBuffer(diff_coeff,front,NULL);
 	printf("computeProjectionSimple() %d  %s\n", __LINE__, __FILE__);
         fflush(stdout);
+	printf("Before projection\n");
         for (k = 0; k <= top_gmax[2]; k++)
         for (j = 0; j <= top_gmax[1]; j++)
         for (i = 0; i <= top_gmax[0]; i++)
@@ -1713,6 +1739,8 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
             div_U[index] = source[index];
             source[index] /= accum_dt;
             array[index] = phi[index];
+	    if (i == 65 && k == 4)
+		printf("phi[%d,%d,%d] = %f\n",i,j,k,array[index]);
         }
 
         if(debugging("step_size"))
@@ -1789,12 +1817,15 @@ void Incompress_Solver_Smooth_3D_Cartesian::computeProjectionSimple(void)
 
 	min_phi =  HUGE;
 	max_phi = -HUGE;
+	printf("After projection\n");
         for (k = 0; k <= top_gmax[2]; k++)
         for (j = 0; j <= top_gmax[1]; j++)
         for (i = 0; i <= top_gmax[0]; i++)
         {
             index  = d_index3d(i,j,k,top_gmax);
             phi[index] = array[index];
+	    if (i == 65 && k == 4)
+		printf("phi[%d,%d,%d] = %f\n",i,j,k,array[index]);
             if (min_phi > phi[index])
 	    {
 		min_phi = phi[index];

@@ -3094,6 +3094,7 @@ extern int ifluid_find_state_at_crossing(
 	if (wave_type(*hs) == DIRICHLET_BOUNDARY) 
 	{
 	    if (boundary_state(*hs))
+	    	//return CONST_P_PDE_BOUNDARY; // xiaolin's suggestion
 	    	return CONST_V_PDE_BOUNDARY;
 	    else
 	    	return CONST_P_PDE_BOUNDARY;
